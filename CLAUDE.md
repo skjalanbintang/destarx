@@ -17,6 +17,14 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
   defaults, rooms in `kehadiran-data.js`/`tempahan.html`/`aktiviti.html`, OPR template images in `assets/`)
   still has to be replaced with SK Jalan Bintang data.
 
+## Kategori paparan utama
+
+- Paparan utama index.html memaparkan 5 kad kategori (`HUB_CATS`): PENGURUSAN, KURIKULUM, HEM (Hal Ehwal Murid), KOKURIKULUM, PPKI.
+  Tekan kad -> `setCategory(id)` memaparkan alatan kategori itu dengan butang "Semua kategori". Carian dan "Disimpan" memaparkan senarai alatan terus.
+- `tool.category` menyimpan id baharu. `catOf(tool)` memetakan tool lama dalam Firestore (PDP, PENTADBIRAN, GRAFIK, HTML) secara automatik
+  (`LEGACY_CAT`, `LEGACY_TOOL_CAT`); tukar kategori sesuatu tool melalui Panel Pentadbir > Edit. Gaya kad: `.hub-cat` dalam `tema-zamrud.css`.
+- Tambah kategori baharu dengan menambah entri dalam `HUB_CATS`, `<option>` `#toolCategory`, chip `#categoryChips` dan warna `.hub-cat[data-hc]`.
+
 ## Visual theme (Zamrud & Krim)
 
 - `tema-tailwind.js` holds the Tailwind CDN palette (loaded after cdn.tailwindcss.com). It remaps

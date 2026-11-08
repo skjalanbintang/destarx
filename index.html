@@ -812,33 +812,37 @@
 
             <!-- Categories Horizontal Scroll Bar -->
             <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-1 text-xs" id="categoryChips">
-                <button onclick="setCategory('ALL')" class="cat-chip active px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-brand-600 text-white shadow-sm shadow-brand-600/30">
-                    <i class="fa-solid fa-border-all mr-1.5"></i>Semua Alatan
+                <button data-cat="ALL" onclick="setCategory('ALL')" class="cat-chip active px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-brand-600 text-white shadow-sm shadow-brand-600/30">
+                    <i class="fa-solid fa-border-all mr-1.5"></i>Semua Kategori
                 </button>
-                <button onclick="setCategory('PDP')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <i class="fa-solid fa-chalkboard-user mr-1.5 text-emerald-500"></i>PdP & Kelas
+                <button data-cat="PENGURUSAN" onclick="setCategory('PENGURUSAN')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-briefcase mr-1.5"></i>Pengurusan
                 </button>
-                <button onclick="setCategory('PENTADBIRAN')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <i class="fa-solid fa-folder-tree mr-1.5 text-blue-500"></i>Pentadbiran
+                <button data-cat="KURIKULUM" onclick="setCategory('KURIKULUM')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-book-open mr-1.5"></i>Kurikulum
                 </button>
-                <button onclick="setCategory('GRAFIK')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-purple-500"></i>Grafik
+                <button data-cat="HEM" onclick="setCategory('HEM')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-user-graduate mr-1.5"></i>Hal Ehwal Murid
                 </button>
-                <button onclick="setCategory('HTML')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <i class="fa-solid fa-code mr-1.5 text-amber-500"></i>Widget HTML Interaktif
+                <button data-cat="KOKURIKULUM" onclick="setCategory('KOKURIKULUM')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-medal mr-1.5"></i>Kokurikulum
                 </button>
-                <button onclick="setCategory('FAV')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
-                    <i class="fa-solid fa-bookmark mr-1.5 text-rose-500"></i>Disimpan
+                <button data-cat="PPKI" onclick="setCategory('PPKI')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-hands-holding-child mr-1.5"></i>PPKI
+                </button>
+                <button data-cat="FAV" onclick="setCategory('FAV')" class="cat-chip px-4 py-2 rounded-xl font-medium whitespace-nowrap transition bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-bookmark mr-1.5"></i>Disimpan
                 </button>
             </div>
         </div>
 
         <div class="flex items-center justify-between mb-3">
             <h3 class="font-heading font-bold text-sm md:text-base text-slate-700 dark:text-slate-300 flex items-center">
-                <span id="sectionTitle">Alatan</span>
+                <button id="catBack" type="button" onclick="setCategory('ALL')" class="hidden mr-3 px-3 py-1.5 rounded-lg text-[11px] font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-brand-500 transition" aria-label="Kembali ke semua kategori"><i class="fa-solid fa-arrow-left mr-1.5"></i>Semua kategori</button>
+                <span id="sectionTitle">Kategori</span>
                 <span id="toolCountBadge" class="ml-2 px-2 py-0.5 rounded-full text-[11px] bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold">0</span>
             </h3>
-            <span class="text-[11px] text-slate-400">Pilih alatan untuk melancarkan</span>
+            <span id="sectionHint" class="text-[11px] text-slate-400">Pilih kategori untuk melihat alatan</span>
         </div>
 
         <!-- Grid Cards Container -->
@@ -1559,10 +1563,11 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Kategori <span class="text-rose-500">*</span></label>
                                 <select id="toolCategory" required class="admin-input w-full px-3 py-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-brand-500 outline-none transition">
-                                    <option value="PDP">PdP & Kelas</option>
-                                    <option value="PENTADBIRAN">Pengurusan & KPM</option>
-                                    <option value="GRAFIK">Reka Bentuk & Grafik</option>
-                                    <option value="HTML">Widget HTML Interaktif</option>
+                                    <option value="PENGURUSAN">Pengurusan</option>
+                                    <option value="KURIKULUM">Kurikulum</option>
+                                    <option value="HEM">Hal Ehwal Murid</option>
+                                    <option value="KOKURIKULUM">Kokurikulum</option>
+                                    <option value="PPKI">PPKI</option>
                                 </select>
                             </div>
                         </div>
@@ -1913,15 +1918,15 @@
         // kosong, Admin yang log masuk akan menyimpannya ke Firestore secara automatik;
         // selepas itu katalog diurus melalui Panel Pentadbir.
         const INITIAL_TOOLS = [
-            { id: 'tool_jadual', title: "Jadual Waktu PdP", category: 'PDP', desc: "Jadual waktu guru dan kelas, dengan peringatan kelas bermula.", type: 'URL', url: './jadual.html', htmlCode: '', icon: 'fa-solid fa-table-cells', isPinned: false, order: 2 },
-            { id: 'tool_kehadiran', title: "Kehadiran Kelas", category: 'PDP', desc: "Imbas kod QR kelas atau bilik khas untuk merekod kehadiran guru.", type: 'URL', url: './kehadiran.html', htmlCode: '', icon: 'fa-solid fa-clipboard-check', isPinned: false, order: 3 },
-            { id: 'tool_ganti', title: "Guru Ganti", category: 'PENTADBIRAN', desc: "Jana jadual guru ganti (teach-in) daripada jadual waktu guru dan kelas.", type: 'URL', url: './ganti.html', htmlCode: '', icon: 'fa-solid fa-people-arrows', isPinned: false, order: 4 },
-            { id: 'tool_tempahan', title: "Tempahan Bilik Khas", category: 'PENTADBIRAN', desc: "Tempah bilik dan lihat jadual penggunaannya pada satu paparan.", type: 'URL', url: './tempahan.html', htmlCode: '', icon: 'fa-solid fa-door-open', isPinned: false, order: 5 },
-            { id: 'tool_aktiviti', title: "Daftar Aktiviti", category: 'PENTADBIRAN', desc: "Daftar program sekolah; ia dipaparkan dalam kalendar hub.", type: 'URL', url: './aktiviti.html', htmlCode: '', icon: 'fa-solid fa-calendar-days', isPinned: false, order: 6 },
-            { id: 'tool_ekokurikulum', title: "e-Kokurikulum", category: 'PDP', desc: "Daftar hadir, laporan mingguan dan pencapaian unit kokurikulum.", type: 'URL', url: './ekokurikulum.html', htmlCode: '', icon: 'fa-solid fa-medal', isPinned: false, order: 7 },
-            { id: 'tool_ekoku', title: "eKOKU Laporan Perjumpaan", category: 'PDP', desc: "Laporan perjumpaan unit, kehadiran murid, rumusan kehadiran berserta graf, program dan pencapaian.", type: 'URL', url: './ekoku/index.html', htmlCode: '', icon: 'fa-solid fa-chart-column', isPinned: false, order: 7.5 },
-            { id: 'tool_opr', title: "Jana OPR", category: 'GRAFIK', desc: "Hasilkan One Page Report program daripada templat sedia ada.", type: 'URL', url: './opr.html', htmlCode: '', icon: 'fa-solid fa-file-invoice', isPinned: false, order: 8 },
-            { id: 'tool_qr-kelas', title: "Cetak Kod QR Kelas", category: 'PENTADBIRAN', desc: "Kod QR untuk ditampal di setiap kelas dan bilik khas.", type: 'URL', url: './qr-kelas.html', htmlCode: '', icon: 'fa-solid fa-qrcode', isPinned: false, order: 9 }
+            { id: 'tool_jadual', title: "Jadual Waktu PdP", category: 'KURIKULUM', desc: "Jadual waktu guru dan kelas, dengan peringatan kelas bermula.", type: 'URL', url: './jadual.html', htmlCode: '', icon: 'fa-solid fa-table-cells', isPinned: false, order: 2 },
+            { id: 'tool_kehadiran', title: "Kehadiran Kelas", category: 'PENGURUSAN', desc: "Imbas kod QR kelas atau bilik khas untuk merekod kehadiran guru.", type: 'URL', url: './kehadiran.html', htmlCode: '', icon: 'fa-solid fa-clipboard-check', isPinned: false, order: 3 },
+            { id: 'tool_ganti', title: "Guru Ganti", category: 'PENGURUSAN', desc: "Jana jadual guru ganti (teach-in) daripada jadual waktu guru dan kelas.", type: 'URL', url: './ganti.html', htmlCode: '', icon: 'fa-solid fa-people-arrows', isPinned: false, order: 4 },
+            { id: 'tool_tempahan', title: "Tempahan Bilik Khas", category: 'PENGURUSAN', desc: "Tempah bilik dan lihat jadual penggunaannya pada satu paparan.", type: 'URL', url: './tempahan.html', htmlCode: '', icon: 'fa-solid fa-door-open', isPinned: false, order: 5 },
+            { id: 'tool_aktiviti', title: "Daftar Aktiviti", category: 'PENGURUSAN', desc: "Daftar program sekolah; ia dipaparkan dalam kalendar hub.", type: 'URL', url: './aktiviti.html', htmlCode: '', icon: 'fa-solid fa-calendar-days', isPinned: false, order: 6 },
+            { id: 'tool_ekokurikulum', title: "e-Kokurikulum", category: 'KOKURIKULUM', desc: "Daftar hadir, laporan mingguan dan pencapaian unit kokurikulum.", type: 'URL', url: './ekokurikulum.html', htmlCode: '', icon: 'fa-solid fa-medal', isPinned: false, order: 7 },
+            { id: 'tool_ekoku', title: "eKOKU Laporan Perjumpaan", category: 'KOKURIKULUM', desc: "Laporan perjumpaan unit, kehadiran murid, rumusan kehadiran berserta graf, program dan pencapaian.", type: 'URL', url: './ekoku/index.html', htmlCode: '', icon: 'fa-solid fa-chart-column', isPinned: false, order: 7.5 },
+            { id: 'tool_opr', title: "Jana OPR", category: 'PENGURUSAN', desc: "Hasilkan One Page Report program daripada templat sedia ada.", type: 'URL', url: './opr.html', htmlCode: '', icon: 'fa-solid fa-file-invoice', isPinned: false, order: 8 },
+            { id: 'tool_qr-kelas', title: "Cetak Kod QR Kelas", category: 'PENGURUSAN', desc: "Kod QR untuk ditampal di setiap kelas dan bilik khas.", type: 'URL', url: './qr-kelas.html', htmlCode: '', icon: 'fa-solid fa-qrcode', isPinned: false, order: 9 }
         ];
 
         window.ERPH_TOOL = ERPH_TOOL;
@@ -2380,16 +2385,59 @@
             activeHtmlTool = null;
         }
 
+        // Kategori hab: Pengurusan, Kurikulum, Hal Ehwal Murid, Kokurikulum, PPKI.
+        // Tool lama (kategori PDP / PENTADBIRAN / GRAFIK / HTML) dipetakan automatik;
+        // tukar kategori sesuatu tool melalui Panel Pentadbir > Edit.
+        const HUB_CATS = [
+            { id: 'PENGURUSAN', label: 'Pengurusan', icon: 'fa-solid fa-briefcase', desc: 'Pentadbiran sekolah, jadual, tempahan dan program', old: 'PENTADBIRAN' },
+            { id: 'KURIKULUM', label: 'Kurikulum', icon: 'fa-solid fa-book-open', desc: 'Pengajaran dan pembelajaran, jadual waktu dan eRPH', old: 'PDP' },
+            { id: 'HEM', label: 'Hal Ehwal Murid', icon: 'fa-solid fa-user-graduate', desc: 'Kehadiran, disiplin dan kebajikan murid', old: 'GRAFIK' },
+            { id: 'KOKURIKULUM', label: 'Kokurikulum', icon: 'fa-solid fa-medal', desc: 'Unit beruniform, kelab, sukan dan rumah sukan', old: 'ERPH' },
+            { id: 'PPKI', label: 'PPKI', icon: 'fa-solid fa-hands-holding-child', desc: 'Program Pendidikan Khas Integrasi', old: 'HTML' }
+        ];
+        const LEGACY_CAT = { PENTADBIRAN: 'PENGURUSAN', PDP: 'KURIKULUM', GRAFIK: 'PENGURUSAN', HTML: 'KURIKULUM' };
+        const LEGACY_TOOL_CAT = { tool_ekokurikulum: 'KOKURIKULUM', tool_ekoku: 'KOKURIKULUM', tool_kehadiran: 'PENGURUSAN', tool_jadual: 'KURIKULUM' };
+        function catOf(t) {
+            if (!t) return 'PENGURUSAN';
+            if (HUB_CATS.some(c => c.id === t.category)) return t.category;
+            if (LEGACY_TOOL_CAT[t.id]) return LEGACY_TOOL_CAT[t.id];
+            if (t.type === 'ERPH') return 'KURIKULUM';
+            return LEGACY_CAT[t.category] || 'PENGURUSAN';
+        }
+        const hubCat = id => HUB_CATS.find(c => c.id === id);
+        const catLabelOf = t => (hubCat(catOf(t)) || {}).label || 'Pengurusan';
+
+        function renderCategoryCards(grid, list) {
+            document.getElementById('toolCountBadge').innerText = HUB_CATS.length;
+            document.getElementById('emptyState').classList.add('hidden');
+            grid.classList.remove('hidden');
+            grid.innerHTML = HUB_CATS.map((c, i) => {
+                const n = list.filter(t => catOf(t) === c.id).length;
+                return `<button type="button" class="hub-cat" data-hc="${c.id}" style="--card-i:${i}" onclick="setCategory('${c.id}')" aria-label="${c.label}, ${n} alatan">
+                    <span class="hub-cat-ic"><i class="${c.icon}"></i></span>
+                    <span class="hub-cat-tx"><b>${c.label}</b><small>${c.desc}</small></span>
+                    <span class="hub-cat-ft"><em>${n} alatan</em><i class="fa-solid fa-arrow-right"></i></span>
+                </button>`;
+            }).join('');
+        }
+
         function renderTools() {
             const grid = document.getElementById('toolsGrid');
             const emptyState = document.getElementById('emptyState');
             grid.innerHTML = '';
 
-            let filtered = tools.filter(t => t && typeof t === 'object').filter(t => {
+            const allTools = tools.filter(t => t && typeof t === 'object');
+            // Paparan utama: kad kategori sahaja (carian merentas semua kategori memaparkan senarai alatan).
+            if (currentCategory === 'ALL' && searchQuery.trim() === '' && window.__toolsLoaded !== false) {
+                renderCategoryCards(grid, allTools);
+                return;
+            }
+
+            let filtered = allTools.filter(t => {
                 // Category Filter
                 if (currentCategory === 'FAV') {
                     if (!favorites.includes(t.id)) return false;
-                } else if (currentCategory !== 'ALL' && t.category !== currentCategory) {
+                } else if (currentCategory !== 'ALL' && catOf(t) !== currentCategory) {
                     return false;
                 }
 
@@ -2398,7 +2446,7 @@
                     const q = searchQuery.toLowerCase().trim();
                     const matchTitle = t.title.toLowerCase().includes(q);
                     const matchDesc = (t.desc || '').toLowerCase().includes(q);
-                    const matchCat = (t.category || '').toLowerCase().includes(q);
+                    const matchCat = catLabelOf(t).toLowerCase().includes(q);
                     const matchType = (t.type || '').toLowerCase().includes(q);
                     return matchTitle || matchDesc || matchCat || matchType;
                 }
@@ -2417,6 +2465,12 @@
                     grid.innerHTML = '<div class="col-span-full py-10 text-center text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Memuatkan senarai alatan...</div>';
                     return;
                 }
+                const inCat = !!hubCat(currentCategory) && searchQuery.trim() === '';
+                const eh = emptyState.querySelector('h4'), ep = emptyState.querySelector('p'), eb = emptyState.querySelector('button');
+                eh.innerText = inCat ? 'Belum ada alatan dalam kategori ini' : 'Tiada alatan ditemui';
+                ep.innerText = inCat ? 'Admin boleh menambah alatan atau menukar kategori alatan melalui Panel Pentadbir.' : 'Sila cuba kata kunci lain atau kosongkan carian untuk melihat semula senarai alatan.';
+                eb.setAttribute('onclick', inCat ? "setCategory('ALL')" : 'clearSearch()');
+                eb.innerHTML = inCat ? '<i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali ke kategori' : '<i class="fa-solid fa-rotate-left mr-1.5"></i>Set Semula Carian';
                 emptyState.classList.remove('hidden');
                 grid.classList.add('hidden');
                 return;
@@ -2429,15 +2483,12 @@
                 const isFav = favorites.includes(tool.id);
                 const card = document.createElement('div');
                 card.className = 'tool-card glass-card p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all duration-200 flex flex-col justify-between group relative ios-shadow';
-                card.dataset.cat = tool.type === 'ERPH' ? 'ERPH' : (['PDP', 'GRAFIK', 'HTML'].includes(tool.category) ? tool.category : 'PENTADBIRAN');
+                card.dataset.cat = (hubCat(catOf(tool)) || {}).old || 'PENTADBIRAN';
                 card.style.setProperty('--card-i', String(grid.children.length));
 
-                let catBadgeColor = 'bg-blue-500/10 text-blue-600 dark:text-blue-400';
-                let catLabel = 'Pentadbiran';
-                if(tool.category === 'PDP') { catBadgeColor = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'; catLabel = 'PdP & Kelas'; }
-                if(tool.category === 'GRAFIK') { catBadgeColor = 'bg-purple-500/10 text-purple-600 dark:text-purple-400'; catLabel = 'Grafik'; }
-                if(tool.category === 'HTML') { catBadgeColor = 'bg-amber-500/10 text-amber-600 dark:text-amber-400'; catLabel = 'Widget HTML'; }
-                if(tool.type === 'ERPH') { catBadgeColor = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'; catLabel = 'Pengurusan eRPH'; }
+                const cc = catOf(tool);
+                const catBadgeColor = { PENGURUSAN: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', KURIKULUM: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400', HEM: 'bg-amber-500/10 text-amber-600 dark:text-amber-400', KOKURIKULUM: 'bg-teal-500/10 text-teal-600 dark:text-teal-400', PPKI: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' }[cc] || 'bg-blue-500/10 text-blue-600';
+                const catLabel = tool.type === 'ERPH' ? 'Pengurusan eRPH' : catLabelOf(tool);
 
                 const typeBadge = tool.type === 'ERPH'
                     ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"><i class="fa-solid fa-file-signature mr-1"></i>eRPH</span>`
@@ -2487,11 +2538,18 @@
         // Filter and Category Controls
         function setCategory(cat) {
             currentCategory = cat;
-            
-            const chips = document.querySelectorAll('.cat-chip');
-            chips.forEach(chip => {
-                chip.classList.remove('bg-brand-600', 'text-white', 'shadow-sm', 'shadow-brand-600/30');
-                chip.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+
+            document.querySelectorAll('.cat-chip').forEach(chip => {
+                const on = chip.dataset.cat === cat;
+                chip.classList.toggle('active', on);
+                chip.classList.toggle('bg-brand-600', on);
+                chip.classList.toggle('text-white', on);
+                chip.classList.toggle('shadow-sm', on);
+                chip.classList.toggle('shadow-brand-600/30', on);
+                chip.classList.toggle('bg-white', !on);
+                chip.classList.toggle('dark:bg-slate-800', !on);
+                chip.classList.toggle('text-slate-600', !on);
+                chip.classList.toggle('dark:text-slate-300', !on);
             });
 
             // Bottom mobile navigation: active state tanpa background hijau.
@@ -2508,17 +2566,15 @@
                 if (mobileHome) mobileHome.classList.add('active');
             }
 
-            const titles = {
-                'ALL': 'Alatan',
-                'PDP': 'PdP & Kelas',
-                'PENTADBIRAN': 'Pentadbiran',
-                'GRAFIK': 'Grafik',
-                'HTML': 'Widget HTML',
-                'FAV': 'Alatan disimpan'
-            };
-            document.getElementById('sectionTitle').innerText = titles[cat] || 'Senarai Alatan';
+            const hc = hubCat(cat);
+            document.getElementById('sectionTitle').innerText = cat === 'ALL' ? 'Kategori' : cat === 'FAV' ? 'Alatan disimpan' : (hc ? hc.label : 'Senarai Alatan');
+            const back = document.getElementById('catBack');
+            if (back) back.classList.toggle('hidden', !hc);
+            const hint = document.getElementById('sectionHint');
+            if (hint) hint.innerText = hc ? hc.desc : (cat === 'FAV' ? 'Alatan yang anda simpan' : 'Pilih kategori untuk melihat alatan');
 
             renderTools();
+            if (hc || cat === 'ALL') window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function filterTools() {
@@ -2784,7 +2840,7 @@
                         </div>
                         <div class="truncate">
                             <h5 class="font-bold text-slate-900 dark:text-white truncate">${tool.title}</h5>
-                            <span class="text-[10px] text-slate-400">${tool.category} • ${tool.type}</span>
+                            <span class="text-[10px] text-slate-400">${catLabelOf(tool)} • ${tool.type}</span>
                         </div>
                     </div>
                     <div class="flex items-center space-x-1.5">
@@ -2806,7 +2862,7 @@
 
             document.getElementById('editingToolId').value = tool.id;
             document.getElementById('toolTitle').value = tool.title;
-            document.getElementById('toolCategory').value = tool.category;
+            document.getElementById('toolCategory').value = catOf(tool);
             document.getElementById('toolDesc').value = tool.desc || '';
             document.getElementById('toolType').value = tool.type;
             document.getElementById('toolIcon').value = tool.icon || '';
