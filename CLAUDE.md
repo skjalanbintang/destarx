@@ -69,10 +69,11 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
 
 ## Data
 
-- `aktiviti` — school activities (aktiviti.html; shown on the index calendar). Public read.
+- `aktiviti` — school activities (aktiviti.html; shown on the index calendar). Public read. Teachers may only ADD; edit/delete is admin + pentadbir only
+  (UI `canDelete()` and rules `isReviewer()`; same for `roomBookings`).
 - `roomBookings` — special-room bookings (tempahan.html). Activities with a room create
   linked bookings (`aktivitiId`, `sumber: "aktiviti"`). Read requires an active teacher.
-  Admin can edit any booking in tempahan.html (modal, updateDoc + overlap check excluding itself; adds updatedAt/updatedBy).
+  Admin and pentadbir can edit/cancel any booking in tempahan.html (teachers can no longer cancel their own) (modal, updateDoc + overlap check excluding itself; adds updatedAt/updatedBy).
   Linked aktiviti bookings are edited via `aktiviti.html?edit=<aktivitiId>` instead, so the activity and booking stay in sync.
 - `kehadiranKelas` — teacher class attendance from QR scans (kehadiran.html). Doc id
   `<date>_<email-key>_<slotStart HHMM>`; create-only for the teacher; admin + pentadbir read all (report). Rules block is live in the Console.

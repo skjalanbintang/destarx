@@ -349,7 +349,8 @@
 
   function canDelete(a) {
     if (!currentUser || !currentTeacher) return false;
-    return currentTeacher.role === "admin" || a.uid === currentUser.uid;
+    // Edit & padam aktiviti: admin dan pentadbir sahaja (guru hanya menambah).
+    return currentTeacher.role === "admin" || currentTeacher.role === "pentadbir";
   }
 
   async function loadAktiviti() {
@@ -691,7 +692,7 @@
       }
       currentTeacher = snap.data();
       $("userName").textContent = currentTeacher.displayName || user.displayName || user.email;
-      $("userRole").textContent = currentTeacher.role === "admin" ? "ADMIN" : "GURU";
+      $("userRole").textContent = currentTeacher.role === "admin" ? "ADMIN" : currentTeacher.role === "pentadbir" ? "PENTADBIR" : "GURU";
       setUI(true);
       render();
       cubaEditDariUrl();

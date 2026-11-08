@@ -223,7 +223,7 @@ function renderBookingList() {
       ${isAdmin()
         ? `<button class="edit-btn" data-id="${escapeHtml(b.id)}" title="Edit tempahan">Edit</button>`
         : ""}
-      ${currentUser && (b.uid === currentUser.uid || isAdmin())
+      ${currentUser && isAdmin()
         ? `<button class="delete-btn" data-id="${escapeHtml(b.id)}" title="Batalkan tempahan">Batalkan</button>`
         : ""}
       </div>
@@ -238,8 +238,9 @@ function renderBookingList() {
   });
 }
 
-/* ===== Edit tempahan (admin sahaja) ===== */
-function isAdmin() { return currentTeacher?.role === "admin"; }
+/* ===== Edit tempahan (admin & pentadbir sahaja) ===== */
+// Edit & batal tempahan: admin dan pentadbir sahaja (guru hanya menambah).
+function isAdmin() { return currentTeacher?.role === "admin" || currentTeacher?.role === "pentadbir"; }
 
 let editingBooking = null;
 
