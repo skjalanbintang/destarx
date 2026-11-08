@@ -8,6 +8,7 @@
 <title>Kehadiran Kelas • Hub Tool ICT</title>
 <link rel="icon" href="data:,">
 <script src="ict-header.js"></script>
+<script src="school-settings.js?v=20261108"></script>
 <script src="kehadiran-data.js?v=20261015"></script>
 <script src="qr-scanner.js?v=20261015ios" defer></script>
 <style>
@@ -317,7 +318,7 @@
       window.ICTHeader?.setUser(teacher.displayName || u.displayName || u.email, roleLabel);
 
       tt = await K.loadTimetable();
-      ttTeacher = K.findTeacher(tt.data, teacher.displayName || u.displayName);
+      ttTeacher = K.findTeacher(tt.data, teacher.namaJadual || teacher.displayName || u.displayName);
 
       show("loadingCard", false);
       show("scanCard", true);

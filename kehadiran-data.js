@@ -11,7 +11,8 @@
 (function (global) {
   'use strict';
 
-  // Senarai bilik khas. Salinan yang sama ada dalam tempahan.html dan aktiviti.html (ROOMS) — kekalkan selari.
+  // Senarai bilik khas lalai. Admin mengubahnya di tetapan.html (school-settings.js); senarai ini
+  // dikemas kini di tempat sebaik tetapan dimuat (lihat loadTimetable / applySettings).
   var ROOMS = [
     'Dewan Ibnu Khaldun',
     'Makmal Komputer',
@@ -29,6 +30,14 @@
 
   // Semua lokasi yang mempunyai kod QR (ICTHUB:BILIK:<nama>).
   var SCAN_ROOMS = ROOMS.concat(EXTRA_LOCATIONS);
+
+  function applySettings(st) {
+    if (!st) return;
+    if (st.bilik) ROOMS.splice.apply(ROOMS, [0, ROOMS.length].concat(st.bilik));
+    if (st.lokasi) EXTRA_LOCATIONS.splice.apply(EXTRA_LOCATIONS, [0, EXTRA_LOCATIONS.length].concat(st.lokasi));
+    SCAN_ROOMS.splice.apply(SCAN_ROOMS, [0, SCAN_ROOMS.length].concat(ROOMS, EXTRA_LOCATIONS));
+  }
+  var settingsPromise = (global.SchoolSettings ? global.SchoolSettings.get().then(applySettings) : Promise.resolve()).catch(function () {});
 
   var PREFIX = 'ICTHUB';
   var EARLY_MIN = 15;   // boleh imbas sehingga 15 minit sebelum slot bermula
@@ -66,7 +75,7 @@
   var ttPromise = null;
   function loadTimetable() {
     if (ttPromise) return ttPromise;
-    ttPromise = fetch('./jadual.html', { cache: 'no-cache' })
+    ttPromise = settingsPromise.then(function () { return fetch('./jadual.html', { cache: 'no-cache' }); })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
       .then(function (src) {
         var a = src.indexOf('const VERSION_DATA');
@@ -209,7 +218,7 @@
     ROOMS: ROOMS, EXTRA_LOCATIONS: EXTRA_LOCATIONS, SCAN_ROOMS: SCAN_ROOMS, EARLY_MIN: EARLY_MIN,
     makeCode: makeCode, parseCode: parseCode, codeLabel: codeLabel,
     mins: mins, hhmm: hhmm, dateKey: dateKey, nowInfo: nowInfo,
-    loadTimetable: loadTimetable, findTeacher: findTeacher, normalizeName: normalizeName,
+    loadTimetable: loadTimetable, settingsReady: settingsPromise, findTeacher: findTeacher, normalizeName: normalizeName,
     teacherBlocks: teacherBlocks, classBlocks: classBlocks, evaluateScan: evaluateScan
   };
 })(window);

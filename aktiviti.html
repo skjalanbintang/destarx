@@ -9,6 +9,7 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="ict-header.js"></script>
+<script src="school-settings.js?v=20261108"></script>
 
 <style>
   :root {
@@ -287,7 +288,7 @@
 
   const COLLECTION = "aktiviti";
   const BOOKINGS = "roomBookings";
-  // Mesti sama dengan senarai ROOMS dalam tempahan.html
+  // Senarai bilik dibaca daripada tetapan sekolah (school-settings.js)
   const ROOMS = [
     "Dewan Ibnu Khaldun",
     "Makmal Komputer",
@@ -295,6 +296,8 @@
     "Bilik Muzik",
     "Bilik Mesyuarat"
   ];
+  // Senarai bilik diubah admin di tetapan.html; nilai di atas hanya lalai jika tetapan tiada.
+  try { const st = await self.SchoolSettings.get(); if (st.bilik.length) ROOMS.splice(0, ROOMS.length, ...st.bilik); } catch (e) {}
   const MAX_HARI_TEMPAHAN = 14;
   const BULAN = ["JAN","FEB","MAC","APR","MEI","JUN","JUL","OGO","SEP","OKT","NOV","DIS"];
   const BULAN_PENUH = ["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];

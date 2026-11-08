@@ -13,9 +13,18 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
 - `firestore.rules` is the complete rules set for a new project (the `firestore-rules-*.txt` files are
   the original partial blocks, kept for reference). Keep it in sync when adding collections.
 - `apps-script/*.gs` need `PROJECT_ID` (and `SHEET_ID` for e-Kokurikulum) filled in before deploying.
-- Data inherited from the original school (timetable in `jadual.html`, teacher names in `ganti.html`
-  defaults, rooms in `kehadiran-data.js`/`tempahan.html`/`aktiviti.html`, OPR template images in `assets/`)
-  still has to be replaced with SK Jalan Bintang data.
+- The timetable in `jadual.html` is now the SK Jalan Bintang "Jadual Waktu Induk Guru" (5.10.2026, aSc PDF, version id `sjb1`;
+  62 teachers by SHORT names such as Teo/Johnny, 30 classes derived from the teacher rows). Assumed bell: period 0 = 07:00,
+  30 min per period (Friday ends period 9). Replace it by regenerating the `const VERSION_DATA = [ ... \n];` block.
+  OPR template images in `assets/` are still from the original school.
+- `tetapan.html` (admin only, in PENGURUSAN) edits Firestore `tetapan/sekolah` {bilik[], lokasi[], gantiExtra[], gantiFlex[], gantiAdmin[]}
+  (public read, admin write — rules block in `firestore.rules`, must be pasted in the Console). `school-settings.js` reads it via
+  Firestore REST (no SDK), caches in localStorage `sjb_tetapan_sekolah`, falls back to built-in defaults. `kehadiran-data.js` mutates
+  `ROOMS`/`EXTRA_LOCATIONS`/`SCAN_ROOMS` in place (`settingsReady`, awaited by `loadTimetable`); `tempahan.html`/`aktiviti.html` do the
+  same for their `ROOMS` — there is no longer a copy of the room list to keep in sync except the fallback defaults.
+  `ganti.html` takes EXTRA_TEACHERS / DEFAULT_FLEX / DEFAULT_ADMINS from the settings (names = timetable names).
+- Timetable name -> account: `teachers/<email>.namaJadual` (set in tetapan.html "Padanan nama jadual"); `kehadiran.html` passes it to
+  `findTeacher` before displayName.
 
 ## Kategori paparan utama
 
@@ -58,7 +67,7 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
 - `kehadiranKelas` — teacher class attendance from QR scans (kehadiran.html). Doc id
   `<date>_<email-key>_<slotStart HHMM>`; create-only for the teacher; admin + pentadbir read all (report). Rules block is live in the Console.
   Required rules are in `firestore-rules-kehadiran.txt`.
-- Room list is duplicated in `tempahan.html`, `aktiviti.html` and `kehadiran-data.js` (`ROOMS`); keep in sync.
+- Room list: single source is Firestore `tetapan/sekolah.bilik` (see Tetapan above); the arrays in `tempahan.html`, `aktiviti.html`, `kehadiran-data.js` are fallbacks only.
   `kehadiran-data.js` also has `EXTRA_LOCATIONS` (Padang, Makmal Sains, Surau Istiqomah) — scan-only, not bookable.
 
 ## Kehadiran Kelas (QR)

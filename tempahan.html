@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#071a16">
 <script src="ict-header.js"></script>
+<script src="school-settings.js?v=20261108"></script>
 <title>Tempahan Bilik Khas • Hub Tool ICT</title>
 <link rel="icon" href="data:,">
 <script type="module">
@@ -45,6 +46,8 @@ const ROOMS = [
   "Bilik Muzik",
   "Bilik Mesyuarat"
 ];
+// Senarai bilik diubah admin di tetapan.html; nilai di atas hanya lalai jika tetapan tiada.
+try { const st = await self.SchoolSettings.get(); if (st.bilik.length) ROOMS.splice(0, ROOMS.length, ...st.bilik); } catch (e) {}
 
 const $ = (id) => document.getElementById(id);
 

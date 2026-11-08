@@ -56,6 +56,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ---------- Tetapan sekolah (bilik khas, lokasi QR, senarai Guru Ganti) ----------
+    match /tetapan/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ---------- Aktiviti & tempahan bilik ----------
     match /aktiviti/{id} {
       allow read: if true;

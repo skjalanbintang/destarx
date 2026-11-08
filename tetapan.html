@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<script src="./site-config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#071a16">
+<title>Tetapan Sekolah • Hub Tool ICT</title>
+<link rel="icon" href="data:,">
+<script src="ict-header.js"></script>
+<script src="school-settings.js?v=20261108"></script>
+<script src="kehadiran-data.js?v=20261108"></script>
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; background:#f5f8fa; color:#172033; font-family:"Plus Jakarta Sans",Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { width:min(1000px,calc(100% - 32px)); margin:24px auto 50px; display:grid; gap:18px; }
+  .card { background:#fff; border:1px solid #dce5eb; border-radius:22px; padding:22px; box-shadow:0 10px 30px #18314d0d; }
+  .card h2 { margin:0 0 4px; font-size:18px; }
+  .hint { color:#62707e; font-size:13px; margin:0 0 14px; line-height:1.5; }
+  .hidden { display:none !important; }
+  button { font:inherit; cursor:pointer; border:1px solid #c9d6de; background:#fff; border-radius:12px; padding:8px 14px; }
+  button.pri { background:#0f6b55; border-color:#0f6b55; color:#fff; font-weight:600; }
+  button.del { color:#b42318; border-color:#f1c0bb; }
+  button:disabled { opacity:.5; cursor:default; }
+  input[type=text], select { font:inherit; padding:8px 10px; border:1px solid #c9d6de; border-radius:10px; width:100%; background:#fff; }
+  .row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .row input { flex:1; }
+  .row .n { width:22px; text-align:right; color:#91a0ae; font-size:12px; }
+  .add { display:flex; gap:8px; margin-top:6px; }
+  .savebar { display:flex; gap:10px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .msg { font-size:13px; color:#0f6b55; }
+  .msg.err { color:#b42318; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .chip { display:inline-flex; gap:6px; align-items:center; border:1px solid #c9d6de; border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer; user-select:none; }
+  .chip input { margin:0; }
+  .chip.on { background:#e3f3ee; border-color:#0f6b55; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:7px 8px; border-bottom:1px solid #eef2f5; vertical-align:middle; }
+  th { color:#62707e; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .tag { font-size:11px; padding:2px 8px; border-radius:999px; background:#fff3d6; color:#8a5a00; }
+  .tag.ok { background:#e3f3ee; color:#0f6b55; }
+  .login { text-align:center; padding:40px 22px; }
+  @media (max-width:640px){ .card{padding:16px;border-radius:18px} th:nth-child(3),td:nth-child(3){display:none} }
+  .footer { text-align:center; color:#91a0ae; font-size:11px; padding:25px; }
+</style>
+</head>
+<body>
+<ict-header icon="fa-solid fa-sliders" title="Tetapan Sekolah" subtitle="Bilik khas, padanan guru dan senarai Guru Ganti — admin sahaja."></ict-header>
+
+<main>
+  <section class="card login" id="loginCard">
+    <h2>Log masuk admin</h2>
+    <p class="hint" id="loginHint">Gunakan akaun Google guru yang berstatus admin.</p>
+    <button class="pri" id="loginBtn">Log masuk dengan Google</button>
+    <p class="msg err" id="loginMsg"></p>
+  </section>
+
+  <div id="app" class="hidden" style="display:grid;gap:18px">
+    <section class="card">
+      <h2>Bilik khas (boleh ditempah)</h2>
+      <p class="hint">Senarai ini dipakai oleh Tempahan Bilik Khas, Daftar Aktiviti dan Kehadiran Kelas. Menukar nama bilik tidak mengubah tempahan lama.</p>
+      <div id="bilikList"></div>
+      <div class="add"><input type="text" id="bilikNew" placeholder="Nama bilik baharu"><button id="bilikAdd">Tambah</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Lokasi imbasan QR sahaja</h2>
+      <p class="hint">Lokasi yang ada kod QR kehadiran tetapi tidak boleh ditempah (cth. Padang). Boleh dikemas kini kemudian.</p>
+      <div id="lokasiList"></div>
+      <div class="add"><input type="text" id="lokasiNew" placeholder="Nama lokasi baharu"><button id="lokasiAdd">Tambah</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Guru Ganti (Teach-In)</h2>
+      <p class="hint">Nama mengikut jadual waktu. Ini menjadi pilihan lalai halaman Guru Ganti (pilihan yang pernah disimpan dalam pelayar seseorang tetap diutamakan).</p>
+      <b style="font-size:14px">Pentadbir</b>
+      <div class="chips" id="gAdmin"></div>
+      <b style="font-size:14px">Guru fleksibel (Pemulihan, Bimbingan &amp; Kaunseling)</b>
+      <div class="chips" id="gFlex"></div>
+      <b style="font-size:14px">Guru tanpa jadual (ditambah ke senarai guru)</b>
+      <p class="hint" style="margin:2px 0 8px">Satu nama setiap baris.</p>
+      <div id="gExtraList"></div>
+      <div class="add"><input type="text" id="gExtraNew" placeholder="Nama guru"><button id="gExtraAdd">Tambah</button></div>
+    </section>
+
+    <div class="savebar card" style="padding:14px 22px">
+      <button class="pri" id="saveBtn">Simpan tetapan</button>
+      <span class="msg" id="saveMsg"></span>
+    </div>
+
+    <section class="card">
+      <h2>Padanan nama jadual dengan akaun guru</h2>
+      <p class="hint" id="padHint">Jadual menggunakan nama pendek. Pilih akaun guru bagi setiap nama supaya Kehadiran Kelas mengenali jadual guru itu. Perubahan di sini disimpan serta-merta.</p>
+      <div style="overflow-x:auto"><table><thead><tr><th>Nama dalam jadual</th><th>Akaun guru</th><th>Status</th></tr></thead><tbody id="padBody"></tbody></table></div>
+    </section>
+
+    <section class="card">
+      <h2>Jadual waktu aktif</h2>
+      <p class="hint" id="jwInfo">Memuatkan…</p>
+    </section>
+  </div>
+</main>
+<div class="footer">Hub Tool ICT • SK Jalan Bintang</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, getDocs, collection, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  const K = window.KehadiranData;
+  let db, auth, S = null, TTD = null, accounts = [];
+
+  if (!self.SITE.firebaseReady) {
+    $("loginHint").textContent = "Firebase belum disediakan dalam site-config.js. Halaman ini memerlukan Firebase.";
+    $("loginBtn").disabled = true;
+  } else {
+    const app = initializeApp(self.SITE.firebase);
+    auth = getAuth(app); db = getFirestore(app);
+    $("loginBtn").onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).catch(e => { $("loginMsg").textContent = e.message; });
+    onAuthStateChanged(auth, async user => {
+      if (!user) { $("loginCard").classList.remove("hidden"); $("app").classList.add("hidden"); return; }
+      try {
+        const email = String(user.email || "").toLowerCase().trim();
+        const snap = await getDoc(doc(db, "teachers", email));
+        if (!snap.exists() || snap.data().active === false || snap.data().role !== "admin") throw new Error("Halaman ini untuk admin sahaja.");
+        window.ICTHeader?.setUser(snap.data().displayName || user.displayName || email, "ADMIN");
+        $("loginCard").classList.add("hidden"); $("app").classList.remove("hidden");
+        await init();
+      } catch (e) { $("loginMsg").textContent = e.message; $("loginCard").classList.remove("hidden"); $("app").classList.add("hidden"); }
+    });
+  }
+
+  async function init() {
+    const d = await getDoc(doc(db, "tetapan", "sekolah"));
+    const raw = d.exists() ? d.data() : null;
+    S = self.SchoolSettings.clean(raw);
+    const tt = await K.loadTimetable();
+    TTD = tt;
+    $("jwInfo").innerHTML = `<b>${esc(tt.label)}</b> — ${tt.data.teachers.length} guru, ${tt.data.classes.length} kelas. Jadual dibaca daripada <code>jadual.html</code>; penggantian jadual dibuat oleh pembangun hub (hantar fail jadual baharu).`;
+    const ts = await getDocs(collection(db, "teachers"));
+    accounts = ts.docs.map(x => ({ email: x.id, ...x.data() })).filter(a => a.active !== false).sort((a, b) => String(a.displayName || a.email).localeCompare(String(b.displayName || b.email)));
+    renderAll();
+  }
+
+  function listEditor(boxId, key) {
+    const box = $(boxId);
+    box.innerHTML = S[key].map((v, i) => `<div class="row"><span class="n">${i + 1}</span><input type="text" data-k="${key}" data-i="${i}" value="${esc(v)}">
+      <button data-up="${key}" data-i="${i}" title="Naik">↑</button><button data-dn="${key}" data-i="${i}" title="Turun">↓</button><button class="del" data-rm="${key}" data-i="${i}">Buang</button></div>`).join("") || '<p class="hint">Tiada entri.</p>';
+  }
+  function chips(boxId, key) {
+    const names = TTD.data.teachers.map(t => t.name).concat(S.gantiExtra.filter(n => !TTD.data.teachers.some(t => t.name === n)));
+    $(boxId).innerHTML = names.sort((a, b) => a.localeCompare(b)).map(n => {
+      const on = S[key].includes(n);
+      return `<label class="chip${on ? " on" : ""}"><input type="checkbox" data-ch="${key}" value="${esc(n)}"${on ? " checked" : ""}>${esc(n)}</label>`;
+    }).join("");
+  }
+  function renderAll() {
+    listEditor("bilikList", "bilik"); listEditor("lokasiList", "lokasi"); listEditor("gExtraList", "gantiExtra");
+    chips("gAdmin", "gantiAdmin"); chips("gFlex", "gantiFlex");
+    renderPad();
+  }
+  function renderPad() {
+    const byName = {};
+    accounts.forEach(a => { if (a.namaJadual) byName[a.namaJadual] = a.email; });
+    $("padBody").innerHTML = TTD.data.teachers.map(t => {
+      const cur = byName[t.name] || "";
+      const auto = !cur ? accounts.find(a => !a.namaJadual && K.findTeacher({ teachers: [t] }, a.displayName || "")) : null;
+      return `<tr><td><b>${esc(t.name)}</b></td><td><select data-pad="${esc(t.name)}"><option value="">— belum dipadankan —</option>${accounts.map(a => `<option value="${esc(a.email)}"${a.email === cur ? " selected" : ""}>${esc(a.displayName || a.email)} (${esc(a.email)})</option>`).join("")}</select></td>
+        <td>${cur ? '<span class="tag ok">Dipadankan</span>' : auto ? `<span class="tag">Cadangan: ${esc(auto.displayName)}</span>` : '<span class="tag">Belum</span>'}</td></tr>`;
+    }).join("");
+  }
+
+  document.addEventListener("input", e => {
+    const t = e.target; if (t.dataset && t.dataset.k) S[t.dataset.k][+t.dataset.i] = t.value;
+  });
+  document.addEventListener("click", e => {
+    const t = e.target.closest("button"); if (!t) return;
+    const mv = (k, i, d) => { const a = S[k], j = i + d; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; renderAll(); };
+    if (t.dataset.rm) { S[t.dataset.rm].splice(+t.dataset.i, 1); renderAll(); }
+    if (t.dataset.up) mv(t.dataset.up, +t.dataset.i, -1);
+    if (t.dataset.dn) mv(t.dataset.dn, +t.dataset.i, 1);
+  });
+  [["bilikAdd", "bilikNew", "bilik"], ["lokasiAdd", "lokasiNew", "lokasi"], ["gExtraAdd", "gExtraNew", "gantiExtra"]].forEach(([b, i, k]) => {
+    const go = () => { const v = $(i).value.trim(); if (!v) return; if (!S[k].some(x => x.toLowerCase() === v.toLowerCase())) S[k].push(v); $(i).value = ""; renderAll(); };
+    $(b).onclick = go; $(i).addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+  });
+  document.addEventListener("change", async e => {
+    const t = e.target;
+    if (t.dataset && t.dataset.ch) {
+      const a = S[t.dataset.ch], v = t.value, i = a.indexOf(v);
+      if (t.checked && i < 0) a.push(v); if (!t.checked && i >= 0) a.splice(i, 1);
+      t.closest(".chip").classList.toggle("on", t.checked);
+    }
+    if (t.dataset && t.dataset.pad != null && t.tagName === "SELECT") {
+      const name = t.dataset.pad, email = t.value;
+      t.disabled = true;
+      try {
+        for (const a of accounts) if (a.namaJadual === name && a.email !== email) { await updateDoc(doc(db, "teachers", a.email), { namaJadual: "" }); a.namaJadual = ""; }
+        if (email) { await updateDoc(doc(db, "teachers", email), { namaJadual: name }); accounts.find(a => a.email === email).namaJadual = name; }
+        $("padHint").textContent = "Disimpan.";
+      } catch (err) { $("padHint").textContent = "Gagal menyimpan: " + err.message; }
+      t.disabled = false; renderPad();
+    }
+  });
+
+  $("saveBtn").onclick = async () => {
+    const msg = $("saveMsg"); msg.className = "msg"; msg.textContent = "Menyimpan…";
+    try {
+      const data = self.SchoolSettings.clean(S);
+      if (!data.bilik.length) throw new Error("Senarai bilik tidak boleh kosong.");
+      await setDoc(doc(db, "tetapan", "sekolah"), { ...data, updatedAt: serverTimestamp(), updatedBy: auth.currentUser.email });
+      S = data; try { localStorage.setItem("sjb_tetapan_sekolah", JSON.stringify(data)); } catch (e) {}
+      msg.textContent = "Disimpan. Halaman lain mengambil tetapan baharu apabila dibuka semula."; renderAll();
+    } catch (err) { msg.className = "msg err"; msg.textContent = err.message; }
+  };
+</script>
+</body>
+</html>

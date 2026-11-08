@@ -8,6 +8,7 @@
 <title>Guru Ganti • Hub Tool ICT</title>
 <link rel="icon" href="data:,">
 <script src="ict-header.js"></script>
+<script src="school-settings.js?v=20261108"></script>
 <script src="kehadiran-data.js?v=20261014d"></script>
 <style>
   :root{
@@ -620,9 +621,9 @@
   var DAY_NAMES = ['AHAD','ISNIN','SELASA','RABU','KHAMIS','JUMAAT','SABTU'];
   var LS_ADMIN = 'ganti_pentadbir', LS_SET = 'ganti_tetapan', LS_FLEX = 'ganti_fleksibel';
   // Guru tanpa jadual dalam jadual.html (cth. Guru Bimbingan & Kaunseling) — ditambah ke senarai guru.
-  var EXTRA_TEACHERS = ['Ku Muhammad Nadjri bin Ku Nasir'];
+  var EXTRA_TEACHERS = [];
   // Guru fleksibel lalai: Guru Pemulihan & Guru Bimbingan dan Kaunseling.
-  var DEFAULT_FLEX = ['Muhammad Saifullah bin Suhaimi', 'Ku Muhammad Nadjri bin Ku Nasir'];
+  var DEFAULT_FLEX = [];
   var SUBJ_LABEL = { BA: 'B ARAB', TAS: 'TASMIK' };
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
@@ -638,7 +639,7 @@
   var teachers = [];          // nama guru (ikut susunan jadual)
   var classCodes = [];
   // Pentadbir lalai (boleh diubah dalam "Senarai pentadbir"; pilihan disimpan dalam pelayar).
-  var DEFAULT_ADMINS = ['Fauzia binti Etayi Kandi Hassan', 'Helmi bin Tambi', 'Mohamad Nazimi bin Abdul Rahman', 'Sapri bin Paee'];
+  var DEFAULT_ADMINS = [];
   var admins = new Set(lsGet(LS_ADMIN, DEFAULT_ADMINS));
   var flex = new Set(lsGet(LS_FLEX, DEFAULT_FLEX));
   var absents = [];           // { name, full, from, to }
@@ -1383,7 +1384,7 @@
   function stat(cls, v, lbl){ return '<div class="stat ' + cls + '"><b>' + v + '</b><span>' + lbl + '</span></div>'; }
 
   // Gelaran: guru Bahasa Arab / Pendidikan Islam → USTAZ (bin) / USTAZAH (binti); lain-lain → CIKGU.
-  var AGAMA_SUBJ = /^(BA|PI-)/;
+  var AGAMA_SUBJ = /^(BA|PAI|PI-)/;
   function honorific(name){
     if (!TT.agama) return 'CIKGU';
     if (!TT.agama[name]) return 'CIKGU';
@@ -1976,6 +1977,14 @@
     return KD.dateKey(d);
   }
   window.GantiUI.ready = KD.loadTimetable().then(function(tt){
+    return window.SchoolSettings.get().then(function(st){
+      // Senarai daripada tetapan.html menjadi lalai (pilihan simpanan pelayar masih diutamakan).
+      if (st.gantiExtra.length) EXTRA_TEACHERS = st.gantiExtra;
+      if (st.gantiFlex.length) { DEFAULT_FLEX = st.gantiFlex; if (!localStorage.getItem(LS_FLEX)) flex = new Set(DEFAULT_FLEX); }
+      if (st.gantiAdmin.length) { DEFAULT_ADMINS = st.gantiAdmin; if (!localStorage.getItem(LS_ADMIN)) admins = new Set(DEFAULT_ADMINS); }
+      return tt;
+    });
+  }).then(function(tt){
     TT = tt;
     teachers = tt.data.teachers.map(function(t){ return t.name; }).concat(EXTRA_TEACHERS.filter(function(n){
       return !tt.data.teachers.some(function(t){ return t.name === n; });
