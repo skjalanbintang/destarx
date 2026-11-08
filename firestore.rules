@@ -1,0 +1,102 @@
+rules_version = '2';
+
+// =====================================================================
+// ICT Hub SK Jalan Bintang — peraturan Firestore lengkap
+// Salin SEMUA kandungan fail ini ke:
+//   Firebase Console > Firestore Database > Rules > Publish
+// Whitelist guru = koleksi `teachers`, ID dokumen = e-mel huruf kecil,
+// medan: active (true/false), role ('teacher' | 'pentadbir' | 'admin'),
+// displayName, dan pilihan penyelarasTeachIn (true).
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn()       { return request.auth != null && request.auth.token.email != null; }
+    function myEmail()        { return request.auth.token.email.lower(); }
+    function teacherPath()    { return /databases/$(database)/documents/teachers/$(myEmail()); }
+    function isActiveTeacher(){ return signedIn() && exists(teacherPath()) && get(teacherPath()).data.active == true; }
+    function myRole()         { return get(teacherPath()).data.get('role', 'teacher'); }
+    function isAdmin()        { return isActiveTeacher() && myRole() == 'admin'; }
+    function isReviewer()     { return isActiveTeacher() && myRole() in ['admin', 'pentadbir']; }
+    function isGantiAdmin()   {
+      return isAdmin()
+        || (isActiveTeacher() && get(teacherPath()).data.get('penyelarasTeachIn', false) == true);
+    }
+
+    // ---------- Whitelist guru ----------
+    match /teachers/{email} {
+      // Semasa log masuk, guru membaca dokumennya sendiri sebelum status aktif disemak.
+      allow read: if signedIn() && (email == myEmail() || isActiveTeacher());
+      // Guru hanya boleh mengemas kini uid, foto dan masa log masuk sendiri.
+      allow update: if isActiveTeacher() && email == myEmail()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uid', 'photoURL', 'lastLoginAt']);
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- Katalog alatan & log masuk ----------
+    match /tools/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /loginLogs/{id} {
+      allow create: if isActiveTeacher();
+      allow read, delete: if isAdmin();
+    }
+
+    // ---------- eRPH ----------
+    match /erphSubmissions/{id} {
+      allow read: if isReviewer() || (isActiveTeacher() && resource.data.email == myEmail());
+      allow create: if isActiveTeacher() && request.resource.data.email == myEmail();
+      allow update: if isReviewer()
+        || (isActiveTeacher() && resource.data.email == myEmail() && request.resource.data.email == myEmail());
+      allow delete: if isAdmin();
+    }
+    match /reviewAssignments/{id} {
+      allow read: if isActiveTeacher();
+      allow write: if isAdmin();
+    }
+
+    // ---------- Aktiviti & tempahan bilik ----------
+    match /aktiviti/{id} {
+      allow read: if true;
+      allow create: if isActiveTeacher() && request.resource.data.email == myEmail();
+      allow update, delete: if isAdmin() || (isActiveTeacher() && resource.data.email == myEmail());
+    }
+    match /roomBookings/{id} {
+      allow read: if isActiveTeacher();
+      allow create: if isActiveTeacher() && request.resource.data.email.lower() == myEmail();
+      allow update, delete: if isAdmin() || (isActiveTeacher() && resource.data.email.lower() == myEmail());
+    }
+
+    // ---------- Kehadiran kelas (imbas QR) ----------
+    match /kehadiranKelas/{recordId} {
+      allow read: if isActiveTeacher() && (isReviewer() || resource.data.email == request.auth.token.email);
+      allow create: if isActiveTeacher()
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status in ['HADIR', 'LEWAT', 'LUAR_JADUAL'];
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- Guru ganti ----------
+    match /gantiSekatan/{id} {
+      allow read: if isActiveTeacher();
+      allow create, update, delete: if isAdmin();
+    }
+    match /gantiRekod/{date} {
+      allow read: if isActiveTeacher();
+      allow create, update: if isActiveTeacher()
+        && request.resource.data.savedBy == request.auth.token.email
+        && request.resource.data.date == date;
+      allow delete: if isGantiAdmin();
+    }
+    match /gantiPraktikum/{id} {
+      allow read: if isActiveTeacher();
+      allow create, update, delete: if isGantiAdmin();
+    }
+    match /sekolahGanti/{date} {
+      allow read: if true;
+      allow create, update, delete: if isGantiAdmin();
+    }
+  }
+}

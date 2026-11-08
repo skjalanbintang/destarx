@@ -14,7 +14,7 @@ Tanpa Firebase, hub sudah boleh dibuka dan senarai alatan dipaparkan. Log masuk 
 
 1. Cipta projek baharu di [Firebase Console](https://console.firebase.google.com/).
 2. Authentication > Sign-in method: hidupkan **Google**. Tambah `skjalanbintang.github.io` dalam Authorized domains.
-3. Firestore Database: cipta pangkalan data, kemudian salin peraturan daripada fail `firestore-rules-*.txt`.
+3. Firestore Database: cipta pangkalan data, kemudian salin seluruh kandungan `firestore.rules` ke tab Rules dan tekan Publish.
 4. Project settings > Your apps > Web: salin `firebaseConfig` ke dalam `site-config.js`.
 5. Dalam Firestore, cipta koleksi `teachers` dengan dokumen ID = e-mel DELIMa anda dan medan `active: true`, `role: "admin"`.
    Selepas itu, guru lain didaftarkan melalui Panel Admin.

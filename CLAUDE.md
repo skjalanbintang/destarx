@@ -10,6 +10,8 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
   both service workers `importScripts` it. Use `self.SITE` (works in pages and workers).
 - `self.SITE.firebaseReady` is false while `firebase.apiKey` is empty. index.html then shows the built-in
   catalogue (`INITIAL_TOOLS`) and lets tools open without sign-in; the service workers skip Firebase Messaging.
+- `firestore.rules` is the complete rules set for a new project (the `firestore-rules-*.txt` files are
+  the original partial blocks, kept for reference). Keep it in sync when adding collections.
 - `apps-script/*.gs` need `PROJECT_ID` (and `SHEET_ID` for e-Kokurikulum) filled in before deploying.
 - Data inherited from the original school (timetable in `jadual.html`, teacher names in `ganti.html`
   defaults, rooms in `kehadiran-data.js`/`tempahan.html`/`aktiviti.html`, OPR template images in `assets/`)
