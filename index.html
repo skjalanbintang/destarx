@@ -2417,6 +2417,7 @@
             document.getElementById('toolCountBadge').innerText = HUB_CATS.length;
             document.getElementById('emptyState').classList.add('hidden');
             grid.classList.remove('hidden');
+            grid.classList.add('is-cats');
             grid.innerHTML = HUB_CATS.map((c, i) => {
                 const n = list.filter(t => catOf(t) === c.id).length;
                 return `<button type="button" class="hub-cat" data-hc="${c.id}" style="--card-i:${i}" onclick="setCategory('${c.id}')" aria-label="${c.label}, ${n} alatan">
@@ -2431,6 +2432,7 @@
             const grid = document.getElementById('toolsGrid');
             const emptyState = document.getElementById('emptyState');
             grid.innerHTML = '';
+            grid.classList.remove('is-cats');
 
             const allTools = tools.filter(t => t && typeof t === 'object');
             // Paparan utama: kad kategori sahaja (carian merentas semua kategori memaparkan senarai alatan).
