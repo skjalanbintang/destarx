@@ -1627,6 +1627,9 @@
                             <label class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
                                 <input type="checkbox" id="toolMaint" class="w-4 h-4"> Selenggara (tutup sementara untuk guru)
                             </label>
+                            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="toolAdminOnly" class="w-4 h-4"> Admin sahaja (disembunyikan daripada guru)
+                            </label>
                             <input type="text" id="toolMaintMsg" placeholder="Mesej untuk guru, cth. Sedang diselenggara, cuba semula petang ini" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
                             <p class="text-[10px] text-slate-400">Admin masih boleh membuka alatan ini. Hanya menyekat pembukaan melalui hub.</p>
                         </div>
@@ -2196,6 +2199,11 @@
             const tool = tools.find(t => t.id === id);
             if (!tool) return;
 
+            if (isAdminOnlyTool(tool) && !(window.currentTeacher && window.currentTeacher.role === 'admin')) {
+                showToast('Alatan ini untuk admin sahaja.', 'info');
+                return;
+            }
+
             if (tool.maintenance && !(window.currentTeacher && window.currentTeacher.role === 'admin')) {
                 showToast(tool.maintenanceMsg || 'Alatan ini sedang diselenggara oleh admin. Sila cuba sebentar lagi.', 'info');
                 return;
@@ -2442,13 +2450,17 @@
             }).join('');
         }
 
+        // Alatan khas admin: ditanda `adminOnly` di Panel Pentadbir; Tetapan Sekolah sentiasa admin sahaja.
+        const isAdminOnlyTool = t => !!(t && (t.adminOnly || t.id === 'tool_tetapan'));
+
         function renderTools() {
             const grid = document.getElementById('toolsGrid');
             const emptyState = document.getElementById('emptyState');
             grid.innerHTML = '';
             grid.classList.remove('is-cats');
 
-            const allTools = tools.filter(t => t && typeof t === 'object');
+            const canSeeAdminTools = !!(window.currentTeacher && window.currentTeacher.role === 'admin');
+            const allTools = tools.filter(t => t && typeof t === 'object' && (canSeeAdminTools || !isAdminOnlyTool(t)));
             // Paparan utama: kad kategori sahaja (carian merentas semua kategori memaparkan senarai alatan).
             if (currentCategory === 'ALL' && searchQuery.trim() === '' && window.__toolsLoaded !== false) {
                 renderCategoryCards(grid, allTools);
@@ -2818,7 +2830,8 @@
                 isPinned: existing?.isPinned || false,
                 order: existing?.order ?? 9999,
                 maintenance: document.getElementById('toolMaint').checked,
-                maintenanceMsg: document.getElementById('toolMaintMsg').value.trim()
+                maintenanceMsg: document.getElementById('toolMaintMsg').value.trim(),
+                adminOnly: document.getElementById('toolAdminOnly').checked
             };
 
             try {
@@ -2848,6 +2861,7 @@
             document.getElementById('toolHtmlCode').value = '';
             document.getElementById('toolIcon').value = '';
             document.getElementById('toolMaint').checked = false;
+            document.getElementById('toolAdminOnly').checked = false;
             document.getElementById('toolMaintMsg').value = '';
             document.getElementById('submitFormBtn').innerHTML = `<i class="fa-solid fa-floppy-disk mr-1.5"></i>Simpan Tool`;
         }
@@ -2922,6 +2936,7 @@
             document.getElementById('toolUrl').value = tool.url || '';
             document.getElementById('toolHtmlCode').value = tool.htmlCode || '';
             document.getElementById('toolMaint').checked = !!tool.maintenance;
+            document.getElementById('toolAdminOnly').checked = isAdminOnlyTool(tool);
             document.getElementById('toolMaintMsg').value = tool.maintenanceMsg || '';
 
             toggleTypeInput();

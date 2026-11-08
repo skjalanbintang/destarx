@@ -31,6 +31,11 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
 - Setiap tool boleh ditandakan `maintenance: true` (+ `maintenanceMsg`) di Panel Pentadbir > Edit (kotak "Selenggara"). `launchTool()` menyekat guru bukan admin
   dengan toast mesej itu; kad menjadi pudar dengan lencana "Diselenggara". Hanya hub yang menyekat — URL terus ke halaman tool masih boleh dibuka.
 
+## Alatan khas admin
+
+- `isAdminOnlyTool(t)` = `t.adminOnly` (kotak "Admin sahaja" di Panel Pentadbir > Edit) atau id `tool_tetapan`. Disembunyikan daripada kad/senarai bukan admin
+  dan disekat dalam `launchTool()`. Halaman `tetapan.html` sendiri juga menyemak role admin.
+
 ## Kategori paparan utama
 
 - Paparan utama index.html memaparkan 5 kad kategori (`HUB_CATS`): PENGURUSAN, KURIKULUM, HEM (Hal Ehwal Murid), KOKURIKULUM, PPKI.
