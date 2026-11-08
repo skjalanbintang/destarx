@@ -186,3 +186,13 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
   Signatures are small PNG data URLs stored in the cell. Same unit + perjumpaan → asks to replace.
 - Guru pembimbing list comes from the timetable via `KehadiranData.loadTimetable()`. Laporan text draft kept in localStorage `ekoku_draf_laporan`.
 - Sivik / PikeBM / KBAT lists are constants at the top of the module script.
+
+## eKOKU (ekoku/)
+
+- Aplikasi berasingan (satu fail `ekoku/index.html`, tanpa `ict-header.js`) untuk laporan perjumpaan kokurikulum, kehadiran,
+  rumusan kehadiran (graf), program, jawatankuasa dan pencapaian. Tidak berkongsi kod atau data dengan `ekokurikulum.html`.
+- Ia mempunyai log masuk sendiri (guru/pentadbir) dan Firestore sendiri melalui `ekoku/firebase-config.js`. Selagi fail itu kosong,
+  ia berjalan dalam mod demo (localStorage). Gunakan projek Firebase berasingan untuk data murid sebenar; `ekoku/firestore.rules`
+  hanya untuk projek itu dan TIDAK digabungkan ke `firestore.rules` hub (koleksi guru, murid, unit, perjumpaan, program, jawatan, ekstra, pencapaian, tetapan).
+- Pentadbir boleh import fail MENU.xlsx (Pengurusan & Admin > Setup sistem). Jangan commit fail data murid ke repo ini.
+- Entri katalog: `tool_ekoku` dalam `INITIAL_TOOLS` (index.html). Jika katalog sudah disimpan dalam Firestore, tambah melalui Panel Pentadbir (URL `./ekoku/index.html`).
