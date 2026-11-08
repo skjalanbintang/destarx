@@ -18,12 +18,13 @@ self.SITE = {
   // Selagi apiKey kosong, log masuk guru dan data dalam talian tidak berfungsi,
   // tetapi senarai alatan masih dipaparkan.
   firebase: {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyBe7MLww6IPs-TurtVmOJoHVtxgGLJUTbc",
+    authDomain: "skjb-icthub.firebaseapp.com",
+    projectId: "skjb-icthub",
+    storageBucket: "skjb-icthub.firebasestorage.app",
+    messagingSenderId: "418727174525",
+    appId: "1:418727174525:web:3e3da0c6944058d72fec14",
+    measurementId: "G-M5MWVR06R7"
   },
 
   // Kunci Web Push (Firebase Console > Cloud Messaging > Web Push certificates).

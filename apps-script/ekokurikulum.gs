@@ -31,7 +31,7 @@
  */
 
 const SHEET_ID = 'ISI_ID_GOOGLE_SHEET';            // ID Google Sheet e-Kokurikulum sekolah
-const PROJECT_ID = 'ISI_PROJECT_ID_FIREBASE';   // sama dengan projectId dalam site-config.js
+const PROJECT_ID = 'skjb-icthub';   // sama dengan projectId dalam site-config.js
 const DRIVE_FOLDER_ID = '';                 // pilihan: ID folder Drive sedia ada untuk gambar
 const DRIVE_FOLDER_NAME = 'E-KOKURIKULUM';
 const MAX_IMG_BYTES = 4 * 1024 * 1024;

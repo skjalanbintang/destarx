@@ -19,7 +19,7 @@
  * (Firestore menolak token palsu/tamat tempoh), dan guru mesti active == true.
  */
 
-const PROJECT_ID = 'ISI_PROJECT_ID_FIREBASE';   // sama dengan projectId dalam site-config.js
+const PROJECT_ID = 'skjb-icthub';   // sama dengan projectId dalam site-config.js
 const ROOT_FOLDER_ID = '';            // pilihan: ID folder "TEACH IN" sedia ada
 const ROOT_FOLDER_NAME = 'TEACH IN';
 const MAX_BYTES = 10 * 1024 * 1024;   // 10 MB
