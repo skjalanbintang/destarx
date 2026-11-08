@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<script src="./site-config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#071a16">
+<title>Daftar Aktiviti • Hub Tool ICT</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="ict-header.js"></script>
+
+<style>
+  :root {
+    --green:#009b62; --green-dark:#06724d; --navy:#071a16; --ink:#172033;
+    --muted:#718096; --line:#dce5eb; --bg:#f5f8fa; --red:#e84b5f;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  button,input,select,textarea { font:inherit; }
+  button { cursor:pointer; }
+  .hidden { display:none !important; }
+
+  /* ---------- Header ---------- */
+  .top {
+    background:linear-gradient(135deg,#052b20,#009b62 65%,#087da2); color:#fff;
+    padding:22px max(20px,calc((100vw - 1180px)/2));
+  }
+  .top-inner { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .brand { display:flex; align-items:center; gap:10px; min-width:0; }
+  .back-btn {
+    width:40px;height:40px;border-radius:12px;border:1px solid #ffffff35;background:#ffffff14;
+    color:#fff;font-size:18px;display:grid;place-items:center;flex:0 0 auto;
+  }
+  .brand-icon {
+    width:52px;height:52px;border-radius:16px;background:#fff;color:var(--green);
+    display:grid;place-items:center;font-size:22px;box-shadow:0 8px 24px #0002;flex:0 0 auto;
+  }
+  .eyebrow { font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.78; }
+  h1 { margin:4px 0;font-size:clamp(22px,4vw,30px); }
+  .sub { margin:0;color:#d8f6ea;font-size:13px; }
+  .userbox { display:flex;align-items:center;gap:10px; }
+  .userbox small { display:block;opacity:.8;font-size:10px;font-weight:800; }
+  .top-btn {
+    border:1px solid #ffffff3d;background:#ffffff16;color:#fff;padding:10px 13px;
+    border-radius:12px;font-weight:800;font-size:12px;white-space:nowrap;
+  }
+  .top-btn.solid { background:#fff;color:var(--green-dark);border-color:#fff; }
+
+  /* ---------- Layout ---------- */
+  main { width:min(1180px,calc(100% - 32px));margin:24px auto 50px; }
+  .grid { display:grid;grid-template-columns:1fr 1.45fr;gap:20px;align-items:start; }
+  .card {
+    background:#fff;border:1px solid var(--line);border-radius:22px;
+    box-shadow:0 10px 30px #18314d0d;overflow:hidden;
+  }
+  .card-head { padding:20px 22px 6px; }
+  .card-head h2 { margin:0;font-size:18px; }
+  .card-head p { margin:5px 0 0;color:var(--muted);font-size:12px; }
+
+  /* ---------- Form ---------- */
+  .form { padding:16px 22px 22px;display:grid;gap:13px; }
+  label { font-size:11px;font-weight:800;color:#526174; }
+  input,select,textarea {
+    width:100%;margin-top:6px;border:1px solid var(--line);background:#fbfdfe;
+    border-radius:13px;padding:12px 13px;outline:none;color:var(--ink);
+  }
+  textarea { resize:vertical;min-height:80px; }
+  input:focus,select:focus,textarea:focus { border-color:#24b681;box-shadow:0 0 0 3px #24b6811c; }
+  .two { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+  .primary {
+    border:0;background:linear-gradient(135deg,#009b62,#00b477);color:#fff;padding:13px 16px;
+    border-radius:13px;font-weight:900;box-shadow:0 7px 18px #009b6230;
+  }
+  .primary:disabled { opacity:.55;cursor:not-allowed; }
+  .login-note {
+    margin:16px 22px 22px;padding:22px;border:1px dashed #cbd8e2;border-radius:16px;
+    text-align:center;color:var(--muted);font-size:12px;line-height:1.6;
+  }
+  .login-note strong { display:block;color:var(--ink);font-size:14px;margin-bottom:4px; }
+  .google-btn {
+    margin-top:12px;width:100%;padding:12px 15px;border:1px solid var(--line);border-radius:13px;
+    background:#fff;font-weight:900;color:#273447;
+  }
+
+  /* ---------- Senarai ---------- */
+  .list-head { display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px; }
+  .list-head h2 { margin:0;font-size:17px; }
+  .count { margin-left:6px;padding:2px 8px;border-radius:999px;background:#e3eaef;color:#526174;font-size:11px; }
+  .tabs { display:flex;gap:6px; }
+  .tab {
+    border:1px solid var(--line);background:#fff;color:#526174;padding:7px 11px;border-radius:10px;
+    font-size:11px;font-weight:800;
+  }
+  .tab.active { background:var(--green);border-color:var(--green);color:#fff; }
+  .list { display:grid;gap:10px; }
+  .item {
+    display:flex;gap:13px;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fff;
+  }
+  .item.past { opacity:.6; }
+  .datebox {
+    flex:0 0 56px;text-align:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;align-self:flex-start;
+  }
+  .datebox .m { background:var(--green);color:#fff;font-size:10px;font-weight:900;padding:3px 0; }
+  .datebox .d { font-size:22px;font-weight:900;padding:4px 0; }
+  .item-body { min-width:0;flex:1; }
+  .pills { display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px; }
+  .pill { padding:3px 8px;border-radius:999px;font-size:10px;font-weight:900; }
+  .p-today { background:var(--red);color:#fff; }
+  .p-soon { background:#f59e0b;color:#fff; }
+  .p-week { background:var(--green);color:#fff; }
+  .p-later { background:#e3eaef;color:#526174; }
+  .p-done { background:#e3eaef;color:#8a97a5; }
+  .p-cat { background:#eaf8f2;color:#00855a; }
+  .p-room { background:#e8f1ff;color:#1d5fd1; }
+  .hint { display:block;margin-top:5px;font-size:10.5px;font-weight:600;color:#8a97a5; }
+  .item h3 { margin:0;font-size:14px;line-height:1.35;word-break:break-word; }
+  .meta { margin-top:6px;display:grid;gap:3px;color:var(--muted);font-size:11.5px; }
+  .meta i { width:16px;color:#9aa8b5; }
+  .note {
+    margin-top:8px;padding:7px 9px;border-radius:10px;background:#f5f8fa;font-size:11.5px;
+    color:#40506a;word-break:break-word;white-space:pre-line;
+  }
+  .foot { margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px; }
+  .by { font-size:10.5px;color:#9aa8b5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .actions { display:flex;gap:6px;flex:0 0 auto; }
+  .edit-btn {
+    border:0;background:#eaf8f2;color:#00855a;border-radius:9px;padding:6px 9px;font-size:10px;font-weight:900;
+  }
+  .item.editing { border-color:#24b681;box-shadow:0 0 0 3px #24b6811c; }
+  .cancel-btn {
+    border:1px solid var(--line);background:#fff;color:#526174;padding:12px 16px;border-radius:13px;font-weight:800;
+  }
+  .edit-banner {
+    margin:0 22px;padding:10px 12px;border-radius:12px;background:#fff8e6;border:1px solid #fde3a7;
+    color:#8a5a00;font-size:12px;font-weight:700;
+  }
+  .del-btn {
+    border:0;background:#fff0f2;color:#d62e4d;border-radius:9px;padding:6px 9px;font-size:10px;font-weight:900;
+  }
+  .empty {
+    min-height:150px;border:1px dashed #cbd8e2;border-radius:18px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:5px;padding:24px;font-size:12px;
+  }
+  .empty strong { color:var(--ink);font-size:14px; }
+  .empty.error { color:#d73a52;background:#fff8f9;border-color:#ffd2d9; }
+
+  .toast {
+    position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+    z-index:100;padding:12px 16px;border-radius:13px;background:#172033;color:#fff;
+    box-shadow:0 12px 35px #0003;font-size:12px;font-weight:800;transition:.22s ease;
+    max-width:min(92vw,500px);text-align:center;
+  }
+  .toast.show { opacity:1;transform:translate(-50%,0); }
+  .toast.success { background:#008a59; }
+  .toast.error { background:#d83b53; }
+  .footer { text-align:center;color:#91a0ae;font-size:11px;padding:25px; }
+
+  @media(max-width:850px) {
+    .top { padding:18px 16px; }
+    .top-inner { align-items:flex-start; }
+    .userbox .user-text { display:none; }
+    main { width:calc(100% - 24px);margin-top:15px; }
+    .grid { grid-template-columns:1fr; }
+    .list-col { order:-1; }
+  }
+  @media(max-width:520px) {
+    .brand-icon { display:none; }
+    h1 { font-size:21px; }
+    .sub { font-size:11px; }
+  }
+</style>
+</head>
+<body>
+
+<ict-header
+  icon="fa-solid fa-calendar-days"
+  title="Daftar Aktiviti / Program"
+  subtitle="Daftar dan lihat aktiviti sekolah yang akan diadakan.">
+</ict-header>
+
+<main>
+  <div class="grid">
+    <!-- Borang -->
+    <section class="card">
+      <div class="card-head">
+        <h2 id="formTitle">Daftar Aktiviti Baharu</h2>
+        <p>Aktiviti yang didaftar akan dipaparkan kepada semua guru.</p>
+      </div>
+
+      <div id="loginNote" class="login-note">
+        <strong>Log masuk diperlukan</strong>
+        Hanya guru yang berdaftar dalam Hub Tool ICT boleh mendaftar aktiviti.
+        <button id="googleLoginBtn" class="google-btn"><i class="fa-brands fa-google"></i>&nbsp; Teruskan dengan Google</button>
+      </div>
+
+      <div id="editBanner" class="edit-banner hidden"><i class="fa-solid fa-pen"></i>&nbsp; Anda sedang mengemaskini: <span id="editName"></span></div>
+      <form id="aktivitiForm" class="form hidden">
+        <label>Nama Aktiviti *
+          <input id="akTajuk" type="text" maxlength="120" required placeholder="Contoh: Hari Sukan Tahunan">
+        </label>
+        <div class="two">
+          <label>Tarikh Mula *
+            <input id="akTarikh" type="date" required>
+          </label>
+          <label>Tarikh Tamat
+            <input id="akTarikhTamat" type="date">
+          </label>
+        </div>
+        <div class="two">
+          <label>Masa Mula
+            <input id="akMasaMula" type="time">
+          </label>
+          <label>Masa Tamat
+            <input id="akMasaTamat" type="time">
+          </label>
+        </div>
+        <label>Tempah Bilik Khas
+          <select id="akBilik">
+            <option value="">— Tidak perlu bilik khas —</option>
+          </select>
+          <span class="hint" id="akBilikHint">Pilih bilik jika aktiviti menggunakan bilik khas. Bilik akan dikunci dalam Tempahan Bilik Khas.</span>
+        </label>
+        <label>Tempat *
+          <input id="akTempat" type="text" maxlength="80" required placeholder="Contoh: Dewan Ibnu Khaldun">
+        </label>
+        <div class="two">
+          <label>Kategori
+            <select id="akKategori">
+              <option>Kurikulum</option>
+              <option>Kokurikulum</option>
+              <option>Hal Ehwal Murid</option>
+              <option>Pentadbiran</option>
+              <option>Mesyuarat</option>
+              <option>Keagamaan</option>
+              <option>Lain-lain</option>
+            </select>
+          </label>
+          <label>Penganjur / Unit
+            <input id="akPenganjur" type="text" maxlength="60" placeholder="Contoh: Unit Kokurikulum">
+          </label>
+        </div>
+        <label>Catatan
+          <textarea id="akCatatan" maxlength="400" placeholder="Maklumat tambahan (pakaian, peserta, dll.)"></textarea>
+        </label>
+        <button id="akSubmitBtn" class="primary" type="submit"><i class="fa-solid fa-floppy-disk"></i>&nbsp; Simpan Aktiviti</button>
+        <button id="akCancelBtn" class="cancel-btn hidden" type="button">Batal Kemaskini</button>
+      </form>
+    </section>
+
+    <!-- Senarai -->
+    <section class="list-col">
+      <div class="list-head">
+        <h2>Senarai Aktiviti <span id="akCount" class="count">0</span></h2>
+        <div class="tabs">
+          <button class="tab active" data-view="akan">Akan Datang</button>
+          <button class="tab" data-view="lepas">Telah Berlalu</button>
+        </div>
+      </div>
+      <div id="akList" class="list">
+        <div class="empty"><i class="fa-solid fa-spinner fa-spin"></i> Memuatkan aktiviti...</div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="footer">Hub Tool ICT • SK Jalan Bintang</div>
+<div id="toast" class="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+  import {
+    getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, serverTimestamp, query, where
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+  const firebaseConfig = self.SITE.firebase;
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const COLLECTION = "aktiviti";
+  const BOOKINGS = "roomBookings";
+  // Mesti sama dengan senarai ROOMS dalam tempahan.html
+  const ROOMS = [
+    "Dewan Ibnu Khaldun",
+    "Makmal Komputer",
+    "Bengkel RBT",
+    "Bilik Muzik",
+    "Bilik Mesyuarat"
+  ];
+  const MAX_HARI_TEMPAHAN = 14;
+  const BULAN = ["JAN","FEB","MAC","APR","MEI","JUN","JUL","OGO","SEP","OKT","NOV","DIS"];
+  const BULAN_PENUH = ["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];
+  const HARI = ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"];
+  const $ = (id) => document.getElementById(id);
+
+  let currentUser = null;
+  let currentTeacher = null;
+  let semua = [];
+  let view = "akan";
+  let editingId = null;
+  let editingOriginalDate = "";
+
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  }
+  function parseDate(s) {
+    const [y,m,d] = String(s).split("-").map(Number);
+    return new Date(y, m-1, d);
+  }
+  function fmtDate(s) {
+    const d = parseDate(s);
+    return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN_PENUH[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  function akhir(a) { return a.tarikhTamat || a.tarikh; }
+
+  function showToast(msg, type = "info") {
+    const el = $("toast");
+    el.textContent = msg;
+    el.className = `toast show ${type}`;
+    clearTimeout(window.__t);
+    window.__t = setTimeout(() => el.className = "toast", 3200);
+  }
+
+  function relPill(a) {
+    const t = todayStr();
+    if (akhir(a) < t) return `<span class="pill p-done">Selesai</span>`;
+    if (a.tarikh <= t) return `<span class="pill p-today">Hari ini</span>`;
+    const diff = Math.round((parseDate(a.tarikh) - parseDate(t)) / 86400000);
+    if (diff === 1) return `<span class="pill p-soon">Esok</span>`;
+    return `<span class="pill ${diff <= 7 ? "p-week" : "p-later"}">${diff} hari lagi</span>`;
+  }
+
+  function canDelete(a) {
+    if (!currentUser || !currentTeacher) return false;
+    return currentTeacher.role === "admin" || a.uid === currentUser.uid;
+  }
+
+  async function loadAktiviti() {
+    try {
+      const snap = await getDocs(collection(db, COLLECTION));
+      semua = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(a => a.tarikh && a.tajuk);
+      render();
+      cubaEditDariUrl();
+    } catch (err) {
+      console.error(err);
+      $("akList").innerHTML = `
+        <div class="empty error">
+          <strong>Aktiviti tidak dapat dimuatkan.</strong>
+          <span>${esc(err.code === "permission-denied"
+            ? "Firestore Rules untuk koleksi 'aktiviti' belum ditetapkan."
+            : (err.message || err.code))}</span>
+        </div>`;
+    }
+  }
+
+  function render() {
+    const t = todayStr();
+    let items = view === "akan"
+      ? semua.filter(a => akhir(a) >= t).sort((a,b) =>
+          a.tarikh.localeCompare(b.tarikh) || String(a.masaMula||"99").localeCompare(String(b.masaMula||"99")))
+      : semua.filter(a => akhir(a) < t).sort((a,b) => b.tarikh.localeCompare(a.tarikh)).slice(0, 30);
+
+    $("akCount").textContent = items.length;
+
+    if (!items.length) {
+      $("akList").innerHTML = `
+        <div class="empty">
+          <i class="fa-solid fa-calendar-xmark" style="font-size:22px;color:#9aa8b5"></i>
+          <strong>${view === "akan" ? "Tiada aktiviti akan datang" : "Tiada aktiviti lepas"}</strong>
+          <span>${view === "akan" ? "Aktiviti yang didaftar akan dipaparkan di sini." : ""}</span>
+        </div>`;
+      return;
+    }
+
+    $("akList").innerHTML = items.map(a => {
+      const d = parseDate(a.tarikh);
+      const tarikh = a.tarikhTamat && a.tarikhTamat !== a.tarikh
+        ? `${fmtDate(a.tarikh)} – ${fmtDate(a.tarikhTamat)}` : fmtDate(a.tarikh);
+      const masa = a.masaMula ? `${esc(a.masaMula)}${a.masaTamat ? " – " + esc(a.masaTamat) : ""}` : "";
+      return `
+      <article class="item ${akhir(a) < t ? "past" : ""} ${a.id === editingId ? "editing" : ""}">
+        <div class="datebox"><div class="m">${BULAN[d.getMonth()]}</div><div class="d">${d.getDate()}</div></div>
+        <div class="item-body">
+          <div class="pills">${relPill(a)}<span class="pill p-cat">${esc(a.kategori || "Lain-lain")}</span>${a.bilik ? `<span class="pill p-room"><i class="fa-solid fa-lock"></i> ${esc(a.bilik)}</span>` : ""}</div>
+          <h3>${esc(a.tajuk)}</h3>
+          <div class="meta">
+            <span><i class="fa-regular fa-calendar"></i>${tarikh}</span>
+            ${masa ? `<span><i class="fa-regular fa-clock"></i>${masa}</span>` : ""}
+            <span><i class="fa-solid fa-location-dot"></i>${esc(a.tempat)}</span>
+            ${a.penganjur ? `<span><i class="fa-solid fa-users"></i>${esc(a.penganjur)}</span>` : ""}
+          </div>
+          ${a.catatan ? `<div class="note">${esc(a.catatan)}</div>` : ""}
+          <div class="foot">
+            <span class="by">Didaftar oleh ${esc(a.namaGuru || a.email || "-")}</span>
+            ${canDelete(a) ? `<div class="actions">
+              <button class="edit-btn" data-id="${esc(a.id)}"><i class="fa-solid fa-pen"></i> Edit</button>
+              <button class="del-btn" data-id="${esc(a.id)}"><i class="fa-solid fa-trash-can"></i> Padam</button>
+            </div>` : ""}
+          </div>
+        </div>
+      </article>`;
+    }).join("");
+
+    $("akList").querySelectorAll(".del-btn").forEach(b =>
+      b.addEventListener("click", () => padam(b.dataset.id)));
+    $("akList").querySelectorAll(".edit-btn").forEach(b =>
+      b.addEventListener("click", () => mulaEdit(b.dataset.id)));
+  }
+
+  const SUBMIT_BARU = '<i class="fa-solid fa-floppy-disk"></i>&nbsp; Simpan Aktiviti';
+  const SUBMIT_EDIT = '<i class="fa-solid fa-check"></i>&nbsp; Kemaskini Aktiviti';
+
+  function mulaEdit(id) {
+    const a = semua.find(x => x.id === id);
+    if (!a || !canDelete(a)) return;
+    editingId = id;
+    editingOriginalDate = a.tarikh;
+    $("akTajuk").value = a.tajuk || "";
+    $("akTarikh").value = a.tarikh || "";
+    $("akTarikhTamat").value = a.tarikhTamat || "";
+    $("akMasaMula").value = a.masaMula || "";
+    $("akMasaTamat").value = a.masaTamat || "";
+    $("akTempat").value = a.tempat || "";
+    $("akBilik").value = a.bilik || "";
+    $("akKategori").value = a.kategori || "Lain-lain";
+    $("akPenganjur").value = a.penganjur || "";
+    $("akCatatan").value = a.catatan || "";
+    $("formTitle").textContent = "Kemaskini Aktiviti";
+    $("editName").textContent = a.tajuk || "";
+    $("editBanner").classList.remove("hidden");
+    $("akCancelBtn").classList.remove("hidden");
+    $("akSubmitBtn").innerHTML = SUBMIT_EDIT;
+    render();
+    $("formTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => $("akTajuk").focus({ preventScroll: true }), 400);
+  }
+
+  // Dibuka dari tempahan.html: aktiviti.html?edit=<id>
+  let editDariUrl = new URLSearchParams(location.search).get("edit") || "";
+  function cubaEditDariUrl() {
+    if (!editDariUrl || !currentTeacher || !semua.length) return;
+    const id = editDariUrl;
+    editDariUrl = "";
+    history.replaceState(null, "", location.pathname);
+    const a = semua.find(x => x.id === id);
+    if (!a) return showToast("Aktiviti tidak ditemui.", "error");
+    if (!canDelete(a)) return showToast("Anda tiada kebenaran mengedit aktiviti ini.", "error");
+    mulaEdit(id);
+  }
+
+  function batalEdit() {
+    editingId = null;
+    editingOriginalDate = "";
+    $("aktivitiForm").reset();
+    $("akTarikh").value = todayStr();
+    $("formTitle").textContent = "Daftar Aktiviti Baharu";
+    $("editBanner").classList.add("hidden");
+    $("akCancelBtn").classList.add("hidden");
+    $("akSubmitBtn").innerHTML = SUBMIT_BARU;
+    render();
+  }
+
+  // ---------- Integrasi Tempahan Bilik Khas ----------
+  function toMin(t) { const [h, m] = String(t).split(":").map(Number); return h * 60 + m; }
+  function senaraiTarikh(mula, tamat) {
+    const out = [];
+    const d = parseDate(mula), end = parseDate(tamat || mula);
+    while (d <= end && out.length < MAX_HARI_TEMPAHAN + 1) {
+      out.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`);
+      d.setDate(d.getDate() + 1);
+    }
+    return out;
+  }
+
+  // Pulangkan tempahan lain yang bertindih (abaikan tempahan milik aktiviti ini sendiri).
+  async function semakPertindihan(bilik, tarikhList, mula, tamat, aktivitiId) {
+    const bertindih = [];
+    for (const t of tarikhList) {
+      const snap = await getDocs(query(collection(db, BOOKINGS), where("date", "==", t)));
+      snap.docs.map(d => d.data()).forEach(b => {
+        if (b.room !== bilik) return;
+        if (aktivitiId && b.aktivitiId === aktivitiId) return;
+        if (toMin(mula) < toMin(b.endTime) && toMin(tamat) > toMin(b.startTime)) bertindih.push({ ...b, date: t });
+      });
+    }
+    return bertindih;
+  }
+
+  async function padamTempahanAktiviti(aktivitiId) {
+    const snap = await getDocs(query(collection(db, BOOKINGS), where("aktivitiId", "==", aktivitiId)));
+    let gagal = 0;
+    for (const d of snap.docs) {
+      try { await deleteDoc(d.ref); } catch (err) { console.warn("Gagal padam tempahan", d.id, err); gagal++; }
+    }
+    return gagal;
+  }
+
+  async function ciptaTempahanAktiviti(aktivitiId, data, tarikhList) {
+    for (const t of tarikhList) {
+      await addDoc(collection(db, BOOKINGS), {
+        room: data.bilik,
+        date: t,
+        startTime: data.masaMula,
+        endTime: data.masaTamat,
+        purpose: data.tajuk,
+        groupName: data.penganjur || "Aktiviti Sekolah",
+        aktivitiId,
+        sumber: "aktiviti",
+        uid: currentUser.uid,
+        email: currentUser.email,
+        displayName: currentTeacher.displayName || currentUser.displayName || currentUser.email,
+        createdAt: serverTimestamp()
+      });
+    }
+  }
+
+  async function simpan(e) {
+    e.preventDefault();
+    if (!currentUser || !currentTeacher) { showToast("Sila log masuk dahulu.", "error"); return; }
+
+    const tajuk = $("akTajuk").value.trim();
+    const tarikh = $("akTarikh").value;
+    const tarikhTamat = $("akTarikhTamat").value || "";
+    const masaMula = $("akMasaMula").value || "";
+    const masaTamat = $("akMasaTamat").value || "";
+    const tempat = $("akTempat").value.trim();
+
+    if (!tajuk || !tarikh || !tempat) return showToast("Sila isi nama aktiviti, tarikh dan tempat.", "error");
+    if (tarikh < todayStr() && !(editingId && tarikh === editingOriginalDate)) return showToast("Tarikh aktiviti tidak boleh tarikh yang telah berlalu.", "error");
+    if (tarikhTamat && tarikhTamat < tarikh) return showToast("Tarikh tamat mesti selepas tarikh mula.", "error");
+    if (masaMula && masaTamat && masaTamat <= masaMula && (!tarikhTamat || tarikhTamat === tarikh))
+      return showToast("Masa tamat mesti selepas masa mula.", "error");
+
+    const bilik = $("akBilik").value;
+    const tarikhList = bilik ? senaraiTarikh(tarikh, tarikhTamat) : [];
+    if (bilik) {
+      if (!masaMula || !masaTamat) return showToast("Masa mula dan masa tamat wajib diisi untuk menempah bilik.", "error");
+      if (masaTamat <= masaMula) return showToast("Untuk tempahan bilik, masa tamat mesti selepas masa mula pada hari yang sama.", "error");
+      if (tarikhList.length > MAX_HARI_TEMPAHAN) return showToast(`Tempahan bilik melalui aktiviti terhad kepada ${MAX_HARI_TEMPAHAN} hari.`, "error");
+    }
+
+    const btn = $("akSubmitBtn");
+    btn.disabled = true;
+    btn.textContent = "Menyimpan...";
+    try {
+      const data = {
+        tajuk, tarikh, tarikhTamat,
+        tarikhAkhir: tarikhTamat || tarikh,
+        masaMula, masaTamat, tempat,
+        kategori: $("akKategori").value,
+        penganjur: $("akPenganjur").value.trim(),
+        catatan: $("akCatatan").value.trim(),
+        bilik
+      };
+      const sedangEdit = !!editingId;
+      const asal = sedangEdit ? semua.find(x => x.id === editingId) : null;
+
+      // 1. Semak pertindihan bilik SEBELUM menyimpan apa-apa.
+      if (bilik) {
+        btn.textContent = "Menyemak bilik...";
+        const bertindih = await semakPertindihan(bilik, tarikhList, masaMula, masaTamat, editingId);
+        if (bertindih.length) {
+          const b = bertindih[0];
+          return showToast(`${bilik} sudah ditempah pada ${b.date.split("-").reverse().join("/")} (${b.startTime}–${b.endTime}) untuk "${b.purpose || "-"}".`, "error");
+        }
+        btn.textContent = "Menyimpan...";
+      }
+
+      let aktivitiId = editingId;
+      if (sedangEdit) {
+        await updateDoc(doc(db, COLLECTION, editingId), {
+          ...data,
+          dikemaskiniOleh: currentTeacher.displayName || currentUser.displayName || currentUser.email,
+          updatedAt: serverTimestamp()
+        });
+      } else {
+        const ref = await addDoc(collection(db, COLLECTION), {
+          ...data,
+          uid: currentUser.uid,
+          email: String(currentUser.email || "").toLowerCase(),
+          namaGuru: currentTeacher.displayName || currentUser.displayName || currentUser.email,
+          createdAt: serverTimestamp()
+        });
+        aktivitiId = ref.id;
+      }
+
+      // 2. Selaraskan tempahan bilik: buang tempahan lama aktiviti ini, cipta yang baharu.
+      let amaran = "";
+      try {
+        if (sedangEdit && asal?.bilik) {
+          const gagal = await padamTempahanAktiviti(aktivitiId);
+          if (gagal) amaran = " Sebahagian tempahan lama tidak dapat dibuang; sila semak Tempahan Bilik Khas.";
+        }
+        if (bilik) await ciptaTempahanAktiviti(aktivitiId, data, tarikhList);
+      } catch (err) {
+        console.error("Tempahan bilik gagal:", err);
+        amaran = " Aktiviti disimpan tetapi tempahan bilik GAGAL. Sila tempah secara manual.";
+      }
+
+      batalEdit();
+      const mesej = sedangEdit ? "Aktiviti berjaya dikemaskini." : "Aktiviti berjaya didaftarkan.";
+      showToast(mesej + (bilik && !amaran ? ` ${bilik} telah ditempah.` : "") + amaran, amaran ? "error" : "success");
+      view = "akan";
+      document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x.dataset.view === "akan"));
+      await loadAktiviti();
+    } catch (err) {
+      console.error(err);
+      showToast(err.code === "permission-denied"
+        ? "Tiada kebenaran menyimpan. Semak Firestore Rules."
+        : (err.message || "Gagal menyimpan aktiviti."), "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = editingId ? SUBMIT_EDIT : SUBMIT_BARU;
+    }
+  }
+
+  async function padam(id) {
+    const a = semua.find(x => x.id === id);
+    if (!confirm(a?.bilik ? `Padam aktiviti ini? Tempahan ${a.bilik} untuk aktiviti ini juga akan dibatalkan.` : "Padam aktiviti ini?")) return;
+    try {
+      if (a?.bilik) await padamTempahanAktiviti(id);
+      await deleteDoc(doc(db, COLLECTION, id));
+      if (id === editingId) batalEdit();
+      showToast("Aktiviti telah dipadam.", "success");
+      await loadAktiviti();
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || "Gagal memadam aktiviti.", "error");
+    }
+  }
+
+  async function login() {
+    try {
+      const p = new GoogleAuthProvider();
+      p.setCustomParameters({ prompt: "select_account" });
+      await signInWithPopup(auth, p);
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || "Gagal log masuk Google.", "error");
+    }
+  }
+
+  function setUI(loggedIn) {
+    $("aktivitiForm").classList.toggle("hidden", !loggedIn);
+    $("loginNote").classList.toggle("hidden", loggedIn);
+    if (!loggedIn) window.ICTHeader?.clearUser();
+  }
+
+  $("googleLoginBtn").addEventListener("click", login);
+  $("aktivitiForm").addEventListener("submit", simpan);
+  $("akCancelBtn").addEventListener("click", batalEdit);
+  document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+    view = b.dataset.view;
+    document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x === b));
+    render();
+  }));
+  $("akTarikh").value = todayStr();
+  $("akBilik").insertAdjacentHTML("beforeend", ROOMS.map(r => `<option>${esc(r)}</option>`).join(""));
+  $("akBilik").addEventListener("change", () => {
+    const v = $("akBilik").value;
+    const tempat = $("akTempat");
+    if (v && (!tempat.value.trim() || ROOMS.includes(tempat.value.trim()))) tempat.value = v;
+  });
+
+  onAuthStateChanged(auth, async user => {
+    currentUser = user;
+    currentTeacher = null;
+    if (!user) { setUI(false); render(); return; }
+    try {
+      const email = String(user.email || "").toLowerCase().trim();
+      const snap = await getDoc(doc(db, "teachers", email));
+      if (!snap.exists() || snap.data().active === false) {
+        throw new Error("Akaun anda tidak disenaraikan sebagai guru aktif.");
+      }
+      currentTeacher = snap.data();
+      $("userName").textContent = currentTeacher.displayName || user.displayName || user.email;
+      $("userRole").textContent = currentTeacher.role === "admin" ? "ADMIN" : "GURU";
+      setUI(true);
+      render();
+      cubaEditDariUrl();
+    } catch (err) {
+      console.error(err);
+      setUI(false);
+      showToast(err.message, "error");
+    }
+  });
+
+  loadAktiviti();
+</script>
+</body>
+</html>

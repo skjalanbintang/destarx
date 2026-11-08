@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<script src="./site-config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#071a16">
+<script src="ict-header.js"></script>
+<title>Tempahan Bilik Khas • Hub Tool ICT</title>
+<link rel="icon" href="data:,">
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    Timestamp,
+    doc,
+    getDoc,
+    deleteDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  const firebaseConfig = self.SITE.firebase;
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+const ROOMS = [
+  "Dewan Ibnu Khaldun",
+  "Makmal Komputer",
+  "Bengkel RBT",
+  "Bilik Muzik",
+  "Bilik Mesyuarat"
+];
+
+const $ = (id) => document.getElementById(id);
+
+let currentUser = null;
+let currentTeacher = null;
+let allBookingsForDate = [];
+let currentDate = "";
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[ch]));
+}
+
+function todayMY() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function formatDateMY(dateStr) {
+  if (!dateStr) return "-";
+  const [y,m,d] = dateStr.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+function formatTime(tsOrString) {
+  if (!tsOrString) return "-";
+  if (typeof tsOrString === "string") return tsOrString;
+  if (tsOrString.toDate) {
+    return tsOrString.toDate().toLocaleTimeString("ms-MY", {
+      hour: "2-digit", minute: "2-digit", hour12: false
+    });
+  }
+  return "-";
+}
+
+function timeToMinutes(v) {
+  const [h,m] = String(v).split(":").map(Number);
+  return (h * 60) + m;
+}
+
+function overlaps(aStart, aEnd, bStart, bEnd) {
+  return timeToMinutes(aStart) < timeToMinutes(bEnd)
+    && timeToMinutes(aEnd) > timeToMinutes(bStart);
+}
+
+function showToast(message, type="info") {
+  const el = $("toast");
+  el.textContent = message;
+  el.className = `toast show ${type}`;
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => {
+    el.className = "toast";
+  }, 3200);
+}
+
+async function getTeacherProfile(user) {
+  const ref = doc(db, "teachers", user.email);
+  const snap = await getDoc(ref);
+  if (!snap.exists() || snap.data().active !== true) {
+    throw new Error("Akaun anda tidak disenaraikan sebagai guru aktif.");
+  }
+  return snap.data();
+}
+
+async function loadBookings(dateStr) {
+  currentDate = dateStr;
+  if ($("bookingDate")) $("bookingDate").value = dateStr;
+  if ($("statusDate")) $("statusDate").value = dateStr;
+  $("loading").classList.remove("hidden");
+  $("bookingList").innerHTML = "";
+
+  try {
+    // Ambil semua tempahan sekali sahaja.
+    // Paparan status akan menggunakan tarikh yang dipilih,
+    // manakala senarai tempahan menggunakan semua tempahan
+    // yang masih aktif/belum lepas.
+    const q = query(collection(db, "roomBookings"));
+    const snap = await getDocs(q);
+
+    const now = new Date();
+    const today = todayMY();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    allBookingsForDate = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(b => {
+        if (!b.date) return false;
+
+        // Jangan paparkan tempahan yang tarikh sudah lepas.
+        if (b.date < today) return false;
+
+        // Untuk hari ini, jangan paparkan tempahan yang masa tamat sudah lepas.
+        if (b.date === today) {
+          const end = timeToMinutes(b.endTime || "23:59");
+          return end > nowMinutes;
+        }
+
+        // Semua tempahan pada tarikh akan datang dipaparkan.
+        return true;
+      })
+      .sort((a, b) => {
+        const ka = `${a.date} ${a.startTime || "00:00"}`;
+        const kb = `${b.date} ${b.startTime || "00:00"}`;
+        return ka.localeCompare(kb);
+      });
+
+    renderRoomStatus();
+    renderBookingList();
+  } catch (error) {
+    console.error(error);
+    allBookingsForDate = [];
+    $("bookingList").innerHTML = `
+      <div class="empty error">
+        <strong>Gagal memuatkan tempahan.</strong>
+        <span>${escapeHtml(error.message)}</span>
+      </div>`;
+    renderRoomStatus();
+  } finally {
+    $("loading").classList.add("hidden");
+  }
+}
+
+function renderRoomStatus() {
+  const container = $("roomStatus");
+  container.innerHTML = ROOMS.map(room => {
+    const bookings = allBookingsForDate.filter(b => b.date === currentDate && b.room === room);
+    const booked = bookings.length > 0;
+    const first = bookings[0];
+    return `
+      <div class="room-card ${booked ? "booked" : "available"}">
+        <div class="room-icon">▦</div>
+        <div class="room-info">
+          <strong>${escapeHtml(room)}</strong>
+          <span>${booked
+            ? `${bookings.length} tempahan • ${formatTime(first.startTime)}–${formatTime(first.endTime)}`
+            : "Tersedia"}</span>
+        </div>
+        <span class="status-pill ${booked ? "red" : "green"}">${booked ? "Ditempah" : "Tersedia"}</span>
+      </div>`;
+  }).join("");
+}
+
+function renderBookingList() {
+  const list = $("bookingList");
+  if (!allBookingsForDate.length) {
+    list.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">✓</div>
+        <strong>Tiada tempahan aktif</strong>
+        <span>Tiada tempahan akan datang yang masih aktif.</span>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = allBookingsForDate.map(b => `
+    <article class="booking-item">
+      <div class="booking-time">
+        <strong>${escapeHtml(formatDateMY(b.date))}</strong>
+        <span>${escapeHtml(b.startTime)}–${escapeHtml(b.endTime)}</span>
+        <span>${escapeHtml(b.room)}</span>
+      </div>
+      <div class="booking-detail">
+        <strong>${escapeHtml(b.purpose || "Kegunaan bilik")}</strong>
+        <span>${escapeHtml(b.groupName || "-")}</span>
+        <span>Tempah oleh: ${escapeHtml(b.displayName || b.email || "-")}</span>
+        ${b.sumber === "aktiviti" ? `<span style="color:#1d5fd1;font-weight:700">🔒 Melalui Daftar Aktiviti</span>` : ""}
+      </div>
+      <div class="booking-actions">
+      ${isAdmin()
+        ? `<button class="edit-btn" data-id="${escapeHtml(b.id)}" title="Edit tempahan">Edit</button>`
+        : ""}
+      ${currentUser && (b.uid === currentUser.uid || isAdmin())
+        ? `<button class="delete-btn" data-id="${escapeHtml(b.id)}" title="Batalkan tempahan">Batalkan</button>`
+        : ""}
+      </div>
+    </article>
+  `).join("");
+
+  list.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", () => cancelBooking(btn.dataset.id));
+  });
+  list.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", () => openEdit(btn.dataset.id));
+  });
+}
+
+/* ===== Edit tempahan (admin sahaja) ===== */
+function isAdmin() { return currentTeacher?.role === "admin"; }
+
+let editingBooking = null;
+
+function openEdit(id) {
+  if (!isAdmin()) return;
+  const b = allBookingsForDate.find(x => x.id === id);
+  if (!b) return;
+  // Tempahan daripada Daftar Aktiviti diedit melalui aktiviti supaya kedua-duanya kekal sama.
+  if (b.sumber === "aktiviti" && b.aktivitiId) {
+    if (confirm("Tempahan ini dibuat melalui Daftar Aktiviti.\nBuka aktiviti tersebut untuk diedit? (Tempahan bilik akan dikemaskini bersama.)")) {
+      location.href = "aktiviti.html?edit=" + encodeURIComponent(b.aktivitiId);
+    }
+    return;
+  }
+  editingBooking = b;
+  $("editRoom").value = b.room || "";
+  $("editDate").value = b.date || "";
+  $("editStart").value = b.startTime || "";
+  $("editEnd").value = b.endTime || "";
+  $("editPurpose").value = b.purpose || "";
+  $("editGroup").value = b.groupName || "";
+  $("editOwner").textContent = b.displayName || b.email || "-";
+  $("editModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeEdit() {
+  editingBooking = null;
+  $("editModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+async function saveEdit(event) {
+  event.preventDefault();
+  if (!editingBooking || !isAdmin()) return;
+  const room = $("editRoom").value;
+  const date = $("editDate").value;
+  const startTime = $("editStart").value;
+  const endTime = $("editEnd").value;
+  const purpose = $("editPurpose").value.trim();
+  const groupName = $("editGroup").value.trim();
+
+  if (!room || !date || !startTime || !endTime || !purpose || !groupName) {
+    showToast("Sila lengkapkan semua maklumat.", "error"); return;
+  }
+  if (timeToMinutes(startTime) >= timeToMinutes(endTime)) {
+    showToast("Masa tamat mesti selepas masa mula.", "error"); return;
+  }
+
+  const btn = $("editSaveBtn");
+  btn.disabled = true; btn.textContent = "Menyemak...";
+  try {
+    const existing = await getDocs(query(collection(db, "roomBookings"), where("date", "==", date)));
+    const conflict = existing.docs
+      .filter(d => d.id !== editingBooking.id)
+      .map(d => d.data())
+      .filter(b => b.room === room)
+      .some(b => overlaps(startTime, endTime, b.startTime, b.endTime));
+    if (conflict) { showToast("Bilik tersebut sudah ditempah pada waktu berkenaan.", "error"); return; }
+
+    await updateDoc(doc(db, "roomBookings", editingBooking.id), {
+      room, date, startTime, endTime, purpose, groupName,
+      updatedAt: Timestamp.now(),
+      updatedBy: currentUser.email
+    });
+    closeEdit();
+    showToast("Tempahan telah dikemaskini.", "success");
+    await loadBookings(currentDate);
+  } catch (error) {
+    console.error(error);
+    showToast(error.code === "permission-denied"
+      ? "Tiada kebenaran mengemaskini. Firestore Rules perlu membenarkan admin mengemaskini roomBookings."
+      : (error.message || "Gagal mengemaskini tempahan."), "error");
+  } finally {
+    btn.disabled = false; btn.textContent = "Simpan Perubahan";
+  }
+}
+
+function setFormDefaults() {
+  $("bookingDate").value = currentDate || todayMY();
+  $("startTime").value = "08:00";
+  $("endTime").value = "09:00";
+}
+
+async function submitBooking(event) {
+  event.preventDefault();
+
+  if (!currentUser || !currentTeacher) {
+    showToast("Sila log masuk dahulu.", "error");
+    return;
+  }
+
+  const room = $("room").value;
+  const date = $("bookingDate").value;
+  const startTime = $("startTime").value;
+  const endTime = $("endTime").value;
+  const purpose = $("purpose").value.trim();
+  const groupName = $("groupName").value.trim();
+
+  if (!room || !date || !startTime || !endTime || !purpose || !groupName) {
+    showToast("Sila lengkapkan semua maklumat.", "error");
+    return;
+  }
+
+  if (timeToMinutes(startTime) >= timeToMinutes(endTime)) {
+    showToast("Masa tamat mesti selepas masa mula.", "error");
+    return;
+  }
+
+  if (date < todayMY()) {
+    showToast("Tarikh tempahan tidak boleh pada tarikh yang telah berlalu.", "error");
+    return;
+  }
+
+  const btn = $("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Menyemak...";
+
+  try {
+    // Semak pertindihan dalam transaksi untuk mengurangkan risiko
+    // dua guru menempah bilik yang sama pada masa yang sama.
+    const q = query(
+      collection(db, "roomBookings"),
+      where("date", "==", date)
+    );
+    const existing = await getDocs(q);
+
+    const conflict = existing.docs
+      .map(d => d.data())
+      .filter(b => b.room === room)
+      .some(b => overlaps(startTime, endTime, b.startTime, b.endTime));
+
+    if (conflict) {
+      showToast("Bilik tersebut sudah ditempah pada waktu berkenaan.", "error");
+      return;
+    }
+
+    await addDoc(collection(db, "roomBookings"), {
+      room,
+      date,
+      startTime,
+      endTime,
+      purpose,
+      groupName,
+      uid: currentUser.uid,
+      email: currentUser.email,
+      displayName: currentTeacher.displayName || currentUser.displayName || currentUser.email,
+      createdAt: Timestamp.now()
+    });
+
+    $("bookingForm").reset();
+    $("bookingDate").value = date;
+    $("startTime").value = "08:00";
+    $("endTime").value = "09:00";
+    $("purpose").value = "";
+    $("groupName").value = "";
+
+    showToast("Tempahan bilik berjaya disimpan.", "success");
+    await loadBookings(date);
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Gagal menyimpan tempahan.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Tempah Bilik";
+  }
+}
+
+async function cancelBooking(id) {
+  if (!confirm("Batalkan tempahan ini?")) return;
+
+  try {
+    await deleteDoc(doc(db, "roomBookings", id));
+    showToast("Tempahan telah dibatalkan.", "success");
+    await loadBookings(currentDate);
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Gagal membatalkan tempahan.", "error");
+  }
+}
+
+function showLogin() {
+  $("loginScreen").classList.remove("hidden");
+  $("app").classList.add("hidden");
+}
+
+function showApp() {
+  $("loginScreen").classList.add("hidden");
+  $("app").classList.remove("hidden");
+}
+
+$("googleLoginBtn").addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, new GoogleAuthProvider());
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Gagal log masuk Google.", "error");
+  }
+});
+
+$("bookingForm").addEventListener("submit", submitBooking);
+$("editRoom").insertAdjacentHTML("beforeend", ROOMS.map(r => `<option>${escapeHtml(r)}</option>`).join(""));
+$("editForm").addEventListener("submit", saveEdit);
+$("editCancelBtn").addEventListener("click", closeEdit);
+$("editModal").addEventListener("click", e => { if (e.target === $("editModal")) closeEdit(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && editingBooking) closeEdit(); });
+$("bookingDate").addEventListener("change", e => loadBookings(e.target.value));
+$("statusDate").addEventListener("change", e => loadBookings(e.target.value));
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  if (!user) {
+    currentTeacher = null;
+    window.ICTHeader?.clearUser();
+    showLogin();
+    return;
+  }
+
+  try {
+    currentTeacher = await getTeacherProfile(user);
+
+    // Header dalaman tool telah dibuang kerana portal index.html
+    // sudah mempunyai header sendiri. Jadi jangan akses elemen
+    // userName/userRole yang memang tidak lagi wujud.
+    const userNameEl = $("userName");
+    const userRoleEl = $("userRole");
+
+    if (userNameEl) {
+      userNameEl.textContent =
+        currentTeacher.displayName || user.displayName || user.email;
+    }
+
+    if (userRoleEl) {
+      userRoleEl.textContent =
+        currentTeacher.role === "admin"
+          ? "ADMIN"
+          : currentTeacher.role === "pentadbir"
+            ? "PENTADBIR"
+            : "GURU";
+    }
+
+    showApp();
+    const d = todayMY();
+    $("bookingDate").value = d;
+    $("statusDate").value = d;
+    await loadBookings(d);
+  } catch (error) {
+    console.error(error);
+    await signOut(auth);
+    showLogin();
+    showToast(error.message, "error");
+  }
+});
+  } catch (error) {
+    console.error("Tool initialization error:", error);
+    const boot = document.getElementById("bootError");
+    const text = document.getElementById("bootErrorText");
+    if (boot) boot.classList.remove("hidden");
+    if (text) text.textContent = error?.message || "Ralat semasa memulakan Firebase.";
+  }
+
+</script>
+
+<style>
+  :root {
+    --green:#009b62;
+    --green-dark:#06724d;
+    --navy:#071a16;
+    --ink:#172033;
+    --muted:#718096;
+    --line:#dce5eb;
+    --bg:#f5f8fa;
+    --red:#e84b5f;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+  }
+  button,input,select { font:inherit; }
+  button { cursor:pointer; }
+  .hidden { display:none !important; }
+  .shell { min-height:100vh; }
+  .top {
+    background:linear-gradient(135deg,#052b20,#009b62 65%,#087da2);
+    color:#fff;
+    padding:22px max(20px,calc((100vw - 1180px)/2));
+  }
+  .top-inner { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .back-btn {
+    width:40px;height:40px;border-radius:12px;border:1px solid #ffffff35;
+    background:#ffffff14;color:#fff;font-size:20px;font-weight:900;
+    display:grid;place-items:center;flex:0 0 auto;
+  }
+  .back-btn:hover { background:#ffffff24; }
+  .brand-icon {
+    width:52px;height:52px;border-radius:16px;background:#fff;
+    display:grid;place-items:center;color:var(--green);font-size:25px;font-weight:900;
+    box-shadow:0 8px 24px #0002;
+  }
+  .eyebrow { font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.78; }
+  h1 { margin:4px 0 4px;font-size:clamp(22px,4vw,32px); }
+  .sub { margin:0;color:#d8f6ea;font-size:13px; }
+  .userbox { display:flex;align-items:center;gap:10px; }
+  .userbox small { display:block;opacity:.8; }
+  .role {
+    display:inline-block;margin-top:4px;padding:4px 8px;border-radius:999px;
+    background:#ffffff22;font-size:10px;font-weight:800;
+  }
+  .logout {
+    border:1px solid #ffffff3d;background:#ffffff16;color:#fff;
+    padding:10px 13px;border-radius:12px;font-weight:800;
+  }
+  main { width:min(1180px,calc(100% - 32px));margin:24px auto 50px; }
+  .grid { display:grid;grid-template-columns:1.05fr 1.35fr;gap:20px;align-items:start; }
+  .card {
+    background:#fff;border:1px solid var(--line);border-radius:22px;
+    box-shadow:0 10px 30px #18314d0d;overflow:hidden;
+  }
+  .card-head { padding:20px 22px 10px; }
+  .card-head h2 { margin:0;font-size:18px; }
+  .booking-group { display:block; color:#6b7a90; font-size:11px; margin-top:3px; }\n  .status-head {
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+  }
+  .status-date-picker { flex:0 0 190px; }
+  .status-date-picker label {
+    display:block; font-size:10px; font-weight:900; color:#526174;
+  }
+  .status-date-picker input {
+    margin-top:5px; padding:9px 10px; border-radius:11px; background:#fff;
+  }
+
+  .card-head p { margin:5px 0 0;color:var(--muted);font-size:12px; }
+  .form { padding:18px 22px 22px;display:grid;gap:13px; }
+  label { font-size:11px;font-weight:800;color:#526174; }
+  input,select {
+    width:100%;margin-top:6px;border:1px solid var(--line);background:#fbfdfe;
+    border-radius:13px;padding:12px 13px;outline:none;color:var(--ink);
+  }
+  input:focus,select:focus { border-color:#24b681;box-shadow:0 0 0 3px #24b6811c; }
+  .two { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+  .primary {
+    border:0;background:linear-gradient(135deg,#009b62,#00b477);color:#fff;
+    padding:13px 16px;border-radius:13px;font-weight:900;box-shadow:0 7px 18px #009b6230;
+  }
+  .primary:disabled { opacity:.55;cursor:not-allowed; }
+  .section { margin-top:20px; }
+  .section-title {
+    display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:10px;
+  }
+  .section-title h2 { margin:0;font-size:17px; }
+  .section-title span { color:var(--muted);font-size:12px; }
+  .rooms { display:grid;gap:9px; }
+  .room-card {
+    display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--line);
+    border-radius:15px;background:#fff;
+  }
+  .room-card.booked { background:#fff8f8;border-color:#ffd7dc; }
+  .room-icon {
+    width:38px;height:38px;border-radius:11px;background:#eaf8f2;color:var(--green);
+    display:grid;place-items:center;font-weight:900;flex:0 0 auto;
+  }
+  .booked .room-icon { background:#fff0f2;color:var(--red); }
+  .room-info { min-width:0;flex:1; }
+  .room-info strong { display:block;font-size:13px; }
+  .room-info span { display:block;margin-top:2px;color:var(--muted);font-size:11px; }
+  .status-pill { padding:5px 8px;border-radius:999px;font-size:9px;font-weight:900;white-space:nowrap; }
+  .status-pill.green { background:#e5f8ef;color:#00855a; }
+  .status-pill.red { background:#ffe9ed;color:#cf3450; }
+  .booking-list { display:grid;gap:9px;padding:0 22px 22px; }
+  .booking-item {
+    display:grid;grid-template-columns:130px 1fr auto;gap:14px;align-items:center;
+    border:1px solid var(--line);border-radius:15px;padding:13px 14px;background:#fff;
+  }
+  .booking-time strong { display:block;font-size:13px;color:var(--green-dark); }
+  .booking-time span,.booking-detail span { display:block;color:var(--muted);font-size:11px;margin-top:3px; }
+  .booking-detail strong { display:block;font-size:13px; }
+  .booking-actions { display:flex;flex-direction:column;gap:6px; }
+  .edit-btn {
+    border:0;background:#eaf3ff;color:#1d5fd1;border-radius:10px;padding:9px 10px;font-size:10px;font-weight:900;
+  }
+  .modal-back {
+    position:fixed;inset:0;z-index:90;background:#0b1a2b80;display:flex;align-items:center;justify-content:center;padding:16px;
+  }
+  .modal-back.hidden { display:none; }
+  .modal-card { width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;border-radius:20px;box-shadow:0 25px 70px #0004; }
+  .modal-card .form { padding-top:6px; }
+  .modal-owner { margin:0;color:var(--muted);font-size:12px; }
+  .modal-actions { display:flex;gap:8px; }
+  .modal-actions button { flex:1; }
+  .ghost-btn { border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:13px;padding:12px;font-weight:800; }
+  .delete-btn {
+    border:0;background:#fff0f2;color:#d62e4d;border-radius:10px;padding:9px 10px;font-size:10px;font-weight:900;
+  }
+  .empty {
+    min-height:160px;border:1px dashed #cbd8e2;border-radius:18px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:6px;padding:24px;
+  }
+  .empty strong { color:var(--ink);font-size:14px; }
+  .empty-icon { width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#eaf8f2;color:var(--green);font-weight:900;font-size:20px; }
+  .empty.error { color:#d73a52;background:#fff8f9;border-color:#ffd2d9; }
+  .empty.error strong { color:#c62d47; }
+  .toast {
+    position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+    opacity:0;pointer-events:none;z-index:100;padding:12px 16px;border-radius:13px;
+    background:#172033;color:#fff;box-shadow:0 12px 35px #0003;font-size:12px;font-weight:800;
+    transition:.22s ease;max-width:min(92vw,500px);text-align:center;
+  }
+  .toast.show { opacity:1;transform:translate(-50%,0); }
+  .toast.success { background:#008a59; }
+  .toast.error { background:#d83b53; }
+  #loginScreen {
+    min-height:calc(100vh - 110px);display:grid;place-items:center;padding:24px;
+    background:radial-gradient(circle at top,#0b4938,#071a16 60%);
+  }
+  .login-card {
+    width:min(430px,100%);background:#fff;border-radius:25px;padding:32px;
+    box-shadow:0 25px 70px #0005;text-align:center;
+  }
+  .login-icon {
+    width:70px;height:70px;border-radius:20px;background:#e8f8f1;color:var(--green);
+    display:grid;place-items:center;font-size:30px;font-weight:900;margin:0 auto 16px;
+  }
+  .login-card h2 { margin:0 0 8px;font-size:24px; }
+  .login-card p { color:var(--muted);font-size:13px;line-height:1.6; }
+  .google-btn {
+    width:100%;margin-top:14px;padding:13px 15px;border:1px solid var(--line);
+    border-radius:13px;background:#fff;font-weight:900;color:#273447;
+  }
+  .footer { text-align:center;color:#91a0ae;font-size:11px;padding:25px; }
+  @media(max-width:850px) {
+    .status-head { align-items:stretch; flex-direction:column; }
+    .status-date-picker { width:100%; flex-basis:auto; }
+
+    .top { padding:18px 16px; }
+    .top-inner { align-items:flex-start; }
+    .userbox .user-text { display:none; }
+    main { width:calc(100% - 24px);margin-top:15px; }
+    .grid { grid-template-columns:1fr; }
+    .booking-item { grid-template-columns:1fr auto; }
+    .booking-detail { grid-column:1 / -1;grid-row:2; }
+  }
+  @media(max-width:520px) {
+    .brand-icon { width:46px;height:46px;border-radius:14px; }
+    h1 { font-size:22px; }
+    .sub { font-size:11px; }
+    .logout { padding:9px 10px; }
+    .two { grid-template-columns:1fr 1fr; }
+    .room-card { padding:11px; }
+    .room-info strong { font-size:12px; }
+    .status-pill { font-size:8px; }
+  }
+
+  .boot-error {
+    position: fixed; left: 16px; right: 16px; top: 16px; z-index: 9999;
+    padding: 14px 16px; border-radius: 14px; background: #fff0f2;
+    border: 1px solid #ffd0d8; color: #b4233c; box-shadow: 0 10px 30px #0002;
+    display:flex; flex-direction:column; gap:4px; font-size:12px;
+  }
+  .boot-error strong { font-size:13px; }
+
+</style>
+</head>
+<body>
+<div id="bootError" class="boot-error hidden">
+  <strong>Tool tidak dapat dimuatkan.</strong>
+  <span id="bootErrorText">Sila refresh halaman.</span>
+</div>
+
+<ict-header
+  icon="fa-solid fa-door-open"
+  title="Tempahan Bilik Khas"
+  subtitle="Tempah bilik dan lihat jadual penggunaan pada satu paparan.">
+</ict-header>
+
+<section id="loginScreen">
+  <div class="login-card">
+    <div class="login-icon">▦</div>
+    <h2>Tempahan Bilik Khas</h2>
+    <p>Log masuk menggunakan akaun Google guru yang telah didaftarkan dalam Hub Tool ICT.</p>
+    <button id="googleLoginBtn" class="google-btn">G  &nbsp; Teruskan dengan Google</button>
+  </div>
+</section>
+
+<div id="app" class="shell hidden">
+<main>
+    <div class="grid">
+      <section class="card">
+        <div class="card-head">
+          <h2>Tempah Bilik</h2>
+          <p>Pilih bilik, tarikh dan masa penggunaan.</p>
+        </div>
+        <form id="bookingForm" class="form">
+          <label>
+            Bilik
+            <select id="room" required>
+              <option value="">-- Pilih bilik --</option>
+              <option>Dewan Ibnu Khaldun</option>
+              <option>Makmal Komputer</option>
+              <option>Bengkel RBT</option>
+              <option>Bilik Muzik</option>
+              <option>Bilik Mesyuarat</option>
+            </select>
+          </label>
+
+          <label>
+            Tarikh
+            <input id="bookingDate" type="date" required>
+          </label>
+
+          <div class="two">
+            <label>
+              Masa Mula
+              <input id="startTime" type="time" value="08:00" required>
+            </label>
+            <label>
+              Masa Tamat
+              <input id="endTime" type="time" value="09:00" required>
+            </label>
+          </div>
+
+          <label>
+            Tujuan
+            <input id="purpose" type="text" maxlength="120" placeholder="Contoh: Mesyuarat panitia / PdP / program" required>
+          </label>
+
+          <label>
+            Kelas / Panitia / Unit / Agensi / Sekolah
+            <input id="groupName" type="text" maxlength="120"
+              placeholder="Contoh: Tahun 6 / Panitia Matematik / Unit ICT" required>
+          </label>
+
+          <button id="submitBtn" class="primary" type="submit">Tempah Bilik</button>
+        </form>
+      </section>
+
+      <section>
+        <div class="card">
+          <div class="card-head status-head">
+            <div>
+              <h2>Status Bilik</h2>
+              <p>Pilih tarikh untuk melihat status bilik.</p>
+            </div>
+            <div class="status-date-picker">
+              <label for="statusDate">Tarikh Semakan</label>
+              <input id="statusDate" type="date">
+            </div>
+          </div>
+          <div id="loading" class="empty hidden" style="min-height:120px;border:0;">
+            Memuatkan jadual...
+          </div>
+          <div id="roomStatus" class="rooms" style="padding:8px 22px 22px;"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <h2>Senarai Bilik Yang Telah Ditempah</h2>
+            <span id="selectedDateLabel2"></span>
+          </div>
+          <div id="bookingList" class="booking-list" style="padding-left:0;padding-right:0;"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="footer">Hub Tool ICT • SK Jalan Bintang</div>
+</div>
+
+<div id="editModal" class="modal-back hidden" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+  <div class="modal-card">
+    <div class="card-head">
+      <h2 id="editTitle">Edit Tempahan</h2>
+      <p class="modal-owner">Ditempah oleh: <b id="editOwner"></b></p>
+    </div>
+    <form id="editForm" class="form">
+      <label>
+        Bilik
+        <select id="editRoom" required>
+          <option value="">-- Pilih bilik --</option>
+        </select>
+      </label>
+      <label>
+        Tarikh
+        <input id="editDate" type="date" required>
+      </label>
+      <div class="two">
+        <label>Masa Mula <input id="editStart" type="time" required></label>
+        <label>Masa Tamat <input id="editEnd" type="time" required></label>
+      </div>
+      <label>
+        Tujuan
+        <input id="editPurpose" type="text" maxlength="120" required>
+      </label>
+      <label>
+        Kelas / Panitia / Unit / Agensi / Sekolah
+        <input id="editGroup" type="text" maxlength="120" required>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="ghost-btn" id="editCancelBtn">Batal</button>
+        <button type="submit" class="primary" id="editSaveBtn">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+/* ============================================================
+   TEMA ZAMRUD & KRIM — ICT Hub SK Jalan Bintang
+   ------------------------------------------------------------
+   Lapisan rupa untuk index.html. Dimuatkan paling akhir dalam
+   <head> supaya mengatasi mobile-tools-ui.css dan gaya sebaris.
+   Satu ciri utama sahaja: jaluran bintang lapan (khatam) berwarna
+   emas pada panel sambutan. Selebihnya sengaja tenang dan rata.
+   ============================================================ */
+:root{
+  --krim:#F4EEDD;          /* latar halaman */
+  --kertas:#FFFCF4;        /* permukaan kad */
+  --garis:#E2D9C2;         /* garis halus */
+  --dakwat:#1D2823;        /* teks utama */
+  --redup:#5E685F;         /* teks kedua */
+  --zamrud:#1A4C37;        /* tindakan utama */
+  --zamrud-gelap:#0F3024;  /* panel sambutan */
+  --zamrud-lembut:#E6EFE8;
+  --emas:#AC8634;          /* aksen garis & fokus */
+  --emas-terang:#D9B766;
+  --font-tajuk:"Marcellus",Georgia,"Times New Roman",serif;
+  --font-teks:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --khatam:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23D9B766' stroke-width='.9'%3E%3Crect x='13.86' y='13.86' width='28.28' height='28.28'/%3E%3Cpath d='M28 8 48 28 28 48 8 28Z'/%3E%3Cpath d='M28 0v8M28 48v8M0 28h8M48 28h8'/%3E%3C/g%3E%3C/svg%3E");
+}
+html.dark{
+  --krim:#101A16;
+  --kertas:#16231D;
+  --garis:#2A3A31;
+  --dakwat:#ECE6D6;
+  --redup:#A7AE9F;
+  --zamrud:#7FB596;
+  --zamrud-gelap:#0A1F17;
+  --zamrud-lembut:#1C3328;
+  --emas:#C9A55A;
+}
+
+/* ---------- Asas ---------- */
+html body,
+html body.dark{
+  background:var(--krim)!important;
+  color:var(--dakwat);
+  font-family:var(--font-teks);
+  -webkit-font-smoothing:antialiased;
+}
+.font-heading,h1,h2,h3,h4{font-family:var(--font-tajuk);font-weight:400!important;letter-spacing:0!important}
+:focus-visible{outline:2px solid var(--emas)!important;outline-offset:2px}
+.glass-card{background:var(--kertas)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.ios-shadow{box-shadow:none!important}
+
+/* ---------- Header ---------- */
+html body header.sticky.top-0.z-30,
+html.dark body header.sticky.top-0.z-30{
+  background:color-mix(in srgb,var(--kertas) 92%,transparent)!important;
+  border-bottom:1px solid var(--garis)!important;
+  box-shadow:none!important;
+  color:var(--dakwat)!important;
+}
+html body header.sticky.top-0.z-30 .skamis-logo-header,
+html.dark body header.sticky.top-0.z-30 .skamis-logo-header{
+  width:48px!important;height:48px!important;padding:0!important;
+  background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;
+}
+html body header.sticky.top-0.z-30 h1{
+  font-family:var(--font-tajuk)!important;font-weight:400!important;
+  font-size:clamp(19px,1.7vw,24px)!important;letter-spacing:.01em!important;
+  color:var(--dakwat)!important;
+}
+html body header.sticky.top-0.z-30 h1::after{display:none!important}
+html body header.sticky.top-0.z-30 h1+p,
+html.dark body header.sticky.top-0.z-30 h1+p{
+  color:var(--redup)!important;font-weight:600!important;font-size:11.5px!important;margin-top:4px;
+}
+html body #headerInstallAppBtn{
+  background:var(--zamrud)!important;border:1px solid var(--zamrud)!important;
+  box-shadow:none!important;border-radius:10px!important;font-weight:700!important;
+}
+html.dark body #headerInstallAppBtn{color:#0F1A15!important}
+html body #headerInstallAppBtn:hover{filter:none;transform:none;background:var(--zamrud-gelap)!important}
+html body #adminHeaderBtn{border-radius:10px!important}
+
+/* ---------- Panel sambutan (ciri utama) ---------- */
+html body .ict-welcome-banner,
+html body main > section.ict-welcome-banner{
+  background:var(--zamrud-gelap)!important;
+  border:1px solid color-mix(in srgb,var(--emas-terang) 35%,transparent)!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+  min-height:0!important;
+  padding:clamp(24px,3.4vw,44px) clamp(20px,3.6vw,48px)!important;
+  color:#F4EEDD!important;
+}
+html body .ict-welcome-banner::before{
+  content:""!important;position:absolute!important;inset:0!important;z-index:-1!important;
+  background:var(--khatam) right center/56px 56px repeat!important;
+  opacity:.32;
+  -webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 85%);
+          mask-image:linear-gradient(90deg,transparent 30%,#000 85%);
+}
+html body .ict-welcome-banner::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--emas-terang),var(--emas));opacity:.9;
+}
+.ict-welcome-decoration,.ict-welcome-brand,.ict-welcome-footer{display:none!important}
+html body .ict-welcome-identity{margin-top:0!important;gap:clamp(18px,3vw,36px)!important}
+html body .ict-welcome-avatar-wrap{
+  width:clamp(84px,9vw,116px)!important;height:clamp(84px,9vw,116px)!important;
+  padding:0!important;border-radius:50%!important;
+  background:#F4EEDD!important;box-shadow:0 0 0 1px var(--emas-terang),0 0 0 6px rgba(217,183,102,.12)!important;
+  display:grid;place-items:center;flex:0 0 auto!important;aspect-ratio:1;
+}
+html body .ict-welcome-crest{width:72%;height:72%;object-fit:contain;display:block}
+html body .ict-welcome-avatar-fallback{background:var(--zamrud)!important;font-family:var(--font-tajuk);font-weight:400!important}
+html body .ict-welcome-online{background:#7FB596!important;border-color:var(--zamrud-gelap)!important}
+html body .ict-welcome-greeting{
+  font-family:var(--font-teks)!important;font-weight:600!important;
+  font-size:clamp(13px,1.1vw,15px)!important;letter-spacing:.02em!important;
+  color:var(--emas-terang)!important;line-height:1.3!important;
+}
+html body .ict-welcome-name{
+  font-family:var(--font-tajuk)!important;font-weight:400!important;
+  color:#F7F2E3!important;letter-spacing:0!important;
+  font-size:clamp(30px,4.2vw,54px)!important;line-height:1.08!important;margin-top:4px!important;
+}
+html body .ict-welcome-subtitle{
+  color:rgba(244,238,221,.78)!important;font-size:clamp(13px,1.15vw,15.5px)!important;
+  max-width:52ch;line-height:1.6!important;margin-top:10px!important;
+}
+html body .ict-welcome-login-note{color:rgba(244,238,221,.75)!important;font-size:13px!important;margin-top:20px!important;gap:14px!important}
+html body .ict-welcome-login-note button{
+  background:#F4EEDD!important;color:var(--zamrud-gelap)!important;
+  border-radius:8px!important;padding:10px 16px!important;font-weight:700!important;font-size:13px!important;
+  display:inline-flex;align-items:center;gap:8px;
+}
+html body .ict-welcome-login-note button:hover{background:#fff!important}
+html body .ict-welcome-login-note.is-setup{
+  padding:10px 14px;border:1px dashed color-mix(in srgb,var(--emas-terang) 55%,transparent);border-radius:6px;
+}
+html body .ict-welcome-login-note.is-setup i{color:var(--emas-terang)}
+html body .ict-welcome-login-note code{font-size:12px;color:#F7F2E3;background:rgba(244,238,221,.1);padding:1px 6px;border-radius:4px}
+html body .ict-profile-field:not(:last-child){border-right-color:rgba(217,183,102,.25)!important}
+html body .ict-profile-icon{background:rgba(244,238,221,.08)!important;border-color:rgba(217,183,102,.25)!important;color:var(--emas-terang)!important;border-radius:8px!important}
+html body .ict-profile-field small{color:rgba(244,238,221,.6)!important}
+html body .ict-role-pill{background:var(--emas-terang)!important;color:var(--zamrud-gelap)!important}
+html body .ict-profile-header-btn{background:transparent!important;border-color:rgba(244,238,221,.3)!important;border-radius:8px!important}
+html body .ict-profile-logout-btn{background:transparent!important;border:1px solid rgba(244,238,221,.3)!important;border-radius:8px!important;color:#F4EEDD!important}
+html body .ict-profile-logout-btn:hover{background:#7A2E2E!important;border-color:#7A2E2E!important}
+
+/* ---------- Carian & kategori ---------- */
+html body #searchInput{
+  background:var(--kertas)!important;border-color:var(--garis)!important;
+  border-radius:8px!important;box-shadow:none!important;color:var(--dakwat)!important;
+}
+html body #searchInput:focus{--tw-ring-color:var(--emas)!important;border-color:var(--emas)!important}
+html body .cat-chip{
+  border-radius:999px!important;box-shadow:none!important;font-weight:600!important;
+  background:transparent!important;border:1px solid var(--garis)!important;color:var(--redup)!important;
+}
+html body .cat-chip i{color:inherit!important;opacity:.8}
+html body .cat-chip:hover{border-color:var(--zamrud)!important;color:var(--zamrud)!important}
+html body .cat-chip.bg-brand-600,
+html body .cat-chip.active.bg-brand-600{
+  background:var(--zamrud)!important;border-color:var(--zamrud)!important;color:#F7F2E3!important;
+}
+html.dark body .cat-chip.bg-brand-600{color:#0F1A15!important}
+html body #sectionTitle,
+html body #aktivitiSection h3,
+html body main h3.font-heading{font-family:var(--font-tajuk)!important;font-size:clamp(18px,1.6vw,22px)!important;color:var(--dakwat)!important}
+html body #toolCountBadge,html body #aktivitiCount{background:transparent!important;border:1px solid var(--garis);color:var(--redup)!important;font-family:var(--font-teks)}
+
+/* ---------- Kad alatan ---------- */
+#toolsGrid>.tool-card{--acc:#1A4C37;--acc2:#1A4C37;--acc-soft:#E6EFE8;--acc-ink:#1A4C37}
+#toolsGrid>.tool-card[data-cat="PENTADBIRAN"]{--acc:#33566E;--acc2:#33566E;--acc-soft:#E4ECF1;--acc-ink:#2A4659}
+#toolsGrid>.tool-card[data-cat="GRAFIK"],
+#toolsGrid>.tool-card[data-cat="HTML"]{--acc:#8E6C29;--acc2:#8E6C29;--acc-soft:#F4EAD0;--acc-ink:#705422}
+html.dark #toolsGrid>.tool-card{--acc-soft:#1C3328;--acc-ink:#9CC8AE}
+html.dark #toolsGrid>.tool-card[data-cat="PENTADBIRAN"]{--acc-soft:#1E2C36;--acc-ink:#A8C2D3}
+html.dark #toolsGrid>.tool-card[data-cat="GRAFIK"],
+html.dark #toolsGrid>.tool-card[data-cat="HTML"]{--acc-soft:#33291A;--acc-ink:#D9B766}
+
+html body #toolsGrid>div.tool-card,
+html.dark body #toolsGrid>div.tool-card{
+  background:var(--kertas)!important;
+  border:1px solid var(--garis)!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+  padding:20px!important;
+  transition:border-color .15s ease!important;
+}
+html body #toolsGrid>div.tool-card:hover{border-color:var(--acc)!important}
+html body #toolsGrid>div.tool-card::before{
+  content:""!important;position:absolute!important;display:block!important;
+  left:20px!important;right:auto!important;top:-1px!important;bottom:auto!important;
+  width:28px!important;height:2px!important;border-radius:0!important;
+  background:var(--acc)!important;opacity:1!important;
+}
+html body #toolsGrid>div.tool-card .w-11.h-11{
+  background:var(--acc-soft)!important;color:var(--acc-ink)!important;
+  border-radius:50%!important;box-shadow:none!important;transform:none!important;
+}
+html body #toolsGrid>div.tool-card h4{
+  font-family:var(--font-tajuk)!important;font-weight:400!important;
+  font-size:clamp(17px,1.35vw,19px)!important;line-height:1.25!important;
+  color:var(--dakwat)!important;letter-spacing:0!important;
+}
+html body #toolsGrid>div.tool-card:hover h4{color:var(--acc-ink)!important}
+html body #toolsGrid>div.tool-card p{color:var(--redup)!important;font-size:13px;line-height:1.55!important}
+html body #toolsGrid>div.tool-card span[class*="rounded-md"]{
+  background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;
+  color:var(--acc-ink)!important;font-weight:600!important;font-size:11.5px!important;letter-spacing:.01em!important;
+}
+html body #toolsGrid>div.tool-card span[class*="rounded-md"]+span[class*="rounded-md"]{display:none!important}
+html body #toolsGrid>div.tool-card>.mt-4{border-top-color:var(--garis)!important;padding-top:10px!important;margin-top:16px!important}
+html body #toolsGrid>div.tool-card button[onclick^="launchTool"]{
+  background:transparent!important;color:var(--acc-ink)!important;
+  border:0!important;border-radius:6px!important;box-shadow:none!important;
+  font-weight:700!important;justify-content:flex-start!important;padding-left:0!important;
+  transition:padding .15s ease!important;
+}
+html body #toolsGrid>div.tool-card:hover button[onclick^="launchTool"]{padding-left:4px!important}
+html body #toolsGrid>div.tool-card button[onclick^="toggleFavorite"]{color:var(--garis)}
+html body #toolsGrid>div.tool-card button[onclick^="toggleFavorite"].text-rose-500{color:var(--emas)!important}
+
+@media (max-width:640px){
+  html body .ict-welcome-avatar-wrap{width:64px!important;height:64px!important}
+  html body .ict-welcome-name{font-size:28px!important}
+  html body #toolsGrid>div.tool-card{
+    padding:14px 12px 12px!important;min-height:140px!important;animation:none!important;
+  }
+  html body #toolsGrid>div.tool-card::before{left:12px!important}
+  html body #toolsGrid>div.tool-card h4{font-size:15px!important}
+  html body #toolsGrid>div.tool-card p{font-size:11px!important}
+  html body #toolsGrid>div.tool-card .w-11.h-11{width:36px!important;height:36px!important;min-width:36px!important;font-size:14px!important}
+  html body #toolsGrid>div.tool-card span[class*="rounded-md"]{font-size:10px!important}
+  html body #toolsGrid>div.tool-card button[onclick^="launchTool"]{opacity:0!important;border:0!important}
+  html body #toolsGrid>div.tool-card .tool-card-watermark{display:none!important}
+  html body #toolsGrid>div.tool-card .tool-card-go{background:transparent!important;color:var(--acc-ink)!important}
+  html body > header,html body > header p{color:var(--dakwat)!important}
+}
+
+/* ---------- Kalendar & panel lain ---------- */
+html body #aktivitiSection .glass-card{border:1px solid var(--garis)!important;border-radius:6px!important}
+html body #kalPrev,html body #kalNext{background:transparent!important;border:1px solid var(--garis);border-radius:50%!important;color:var(--redup)!important}
+html body #kalPrev:hover,html body #kalNext:hover{border-color:var(--zamrud);color:var(--zamrud)!important}
+html body #kalTitle{font-family:var(--font-tajuk)!important;font-size:20px!important;font-weight:400!important}
+html body #kalToday{color:var(--emas)!important}
+html body #emptyState{background:var(--kertas)!important;border-color:var(--garis)!important;border-radius:6px!important}
+html body main a.bg-brand-600,html body main button.bg-brand-600{border-radius:8px!important;box-shadow:none!important}
+html body main a.bg-white{background:var(--kertas)!important;border-color:var(--garis)!important;border-radius:8px!important;box-shadow:none!important}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

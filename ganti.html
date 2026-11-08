@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<script src="./site-config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#071a16">
+<title>Guru Ganti • Hub Tool ICT</title>
+<link rel="icon" href="data:,">
+<script src="ict-header.js"></script>
+<script src="kehadiran-data.js?v=20261014d"></script>
+<style>
+  :root{
+    --green:#009b62;--green-dark:#06724d;--navy:#071a16;--ink:#172033;
+    --muted:#718096;--line:#dce5eb;--bg:#f5f8fa;--red:#e84b5f;--amber:#d97706;--blue:#2563eb;--purple:#7c3aed;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  main{width:min(1400px,calc(100% - 24px));margin:18px auto 50px;display:grid;gap:14px}
+  main>*{min-width:0}
+  .card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 30px #18314d0d}
+  .card h2{margin:0;font-size:17px;display:flex;align-items:center;gap:10px}
+  .step{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:800;flex:none}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .card-head p{margin:4px 0 0 36px;color:var(--muted);font-size:12px}
+  .hidden{display:none!important}
+  label.lbl{display:block;font-size:12px;font-weight:700;color:#475569;margin:0 0 5px}
+  input,select{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;color:var(--ink);min-height:42px}
+  input:focus,select:focus{outline:2px solid #00b67433;border-color:var(--green)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .row>div{display:flex;flex-direction:column}
+  .grow{flex:1 1 240px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;
+    padding:10px 16px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;min-height:42px}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--green);color:#fff}
+  .btn.big{font-size:16px;min-height:52px;padding:14px 26px}
+  .btn.save{background:#1d4ed8;color:#fff}
+  .btn[disabled]{opacity:.6;cursor:wait}
+  .save-status{margin:0 0 12px;padding:10px 14px;border-radius:12px;font-size:13px;background:#eff6ff;color:#1e3a8a;border:1px solid #bfdbfe}
+  .save-status.ok{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+  .save-status.err{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+  .save-status a{color:inherit;font-weight:800}
+  .btn.ghost{background:#fff;color:#334155;border:1px solid var(--line)}
+  .btn.danger{background:#fff;color:var(--red);border:1px solid #f5c2c9;min-height:36px;padding:6px 10px}
+  .btn.small{min-height:34px;padding:6px 12px;font-size:13px}
+  .day-badge{display:inline-block;background:#e7f7ef;color:var(--green-dark);font-weight:800;border-radius:10px;padding:10px 14px;font-size:14px}
+  .day-badge.warn{background:#fdecee;color:var(--red)}
+  .list{display:grid;gap:8px;margin-top:12px}
+  .item{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fbfdfe}
+  .item .name{font-weight:700;flex:1 1 220px}
+  .item .meta{color:var(--muted);font-size:12px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:8px 12px;font:inherit;font-size:13px;font-weight:700;color:#475569;cursor:pointer}
+  .seg button.on{background:var(--navy);color:#fff}
+  .empty{color:var(--muted);font-size:13px;padding:6px 2px}
+  .opts{display:grid;gap:8px}
+  .opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:11px 12px;cursor:pointer;background:#fff}
+  .opt:has(input:checked){border-color:var(--green);background:#f0fbf6}
+  .opt input{min-height:0;margin:2px 0 0;accent-color:var(--green);width:17px;height:17px;flex:none}
+  .opt b{font-size:14px}
+  .opt small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .num-opt{cursor:default;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .tier-note{margin:0 0 2px;color:var(--muted);font-size:12px}
+  .num-opt select{min-height:38px;padding:6px 10px}
+  details.flex-box{margin:0 0 4px}
+  details.flex-box summary{margin-top:2px}
+  .opt-group{font-size:11px;font-weight:800;letter-spacing:.06em;color:#94a3b8;text-transform:uppercase;margin:8px 0 2px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;user-select:none}
+  .chip input{min-height:0;margin:0;width:14px;height:14px;accent-color:var(--purple)}
+  .chip:has(input:checked){background:#f3edff;border-color:#c4b5fd;color:#5b21b6}
+  details.admins summary{cursor:pointer;font-size:13px;font-weight:700;color:#475569;margin-top:12px}
+  .admin-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 12px;margin-top:8px;font-size:13px}
+  .admin-list label{display:flex;gap:8px;align-items:center;cursor:pointer}
+  .admin-list input{min-height:0;width:15px;height:15px;accent-color:var(--green)}
+  .login-strip{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;font-size:13px;color:#475569}
+  .login-strip b{color:var(--ink)}
+  .step.adm{background:#d97706}
+  .tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:5px;width:max-content;max-width:100%;overflow-x:auto}
+  .tab{border:0;background:transparent;padding:10px 18px;border-radius:12px;font:inherit;font-weight:800;font-size:14px;color:#475569;cursor:pointer;white-space:nowrap}
+  .tab.on{background:var(--navy);color:#fff}
+  body.tab-minggu .jana-only, body.tab-panduan .jana-only{display:none!important}
+  body:not(.tab-minggu) .minggu-only{display:none!important}
+  body:not(.tab-panduan) .panduan-only{display:none!important}
+  #guideBody{padding:4px 2px 12px}
+  .wk-settings{margin-top:16px}
+  .wk-settings h3{font-size:15px;margin:0 0 8px}
+  .wk-settings details{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:8px;background:#fff}
+  .wk-settings summary{cursor:pointer;font-weight:700;font-size:13px}
+  .wk-settings summary .meta{font-weight:500;color:var(--muted)}
+  .wk-settings ul{margin:8px 0 2px;padding-left:18px;font-size:12.5px;line-height:1.55}
+  @media print{ .wk-settings details{break-inside:avoid} .wk-settings summary{list-style:none} }
+  #guideBody .pg img{max-width:100%}
+  .wk-msg{font-size:13px;color:#475569;margin:0 0 10px}
+  .wk-msg.err{color:var(--red);font-weight:700}
+  table.g.wk td.c{min-width:118px;height:34px;white-space:normal;padding:2px 4px;line-height:1.15}
+  table.g.wk td.c b{font-size:13px}
+  table.g.wk td.c small{display:block;font-size:9.5px;font-weight:600}
+  table.g.wk td.r{outline-offset:-2px}
+  table.g.wk td.abs{text-decoration:none}
+  table.g.wk td.nr{background:#f1f5f9}
+  table.g.wk th.nr{background:#64748b}
+  table.g.wk td.tot{font-weight:800;font-size:13px;min-width:56px}
+  table.g.wk td.tot.hl{color:var(--green-dark)}
+  table.g.wk tr.none td.tn{color:#94a3b8}
+  .rng{display:inline-flex;align-items:center;gap:6px;padding:3px;border-radius:12px;background:#f1f5f9}
+  .rng select{min-height:36px;padding:5px 8px}
+  .rng-del{border:0;background:#fee2e2;color:var(--red);font-weight:800;border-radius:8px;width:26px;height:26px;cursor:pointer;font-size:15px;line-height:1}
+  .upd-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .upd-row .meta{color:var(--muted);font-size:12px}
+  .upd-banner{margin-top:12px;padding:12px 14px;border-radius:14px;background:#fffbeb;border:1px solid #fcd34d;color:#78350f;font-size:13px;line-height:1.5;display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+  .upd-banner b{color:#451a03}
+  .base-tag{display:inline-block;font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px;background:#e0e7ff;color:#3730a3;margin-left:6px;vertical-align:1px}
+  .tag.add{background:#fef3c7;color:#92400e}
+  @media screen{ table.slip-t td.add{background:#fef3c7} }
+  table.g td.r.add{background:#fef3c7;color:#92400e;outline-color:#d97706}
+  table.rl tr.addr td{background:#fffbeb}
+  .generate-bar{display:flex;justify-content:center;padding:4px 0}
+
+  /* Keputusan */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+  .stat{border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+  .stat b{display:block;font-size:22px}
+  .stat span{font-size:12px;color:var(--muted);font-weight:700}
+  .stat.kol b{color:#b45309} .stat.ok b{color:var(--green)} .stat.bad b{color:var(--red)} .stat.prog b{color:var(--purple)}
+  .tools{display:flex;gap:8px;flex-wrap:wrap}
+  table.rl{width:100%;border-collapse:collapse;font-size:13px}
+  table.rl th{text-align:left;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.04em;padding:8px 6px;border-bottom:2px solid var(--line)}
+  table.rl td{padding:7px 6px;border-bottom:1px solid #eef2f5;vertical-align:middle}
+  table.rl select{min-height:34px;padding:5px 8px;font-size:13px;max-width:330px;width:100%}
+  table.rl tr.unfilled td{background:#fff5f6}
+  table.rl tr.prog td{background:#faf7ff;color:#5b21b6}
+  .tag{display:inline-block;font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px;background:#eef2f5;color:#475569}
+  .tag.amber{background:#fef3c7;color:#92400e}
+  table.rl tr.kolr td{background:#fffbeb}
+  .tag.red{background:#fdecee;color:var(--red)} .tag.purple{background:#f3edff;color:#5b21b6}
+
+  .slips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(440px,100%),1fr));gap:16px}
+  .slip{break-inside:avoid;page-break-inside:avoid}
+  table.slip-t{width:100%;border-collapse:collapse;font-size:13px;color:#000;background:#fff}
+  table.slip-t th,table.slip-t td{border:1px solid #000;padding:3px 7px;height:24px}
+  table.slip-t .ttl{font-size:14px;text-align:center;font-weight:800}
+  table.slip-t .lab{text-align:center;font-weight:800;width:46%}
+  table.slip-t .hd th{text-align:center;font-weight:800}
+  table.slip-t td.m,table.slip-t td.k{text-align:center;width:22%}
+  table.slip-t td.k{width:32%}
+  table.slip-t td.none{color:var(--red);font-weight:800}
+  table.slip-t td.kol{color:#92400e}
+  .prepared{margin-top:16px;font-size:14px;color:#000}
+  .fri-note{background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;border-radius:12px;padding:8px 12px}
+  .tier-hint{margin:12px 0 4px;padding:12px 14px;border-radius:14px;background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;font-size:13.5px;line-height:1.5;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .tier-hint b{color:#431407}
+  .kolab-note:empty{display:none}
+  .kolab-note{margin-top:14px;padding:10px 12px;border:1px solid #000;font-size:13px;color:#000;line-height:1.5;break-inside:avoid}
+  .kolab-note b.h{display:block;margin-bottom:4px;text-transform:uppercase}
+  .kolab-note ul{margin:6px 0 0;padding-left:18px}
+  .prepared b{text-transform:uppercase}
+  .print-title{display:none}
+  .grid-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;max-height:80vh}
+  table.g{border-collapse:separate;border-spacing:0;font-size:11px;width:100%}
+  table.g th,table.g td{border-right:1px solid #e5ebf0;border-bottom:1px solid #e5ebf0;padding:0;text-align:center;white-space:nowrap}
+  table.g thead th{position:sticky;top:0;background:var(--navy);color:#fff;font-size:10px;font-weight:700;padding:5px 3px;z-index:2}
+  table.g thead th.tn{left:0;z-index:3;text-align:left;padding-left:8px}
+  table.g td.tn{position:sticky;left:0;background:#fff;text-align:left;padding:3px 8px;font-weight:600;font-size:11px;z-index:1;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  table.g td.c{min-width:42px;height:24px;font-weight:700}
+  table.g td.c small{display:block;font-weight:500;font-size:8.5px;opacity:.8;line-height:1}
+  table.g td.brk,table.g th.brk{background:#f1f5f9;color:#94a3b8;min-width:14px;width:14px}
+  table.g th.brk{background:#334155}
+  table.g td.t{background:#eef6ff;color:#1e3a8a}
+  table.g td.abs{background:#fdecee;color:#b4233a;text-decoration:line-through}
+  table.g td.abs.cov{background:#f3edff;color:#6d28d9}
+  table.g td.abs.kol{background:#fef3c7;color:#92400e;text-decoration:none}
+  table.g td.off{background:repeating-linear-gradient(45deg,#fff,#fff 4px,#fdf0f2 4px,#fdf0f2 8px)}
+  table.g td.t.jb{background:#ede9fe;color:#5b21b6}
+  table.g td.hold{background:repeating-linear-gradient(45deg,#fff,#fff 4px,#e0f2fe 4px,#e0f2fe 8px);color:#0369a1}
+  table.g td.cov{background:#f3edff;color:#6d28d9}
+  table.g td.blk{background:repeating-linear-gradient(45deg,#fff,#fff 4px,#fff4d6 4px,#fff4d6 8px);color:#b45309}
+  table.g td.r{background:#d7f5e6;color:#065f46;outline:2px solid var(--green);outline-offset:-2px}
+  table.g tr.is-abs td.tn{color:var(--red)}
+  table.g td.sum{font-size:10.5px;padding:0 6px;font-weight:700;color:#475569}
+  table.g td.sum.hl{color:var(--green-dark)}
+  table.g tr.is-adm td.tn::after{content:" (P)";color:var(--amber);font-weight:800}
+  table.g tr.is-pr td.tn::after{content:" (PR)";color:#0e7490;font-weight:800}
+  .chip.pr:has(input:checked){background:#ecfeff;border-color:#67e8f9;color:#155e75}
+  .chip.pr input{accent-color:#0e7490}
+  table.g tr.is-flex td.tn::after{content:" (F)";color:var(--blue);font-weight:800}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:#475569;margin:10px 0 0}
+  .legend i{display:inline-block;width:14px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid #0001}
+  .footer{text-align:center;color:#91a0ae;font-size:11px;padding:25px}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(calc(100% + 40px));opacity:0;visibility:hidden;pointer-events:none;background:#0f172a;color:#fff;
+    padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;transition:transform .25s ease,opacity .25s ease,visibility .25s;z-index:50;max-width:90vw}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+
+  @media (max-width:640px){
+    .card{padding:14px;border-radius:18px}
+    .card-head p{margin-left:0}
+  }
+  @media print{
+    body{background:#fff}
+    ict-header,.no-print,.footer,.toast{display:none!important}
+    main{width:100%;margin:0;display:block}
+    .card{box-shadow:none;border:0;padding:0;border-radius:0}
+    .print-title{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 4px;font-size:13px}
+    .print-title small{font-size:9px;color:#475569;font-weight:600}
+    .grid-wrap{overflow:visible;max-height:none;border:0;border-radius:0}
+    table.g{font-size:8px;border-top:1px solid #cbd5e1;border-left:1px solid #cbd5e1}
+    table.g th,table.g td{border-color:#cbd5e1}
+    table.g thead th{position:static;font-size:7.5px;padding:2px 1px}
+    table.g td.tn{position:static;font-size:8px;padding:0 4px;max-width:none}
+    table.g td.c{height:auto;min-width:0;font-size:8px;line-height:1.05;padding:1px 0}
+    table.g td.c small{display:inline;font-size:6.5px;margin-left:2px}
+    table.g tr{height:auto}
+    table.g td{line-height:1.3}
+    table.g td.sum{font-size:8px;padding:0 3px}
+    table.g td.r{outline:1.2px solid var(--green)}
+    .legend{font-size:7.5px;margin-top:3px}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #listCard{break-before:page}
+    body.print-slip #gridCard,body.print-slip #listCard{display:none!important}
+    body.tab-minggu .print-title{display:flex}
+    table.g.wk td.c{min-width:0;height:auto;font-size:7.5px;padding:1px 2px}
+    table.g.wk td.c b{font-size:8px}
+    table.g.wk td.c small{display:inline;font-size:6.5px;margin-left:3px}
+    table.g.wk td.tot{font-size:8px;min-width:0}
+    body.print-grid #slipCard{display:none!important}
+    .slips{display:block}
+    .slip{margin:0 0 7mm}
+    .prepared{margin-top:2mm;font-size:11pt;break-inside:avoid}
+    table.slip-t{font-size:11pt}
+    table.slip-t th,table.slip-t td{height:6.2mm;padding:0 6px}
+    table.slip-t td.none{color:#000}
+    table.slip-t td.kol{color:#000}
+    #listCard .card-head .tools{display:none}
+    table.rl{font-size:10px}
+    table.rl select{border:0;padding:0;min-height:0;appearance:none;-webkit-appearance:none;font-size:10px}
+  }
+</style>
+</head>
+<body>
+
+<ict-header
+  icon="fa-solid fa-people-arrows"
+  title="Guru Ganti"
+  subtitle="Jana jadual guru ganti (relief) berdasarkan jadual waktu guru & kelas.">
+</ict-header>
+
+<main>
+  <section class="card no-print" id="loadingCard"><div class="empty">Memuatkan jadual waktu…</div></section>
+
+  <!-- Log masuk (pilihan): diperlukan untuk memuatkan sekatan teach-in; admin boleh mengurus sekatan -->
+  <section class="card no-print login-strip" id="loginStrip">
+    <div id="loginMsg">Menyemak log masuk…</div>
+    <button class="btn ghost small hidden" id="loginBtn" type="button">Log masuk Google</button>
+  </section>
+
+  <nav class="tabs no-print" id="tabs">
+    <button type="button" class="tab on" data-tab="jana">Jana Teach-In</button>
+    <button type="button" class="tab" data-tab="minggu">Rekod Mingguan</button>
+    <button type="button" class="tab" data-tab="panduan">Panduan</button>
+  </nav>
+
+  <!-- Tab Panduan: kandungan dibaca daripada panduan-ganti.html (sumber tunggal panduan) -->
+  <section class="card no-print panduan-only" id="guideCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step">?</span>Panduan Guru Ganti</h2>
+        <p>Cara menjana teach-in, maksud setiap tetapan dan apa perlu dibuat jika jadual tidak dapat dijana. Panduan ini dikemas kini bersama sistem.</p>
+      </div>
+      <a class="btn ghost small" href="panduan-ganti.html" target="_blank" rel="noopener">Buka / Cetak PDF</a>
+    </div>
+    <div id="guideBody"><div class="empty">Memuatkan panduan…</div></div>
+  </section>
+
+  <!-- ADMIN SEBENAR SAHAJA: lantik Penyelaras Teach-In -->
+  <section class="card no-print hidden jana-only" id="coordCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step adm">★</span>Penyelaras Teach-In <span class="tag amber">Admin sahaja</span></h2>
+        <p>Penyelaras Teach-In mendapat akses admin bagi Guru Ganti sahaja (sekatan teach-in dan guru praktikum). Akses lain dalam ICT HUB tidak berubah.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><input id="coordSearch" placeholder="Cari nama guru…"></div>
+    </div>
+    <div class="admin-list" id="coordList" style="margin-top:10px"><div class="empty">Memuatkan senarai guru…</div></div>
+  </section>
+
+  <!-- ADMIN / PENYELARAS: sekolah ganti -->
+  <section class="card no-print hidden jana-only" id="sgCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step adm">S</span>Sekolah ganti <span class="tag amber">Admin / Penyelaras</span></h2>
+        <p>Tetapkan tarikh persekolahan ganti (cth. hari Sabtu) dan jadual hari persekolahan yang digunakan. Terpakai kepada semua yang menjana jadual teach-in.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div><label class="lbl" for="sgDate">Tarikh sekolah ganti</label><input type="date" id="sgDate"></div>
+      <div><label class="lbl" for="sgDay">Gunakan jadual hari</label>
+        <select id="sgDay"><option>ISNIN</option><option>SELASA</option><option>RABU</option><option>KHAMIS</option><option>JUMAAT</option></select></div>
+      <div class="grow"><label class="lbl" for="sgNote">Catatan (pilihan)</label><input id="sgNote" placeholder="cth. Ganti cuti Deepavali"></div>
+      <div><button class="btn primary" id="sgAddBtn" type="button">+ Simpan</button></div>
+    </div>
+    <div class="list" id="sgList"></div>
+  </section>
+
+  <!-- ADMIN SAHAJA: guru praktikum -->
+  <section class="card no-print hidden jana-only" id="prCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step adm">P</span>Guru praktikum <span class="tag amber">Admin / Penyelaras</span></h2>
+        <p>Guru praktikum mengambil alih kelas tertentu daripada guru asal dan boleh diberikan teach-in. Jika guru praktikum tidak hadir, kelas tersebut diambil alih semula oleh guru asal.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><label class="lbl" for="prName">Nama guru praktikum</label><input id="prName" placeholder="cth. Nur Aina binti Ahmad"></div>
+      <div><label class="lbl" for="prFrom">Tarikh mula</label><input type="date" id="prFrom"></div>
+      <div><label class="lbl" for="prTo">Tarikh tamat</label><input type="date" id="prTo"></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div class="grow"><label class="lbl" for="prMentor">Guru asal (kelas diambil alih daripada guru ini)</label><select id="prMentor"></select></div>
+    </div>
+    <label class="lbl" style="margin-top:12px">Kelas / mata pelajaran yang diambil alih</label>
+    <div class="chips" id="prClasses"><span class="meta">Pilih guru asal dahulu.</span></div>
+    <div style="margin-top:12px"><button class="btn primary" id="prAddBtn" type="button">+ Simpan Guru Praktikum</button></div>
+    <div class="list" id="prList"></div>
+  </section>
+
+  <!-- ADMIN / PENYELARAS: pelepasan kelas -->
+  <section class="card no-print hidden jana-only" id="lpCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step adm">L</span>Pelepasan kelas <span class="tag amber">Admin / Penyelaras</span></h2>
+        <p>Guru dibebaskan daripada kelas / mata pelajaran tertentu (cth. tidak dibenarkan mengajar kelas itu). Guru tersebut boleh diberikan teach-in pada masa itu, dan kelas berkenaan akan diberikan guru teach-in.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><label class="lbl" for="lpTeacher">Guru</label><select id="lpTeacher"></select></div>
+      <div><label class="lbl" for="lpFrom">Tarikh mula (pilihan)</label><input type="date" id="lpFrom"></div>
+      <div><label class="lbl" for="lpTo">Tarikh tamat (pilihan)</label><input type="date" id="lpTo"></div>
+    </div>
+    <label class="lbl" style="margin-top:12px">Kelas / mata pelajaran yang dibebaskan</label>
+    <div class="chips" id="lpClasses"><span class="meta">Pilih guru dahulu.</span></div>
+    <div class="row" style="margin-top:10px">
+      <div class="grow"><label class="lbl" for="lpReason">Sebab</label><input id="lpReason" placeholder="cth. Tidak dibenarkan mengajar kelas ini"></div>
+      <div><button class="btn primary" id="lpAddBtn" type="button">+ Simpan Pelepasan</button></div>
+    </div>
+    <div class="list" id="lpList"></div>
+  </section>
+
+  <!-- ADMIN SAHAJA: sekatan teach-in -->
+  <section class="card no-print hidden jana-only" id="blockCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step adm">A</span>Sekatan teach-in <span class="tag amber">Admin sahaja</span></h2>
+        <p>Guru tidak akan dipilih untuk teach-in pada masa yang ditetapkan. Terpakai kepada semua yang menjana jadual.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><label class="lbl" for="blkTeacher">Guru</label><select id="blkTeacher"></select></div>
+      <div><label class="lbl" for="blkWhen">Bila</label>
+        <select id="blkWhen"><option value="SEMUA">Setiap hari</option><option>ISNIN</option><option>SELASA</option><option>RABU</option><option>KHAMIS</option><option>JUMAAT</option><option value="TARIKH">Tarikh tertentu…</option></select></div>
+      <div class="hidden" id="blkDateWrap"><label class="lbl" for="blkDate">Tarikh</label><input type="date" id="blkDate"></div>
+      <div><label class="lbl" for="blkFrom">Dari</label><select id="blkFrom"></select></div>
+      <div><label class="lbl" for="blkTo">Hingga</label><select id="blkTo"></select></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div class="grow"><label class="lbl" for="blkReason">Sebab</label><input id="blkReason" list="blkReasonList" placeholder="cth. Bertugas di kantin, Mesyuarat Kurikulum"></div>
+      <div><button class="btn primary" id="blkAddBtn" type="button">+ Tambah Sekatan</button></div>
+    </div>
+    <datalist id="blkReasonList"><option>Bertugas</option><option>Mesyuarat</option><option>Urusan pejabat</option><option>Kelas pemulihan</option><option>Sesi kaunseling</option><option>Tugas khas</option></datalist>
+    <div class="list" id="blkList"></div>
+  </section>
+
+  <!-- 1. Tarikh & guru tidak hadir -->
+  <section class="card no-print hidden jana-only" id="absCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step">1</span>Guru tidak hadir</h2>
+        <p>Pilih tarikh, kemudian tambah guru yang tidak hadir — seharian atau beberapa masa sahaja.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div><label class="lbl" for="dateIn">Tarikh</label><input type="date" id="dateIn"></div>
+      <div><span class="day-badge" id="dayBadge">—</span></div>
+      <div class="grow"><label class="lbl" for="teacherSel">Guru</label><select id="teacherSel"></select></div>
+      <div><button class="btn primary" id="addAbsBtn" type="button">+ Tambah</button></div>
+    </div>
+    <div class="upd-row">
+      <span class="meta" style="font-weight:700;color:var(--ink)">Kemas kini teach-in:</span>
+      <button class="btn ghost small" id="loadSavedBtn" type="button" data-mode="tambah">＋ Tambah Teach-In (kekalkan jadual sedia ada)</button>
+      <button class="btn ghost small" id="redoBtn" type="button" data-mode="semula">⟳ Jana Semula Keseluruhan</button>
+      <span class="meta">Menggunakan jadual yang sedang dipaparkan, atau jadual yang telah disimpan bagi tarikh ini.</span>
+    </div>
+    <div class="upd-banner hidden" id="updBanner"></div>
+    <div class="list" id="absList"></div>
+    <datalist id="sebabList"><option>MC</option><option>CRK</option><option>CUTI</option><option>KURSUS</option><option>UPDLP</option><option>MESYUARAT</option><option>URUSAN RASMI</option><option>PROGRAM LUAR</option></datalist>
+  </section>
+
+  <!-- 1b. Permintaan sementara: guru hadir tetapi tidak boleh diberi teach-in pada masa tertentu -->
+  <section class="card no-print hidden jana-only" id="holdCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step">✋</span>Permohonan tidak diberikan teach-in <span class="tag">sementara</span></h2>
+        <p>Guru yang hadir tetapi memohon supaya tidak diberikan teach-in pada masa tertentu hari ini (cth. urusan kerja). Terpakai untuk tarikh ini sahaja.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><label class="lbl" for="holdTeacher">Guru</label><select id="holdTeacher"></select></div>
+      <div><label class="lbl" for="holdFrom">Dari</label><select id="holdFrom"></select></div>
+      <div><label class="lbl" for="holdTo">Hingga</label><select id="holdTo"></select></div>
+      <div class="grow"><label class="lbl" for="holdReason">Sebab (pilihan)</label><input id="holdReason" placeholder="cth. Menyiapkan laporan"></div>
+      <div><button class="btn primary" id="holdAddBtn" type="button">+ Tambah</button></div>
+    </div>
+    <div class="list" id="holdList"></div>
+  </section>
+
+  <!-- 1c. Jual beli masa: kelas seorang guru diambil alih oleh guru lain (persetujuan bersama) -->
+  <section class="card no-print hidden jana-only" id="swapCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step">⇄</span>Jual beli masa <span class="tag">tarikh ini sahaja</span></h2>
+        <p>Kelas guru asal pada masa tertentu diambil alih oleh guru lain atas persetujuan bersama. Sistem akan menganggap guru pengganti yang mengajar kelas tersebut.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><label class="lbl" for="swOwner">Guru asal (kelas dijual)</label><select id="swOwner"></select></div>
+      <div><label class="lbl" for="swFrom">Dari</label><select id="swFrom"></select></div>
+      <div><label class="lbl" for="swTo">Hingga</label><select id="swTo"></select></div>
+      <div class="grow"><label class="lbl" for="swTaker">Guru yang mengambil alih (membeli)</label><select id="swTaker"></select></div>
+    </div>
+    <label class="opt" style="margin-top:10px"><input type="checkbox" id="swOwnerFree"><span><b>Guru asal boleh diberikan teach-in pada masa tersebut</b><small>Jika tidak ditanda, guru asal tidak akan diberikan teach-in dalam masa yang dijual.</small></span></label>
+    <div style="margin-top:10px"><button class="btn primary" id="swAddBtn" type="button">+ Tambah Jual Beli</button></div>
+    <div class="list" id="swList"></div>
+  </section>
+
+  <!-- 2. Program -->
+  <section class="card no-print hidden jana-only" id="progCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step">2</span>Daftar program <span class="tag">jika ada</span></h2>
+        <p>Kelas yang terlibat dalam program pada masa tersebut tidak perlu guru ganti.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow"><label class="lbl" for="progName">Nama program</label><input id="progName" placeholder="cth. Ceramah Motivasi"></div>
+      <div><label class="lbl" for="progFrom">Dari</label><select id="progFrom"></select></div>
+      <div><label class="lbl" for="progTo">Hingga</label><select id="progTo"></select></div>
+    </div>
+    <label class="lbl" style="margin-top:12px">Kelas terlibat
+      <button class="btn ghost small" id="progAllBtn" type="button" style="margin-left:8px">Semua</button>
+      <button class="btn ghost small" id="progNoneBtn" type="button">Kosongkan</button>
+    </label>
+    <div class="chips" id="progClasses"></div>
+    <label class="lbl" style="margin-top:14px">Guru yang sepatutnya mengajar kelas terlibat</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="progFree" value="0" checked><span><b>Guru turut bertugas bersama program</b><small>Guru mengiringi kelas sepanjang program dan tidak akan ditugaskan untuk teach-in.</small></span></label>
+      <label class="opt"><input type="radio" name="progFree" value="1"><span><b>Guru dibebaskan untuk tugas teach-in</b><small>Kelas diuruskan oleh pihak program; guru boleh ditugaskan menggantikan kelas lain dalam tempoh tersebut.</small></span></label>
+    </div>
+    <div style="margin-top:12px"><button class="btn primary" id="addProgBtn" type="button">+ Daftar Program</button></div>
+    <div class="list" id="progList"></div>
+  </section>
+
+  <!-- 3. Tetapan -->
+  <section class="card no-print hidden jana-only" id="setCard">
+    <div class="card-head">
+      <div>
+        <h2><span class="step">3</span>Tetapan pemilihan guru ganti</h2>
+        <p>1 masa bersamaan 1 petak (30 minit).</p>
+      </div>
+    </div>
+    <div class="opts">
+      <div class="opt-group">Had teach-in mengikut beban waktu mengajar guru</div>
+      <p class="tier-note">Bilangan maksimum masa teach-in sehari bagi seorang guru ditentukan oleh jumlah masa mengajar guru itu dalam jadual pada hari tersebut.</p>
+      <p class="tier-note fri-note hidden" id="friNote"><b>Hari Jumaat:</b> had teach-in bagi guru yang mempunyai <b>4 masa mengajar dan ke atas</b> ditetapkan <b>0</b> secara automatik. Tetapan di bawah kekal untuk hari lain.</p>
+      <div class="opt num-opt"><span><b>Guru yang mempunyai 2 masa mengajar dan ke bawah</b><small>Tetapan lalai: maksimum 1 masa.</small></span>
+        <select id="tier2"><option value="0">0 masa (tiada teach-in)</option><option value="1" selected>1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option></select></div>
+      <div class="opt num-opt"><span><b>Guru yang mempunyai 3 masa mengajar</b><small>Tetapan lalai: maksimum 1 masa.</small></span>
+        <select id="tier3"><option value="0">0 masa (tiada teach-in)</option><option value="1" selected>1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option></select></div>
+      <div class="opt num-opt"><span><b>Guru yang mempunyai 4 masa mengajar</b><small>Tetapan lalai: maksimum 1 masa.</small></span>
+        <select id="tier4"><option value="0">0 masa (tiada teach-in)</option><option value="1" selected>1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option></select></div>
+      <div class="opt num-opt"><span><b>Guru yang mempunyai 5 masa mengajar</b><small>Tetapan lalai: maksimum 1 masa.</small></span>
+        <select id="tier5"><option value="0">0 masa (tiada teach-in)</option><option value="1" selected>1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option></select></div>
+      <div class="opt num-opt"><span><b>Guru yang mempunyai 6 masa mengajar</b><small>Tetapan lalai: 0 masa (tidak diberikan teach-in).</small></span>
+        <select id="tier6"><option value="0" selected>0 masa (tiada teach-in)</option><option value="1">1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option></select></div>
+      <div class="opt num-opt"><span><b>Guru yang mempunyai 7 masa mengajar dan ke atas</b><small>Tetapan lalai: 0 masa (tidak diberikan teach-in).</small></span>
+        <select id="tier7"><option value="0" selected>0 masa (tiada teach-in)</option><option value="1">1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option></select></div>
+      <div class="opt-group">Guru fleksibel (Pemulihan / Bimbingan &amp; Kaunseling)</div>
+      <div class="opt num-opt"><span><b>Bilangan maksimum masa teach-in bagi guru fleksibel sehari</b><small>Guru fleksibel diberi keutamaan dan tidak tertakluk kepada had beban waktu mengajar atau had masa berturut-turut.</small></span>
+        <select id="flexMax"><option value="0">0 masa (tidak dilibatkan)</option><option value="1">1 masa</option><option value="2">2 masa</option><option value="3">3 masa</option><option value="4" selected>4 masa</option></select></div>
+      <details class="admins flex-box">
+        <summary>Senarai guru fleksibel (<span id="flexCount">0</span> dipilih)</summary>
+        <div class="admin-list" id="flexList"></div>
+      </details>
+      <div class="opt-group">Pentadbir</div>
+      <label class="opt"><input type="radio" name="adm" value="0" checked><span><b>Pentadbir tidak dilibatkan dalam tugas teach-in</b></span></label>
+      <label class="opt"><input type="radio" name="adm" value="1"><span><b>Pentadbir dilibatkan — maksimum 1 masa sehari</b></span></label>
+      <label class="opt"><input type="radio" name="adm" value="2"><span><b>Pentadbir dilibatkan — maksimum 2 masa sehari</b></span></label>
+      <div class="opt-group">Lain-lain</div>
+      <label class="opt"><input type="checkbox" id="noConsec" checked><span><b>Elakkan guru mengajar 3 masa atau lebih secara berturut-turut</b><small>Tugas teach-in tidak akan diberikan sekiranya ia menyebabkan guru mengajar 3 masa atau lebih tanpa rehat. Waktu rehat dikira sebagai pemisah.</small></span></label>
+      <label class="opt"><input type="checkbox" id="noAdjacent" checked><span><b>Elakkan teach-in bersambung dengan kelas asal guru</b><small>Tugas teach-in tidak akan diberikan pada masa sejurus sebelum atau selepas kelas guru itu sendiri. Waktu rehat dikira sebagai pemisah.</small></span></label>
+      <label class="opt"><input type="checkbox" id="noReliefRun" checked><span><b>Elakkan guru diberikan teach-in secara berturut-turut</b><small>Seorang guru tidak akan diberikan dua masa teach-in yang bersambung (cth. 7.00–7.30 dan 7.30–8.00), walaupun di kelas yang sama. Terpakai juga kepada guru fleksibel. Waktu rehat dikira sebagai pemisah.</small></span></label>
+      <label class="opt"><input type="checkbox" id="weekFair" checked><span><b>Utamakan guru yang belum diberikan teach-in pada minggu tersebut</b><small>Sistem membaca Rekod Mingguan (hari lain dalam minggu yang sama) dan memilih guru yang paling sedikit teach-in terlebih dahulu. Memerlukan log masuk.</small></span></label>
+      <label class="opt"><input type="checkbox" id="splitKolab"><span><b>Benarkan kelas kolaborasi dipecahkan</b><small>Bagi kelas yang diajar oleh dua guru, seorang daripada mereka boleh ditugaskan teach-in di kelas lain, manakala seorang lagi kekal di kelas asal.</small></span></label>
+    </div>
+    <details class="admins" id="adminBox">
+      <summary>Senarai pentadbir (<span id="adminCount">0</span> dipilih) — tandakan guru yang merupakan pentadbir</summary>
+      <div class="admin-list" id="adminList"></div>
+    </details>
+  </section>
+
+  <section class="card no-print hidden jana-only" id="byCard">
+    <div class="row">
+      <div class="grow"><label class="lbl" for="preparedBy">Jadual teach-in disediakan oleh</label><select id="preparedBy"></select></div>
+    </div>
+  </section>
+
+  <div class="generate-bar no-print hidden jana-only" id="genBar">
+    <button class="btn primary big" id="genBtn" type="button">⚡ Jana Guru Ganti</button>
+  </div>
+
+  <!-- Keputusan: slip teach-in (format borang sekolah) -->
+  <section class="card hidden jana-only" id="slipCard">
+    <div class="card-head no-print">
+      <div>
+        <h2>Jadual Teach-In</h2>
+        <p id="slipSub" style="margin-left:0"></p>
+      </div>
+      <div class="tools">
+        <button class="btn ghost" id="copyBtn" type="button">Salin teks WhatsApp</button>
+        <button class="btn ghost" id="printGridBtn" type="button">Cetak Grid</button>
+        <button class="btn primary" id="printBtn" type="button">Cetak Teach-In</button>
+        <button class="btn save" id="saveBtn" type="button">Simpan Rekod</button>
+      </div>
+    </div>
+    <div class="save-status hidden no-print" id="saveStatus"></div>
+    <div class="stats no-print" id="stats"></div>
+    <div class="tier-hint no-print hidden" id="tierHint"></div>
+    <div class="slips" id="slips"></div>
+    <div class="kolab-note" id="kolabNote"></div>
+    <div class="prepared" id="preparedLine"></div>
+  </section>
+
+  <!-- Keputusan: grid -->
+  <section class="card hidden jana-only" id="gridCard">
+    <div class="card-head no-print">
+      <div>
+        <h2>Paparan grid semua guru</h2>
+        <p id="gridSub" style="margin-left:0"></p>
+      </div>
+    </div>
+    <div class="print-title"><b id="printTitle">Jadual Guru Ganti</b><small id="printSub"></small></div>
+    <div class="grid-wrap"><table class="g" id="grid"></table></div>
+    <div class="legend">
+      <span><i style="background:#eef6ff"></i>Kelas biasa</span>
+      <span><i style="background:#d7f5e6;outline:2px solid var(--green);outline-offset:-2px"></i>Masa ganti</span>
+      <span><i style="background:#fdecee"></i>Kelas guru tidak hadir</span>
+      <span><i style="background:#f3edff"></i>Diganti program</span>
+      <span><i style="background:#fef3c7"></i>Kolaborasi (pasangan hadir)</span>
+      <span><i style="background:repeating-linear-gradient(45deg,#fff,#fff 3px,#e0f2fe 3px,#e0f2fe 6px)"></i>Memohon tidak diberi teach-in</span>
+      <span><i style="background:#ede9fe"></i>Kelas jual beli ⇄</span>
+      <span><i style="background:#fef3c7;outline:2px solid #d97706;outline-offset:-2px"></i>Teach-in tambahan (kemas kini)</span>
+      <span><i style="background:repeating-linear-gradient(45deg,#fff,#fff 3px,#fff4d6 3px,#fff4d6 6px)"></i>Sekatan teach-in</span>
+      <span><i style="background:repeating-linear-gradient(45deg,#fff,#fff 3px,#fdf0f2 3px,#fdf0f2 6px)"></i>Tidak hadir (tiada kelas)</span>
+      <span><b style="color:var(--amber)">(P)</b> Pentadbir</span>
+      <span><b style="color:var(--blue)">(F)</b> Guru fleksibel</span>
+      <span><b style="color:#0e7490">(PR)</b> Guru praktikum</span>
+      <span><b>Asal / Ganti / Jumlah</b> dalam masa (30 minit)</span>
+    </div>
+  </section>
+
+  <!-- Keputusan: senarai -->
+  <section class="card hidden jana-only" id="listCard">
+    <div class="card-head">
+      <div>
+        <h2>Senarai masa ganti</h2>
+        <p class="no-print" style="margin-left:0">Guru ganti boleh ditukar secara manual — pilihan menunjukkan guru yang lapang pada masa itu beserta jumlah masa mereka.</p>
+      </div>
+    </div>
+    <div style="overflow:auto"><table class="rl" id="relList"></table></div>
+  </section>
+
+  <!-- TAB: Rekod Mingguan -->
+  <section class="card minggu-only" id="weekCard">
+    <div class="card-head no-print">
+      <div>
+        <h2>Rekod Teach-In Mingguan</h2>
+        <p style="margin-left:0">Dibina daripada rekod harian yang disimpan melalui butang <b>Simpan Rekod</b>. Perlu log masuk.</p>
+      </div>
+      <div class="tools">
+        <select id="wkSel"></select>
+        <select id="wkSort"><option value="nama">Susun: Nama</option><option value="jumlah">Susun: Jumlah teach-in</option></select>
+        <button class="btn ghost" id="wkReload" type="button">Muat semula</button>
+        <button class="btn primary" id="wkPrint" type="button">Cetak</button>
+      </div>
+    </div>
+    <div class="print-title"><b id="wkTitle">Rekod Teach-In Mingguan</b><small id="wkSub"></small></div>
+    <div class="stats no-print" id="wkStats"></div>
+    <div class="wk-msg no-print" id="wkMsg"></div>
+    <div class="grid-wrap"><table class="g wk" id="wkGrid"></table></div>
+    <div class="legend">
+      <span><i style="background:#d7f5e6;outline:2px solid var(--green);outline-offset:-2px"></i>Teach-in (bilangan masa &amp; kelas)</span>
+      <span><i style="background:#fdecee"></i>Tidak hadir (sebab)</span>
+      <span><i style="background:#f1f5f9"></i>Tiada rekod disimpan untuk hari itu</span>
+      <span>Jumlah = bilangan masa teach-in (30 minit) dalam minggu</span>
+    </div>
+    <div id="wkSettings" class="wk-settings"></div>
+  </section>
+</main>
+
+<div class="footer no-print">Hub Tool ICT • SK Jalan Bintang</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+  var KD = window.KehadiranData;
+  var mins = KD.mins, hhmm = KD.hhmm;
+  var DAY_NAMES = ['AHAD','ISNIN','SELASA','RABU','KHAMIS','JUMAAT','SABTU'];
+  var LS_ADMIN = 'ganti_pentadbir', LS_SET = 'ganti_tetapan', LS_FLEX = 'ganti_fleksibel';
+  // Guru tanpa jadual dalam jadual.html (cth. Guru Bimbingan & Kaunseling) — ditambah ke senarai guru.
+  var EXTRA_TEACHERS = ['Ku Muhammad Nadjri bin Ku Nasir'];
+  // Guru fleksibel lalai: Guru Pemulihan & Guru Bimbingan dan Kaunseling.
+  var DEFAULT_FLEX = ['Muhammad Saifullah bin Suhaimi', 'Ku Muhammad Nadjri bin Ku Nasir'];
+  var SUBJ_LABEL = { BA: 'B ARAB', TAS: 'TASMIK' };
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function lsGet(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+  function shortName(n){ return String(n).replace(/\s+(bin|binti|bt|bte|anak|ak)\s+.*$/i, ''); }
+  function upShort(n){ return shortName(n).toUpperCase(); }
+  function subjLabel(s){ return SUBJ_LABEL[s] || s; }
+  function fmtT(t){ var p = t.split(':'); return (+p[0]) + '.' + p[1]; }
+
+  var TT = null;              // { data, label }
+  var teachers = [];          // nama guru (ikut susunan jadual)
+  var classCodes = [];
+  // Pentadbir lalai (boleh diubah dalam "Senarai pentadbir"; pilihan disimpan dalam pelayar).
+  var DEFAULT_ADMINS = ['Fauzia binti Etayi Kandi Hassan', 'Helmi bin Tambi', 'Mohamad Nazimi bin Abdul Rahman', 'Sapri bin Paee'];
+  var admins = new Set(lsGet(LS_ADMIN, DEFAULT_ADMINS));
+  var flex = new Set(lsGet(LS_FLEX, DEFAULT_FLEX));
+  var absents = [];           // { name, full, from, to }
+  var programs = [];          // { name, from, to, classes:[] }
+  var swaps = [];             // jual beli masa: { owner, taker, from, to, ownerFree } (tarikh semasa sahaja)
+  var holds = [];             // permohonan sementara: { name, from, to, reason } (tarikh semasa sahaja)
+  var BASE = null;            // mod kemas kini: { rec, map: {'<kelas>@<HH:MM>': item}, mode: 'tambah'|'semula', src: 'skrin'|'rekod' }
+  function addTag(){ return BASE && BASE.mode === 'semula' ? 'BERUBAH' : 'TAMBAHAN'; }
+  var D = null;               // model hari: { day, slots:[{start,end,brk}], tmap, cmap }
+  var R = null;               // keputusan terakhir
+
+  /* ---------- Model hari ---------- */
+  function dayOf(dateStr){ var p = dateStr.split('-').map(Number); return DAY_NAMES[new Date(p[0], p[1]-1, p[2]).getDay()]; }
+
+  function buildDay(day){
+    var data = TT.data, lo = Infinity, hi = -Infinity;
+    data.teachers.forEach(function(t){ t.entries.forEach(function(e){
+      if (e.day !== day) return; lo = Math.min(lo, mins(e.start)); hi = Math.max(hi, mins(e.end));
+    }); });
+    if (!isFinite(lo)) return { day: day, slots: [], tmap: {}, cmap: {} };
+    var slots = [];
+    for (var m = lo; m < hi; m += 30) slots.push({ start: hhmm(m), end: hhmm(m + 30), m: m, brk: true });
+    function idx(t){ return Math.round((mins(t) - lo) / 30); }
+    var tmap = {}, cmap = {};
+    data.teachers.forEach(function(t){
+      var row = tmap[t.name] = new Array(slots.length).fill(null);
+      t.entries.forEach(function(e){
+        if (e.day !== day) return;
+        for (var i = idx(e.start); i < idx(e.end); i++) if (i >= 0 && i < slots.length) row[i] = { class: e.class, subject: e.subject };
+      });
+    });
+    EXTRA_TEACHERS.forEach(function(n){ if (!tmap[n]) tmap[n] = new Array(slots.length).fill(null); });
+    // Guru praktikum aktif: slot kelas yang diambil alih dipindahkan daripada guru asal kepada guru praktikum.
+    var mentorOf = {};
+    activePraktikum().forEach(function(p){
+      var row = tmap[p.name] = tmap[p.name] || new Array(slots.length).fill(null);
+      var mrow = tmap[p.mentor]; if (!mrow) return;
+      mentorOf[p.name] = p.mentor;
+      var take = {}; (p.classes || []).forEach(function(c){ take[c.class + '|' + c.subject] = 1; });
+      mrow.forEach(function(x, i){
+        if (x && take[x.class + '|' + x.subject]){ row[i] = { class: x.class, subject: x.subject, mentor: p.mentor }; mrow[i] = null; }
+      });
+    });
+    // Pelepasan kelas: slot kelas+subjek guru itu dikosongkan (guru lapang); kelas perlu guru teach-in.
+    var lepas = [];
+    activePelepasan().forEach(function(p){
+      var row = tmap[p.teacher]; if (!row) return;
+      var take = {}; (p.classes || []).forEach(function(c){ take[c.class + '|' + c.subject] = 1; });
+      row.forEach(function(x, i){
+        if (x && !x.mentor && take[x.class + '|' + x.subject]){ lepas.push({ i: i, class: x.class, subject: x.subject, teacher: p.teacher, reason: p.reason || '' }); row[i] = null; }
+      });
+    });
+    // Jual beli masa: pindahkan slot guru asal dalam julat kepada guru yang mengambil alih.
+    swaps.forEach(function(w){
+      var orow = tmap[w.owner], trow = tmap[w.taker] = tmap[w.taker] || new Array(slots.length).fill(null);
+      if (!orow) return;
+      for (var i = 0; i < slots.length; i++){
+        var m = slots[i].m, x = orow[i];
+        if (!x || m < mins(w.from) || m >= mins(w.to) || trow[i]) continue;
+        trow[i] = { class: x.class, subject: x.subject, swapFrom: w.owner }; orow[i] = null;
+      }
+    });
+    data.classes.forEach(function(c){
+      var row = cmap[c.code] = new Array(slots.length).fill(null);
+      c.entries.forEach(function(e){
+        if (e.day !== day || !e.teacher) return;
+        for (var i = idx(e.start); i < idx(e.end); i++) if (i >= 0 && i < slots.length) { row[i] = { subject: e.subject, teacher: e.teacher }; slots[i].brk = false; }
+      });
+    });
+    // Slot yang ada guru mengajar bukan rehat walaupun tiada data kelas.
+    Object.keys(tmap).forEach(function(n){ tmap[n].forEach(function(x, i){ if (x) slots[i].brk = false; }); });
+    return { day: day, slots: slots, tmap: tmap, cmap: cmap, lo: lo, mentorOf: mentorOf, lepas: lepas };
+  }
+  function activePelepasan(){
+    var date = ($('dateIn') && $('dateIn').value) || KD.dateKey();
+    return (window.GANTI_PELEPASAN || []).filter(function(p){ return (!p.from || p.from <= date) && (!p.to || date <= p.to); });
+  }
+  function activePraktikum(){
+    var date = ($('dateIn') && $('dateIn').value) || KD.dateKey();
+    return (window.GANTI_PRAKTIKUM || []).filter(function(p){ return (!p.from || p.from <= date) && (!p.to || date <= p.to); });
+  }
+  function isTrainee(n){ return !!(D && D.mentorOf && D.mentorOf[n]); }
+
+  function slotIndex(t){ return Math.round((mins(t) - D.lo) / 30); }
+  function bounds(){ // senarai sempadan masa untuk dropdown
+    if (!D.slots.length) return [];
+    var b = D.slots.map(function(s){ return s.start; }); b.push(D.slots[D.slots.length - 1].end); return b;
+  }
+  function fillTimeSel(sel, val, isEnd){
+    var b = bounds(), opts = isEnd ? b.slice(1) : b.slice(0, -1);
+    sel.innerHTML = opts.map(function(t){ return '<option' + (t === val ? ' selected' : '') + '>' + t + '</option>'; }).join('');
+    if (!val || opts.indexOf(val) < 0) sel.value = isEnd ? opts[opts.length - 1] : opts[0];
+  }
+
+  /* ---------- UI: tarikh ---------- */
+  // Sekolah ganti (Firestore sekolahGanti, diurus Admin / Penyelaras): tarikh → jadual hari persekolahan yang digunakan.
+  function sekolahGanti(date){ return (window.GANTI_SEKOLAH_GANTI || []).find(function(x){ return x.date === date; }) || null; }
+  function onDate(){
+    var date = $('dateIn').value || KD.dateKey(), real = dayOf(date), sg = sekolahGanti(date);
+    var day = sg ? sg.ikut : real;
+    D = buildDay(day);
+    D.realDay = real; D.sg = sg;
+    var badge = $('dayBadge');
+    var lbl = real + (sg ? ' (sekolah ganti • jadual ' + day + ')' : '');
+    badge.textContent = lbl + (D.slots.length ? ' • ' + D.slots[0].start + '–' + D.slots[D.slots.length - 1].end : '');
+    badge.classList.toggle('warn', !D.slots.length);
+    if (!D.slots.length) badge.textContent = lbl + ' • tiada jadual';
+    absents.forEach(function(a){ if (!a.full){ clampRange(a); (a.extra || []).forEach(clampRange); } });
+    programs.forEach(clampRange);
+    holds.forEach(clampRange);
+    fillTimeSel($('swFrom'), $('swFrom').value, false);
+    fillTimeSel($('swTo'), $('swTo').value, true);
+    renderSwaps();
+    fillTimeSel($('holdFrom'), $('holdFrom').value, false);
+    fillTimeSel($('holdTo'), $('holdTo').value, true);
+    renderHolds();
+    fillTimeSel($('progFrom'), $('progFrom').value, false);
+    fillTimeSel($('progTo'), $('progTo').value, true);
+    var fri = D.day === 'JUMAAT';
+    $('friNote').classList.toggle('hidden', !fri);
+    ['tier4', 'tier5', 'tier6', 'tier7'].forEach(function(k){ $(k).disabled = fri; $(k).title = fri ? 'Hari Jumaat: ditetapkan 0 secara automatik' : ''; });
+    renderAbs(); renderProgs(); hideResults();
+  }
+  // Hari Jumaat: guru 4 masa ke atas tidak diberi teach-in (tetapan yang disimpan tidak diubah).
+  function daySettings(set){
+    return D && D.day === 'JUMAAT' ? Object.assign({}, set, { tier4: 0, tier5: 0, tier6: 0, tier7: 0, jumaat: true }) : set;
+  }
+  // Julat masa tidak hadir: a.from/a.to (julat pertama) + a.extra [{from,to}] (julat tambahan).
+  function rangesOf(a){ return [{ from: a.from, to: a.to }].concat(a.extra || []); }
+  function rangeTxt(a){ return rangesOf(a).map(function(r){ return fmtT(r.from) + '-' + fmtT(r.to); }).join(', '); }
+  function clampRange(o){
+    var b = bounds(); if (!b.length) return;
+    if (b.indexOf(o.from) < 0 || o.from === b[b.length-1]) o.from = b[0];
+    if (b.indexOf(o.to) < 1) o.to = b[b.length - 1];
+  }
+
+  /* ---------- UI: guru tidak hadir ---------- */
+  function fillTeacherSel(){
+    var taken = new Set(absents.map(function(a){ return a.name; }));
+    $('teacherSel').innerHTML = '<option value="">— Pilih guru —</option>' + teachers.filter(function(n){ return !taken.has(n); })
+      .map(function(n){ return '<option>' + esc(n) + '</option>'; }).join('');
+  }
+  function teachCount(name){ var r = D.tmap[name] || []; return r.filter(Boolean).length; }
+  function renderAbs(){
+    fillTeacherSel();
+    var el = $('absList');
+    if (!absents.length){ el.innerHTML = '<div class="empty">Belum ada guru dipilih.</div>'; return; }
+    el.innerHTML = absents.map(function(a, i){
+      return '<div class="item" data-i="' + i + '"><div class="name">' + esc(a.name) + (a.base ? '<span class="base-tag">ASAL</span>' : '') +
+        '<div class="meta">' + teachCount(a.name) + ' masa mengajar pada hari ini</div></div>' +
+        '<div class="seg"><button type="button" data-full="1" class="' + (a.full ? 'on' : '') + '">Seharian</button>' +
+        '<button type="button" data-full="0" class="' + (a.full ? '' : 'on') + '">Beberapa masa</button></div>' +
+        (a.full ? '' : '<span class="rng"><select data-k="from"></select><span class="meta">hingga</span><select data-k="to"></select></span>' +
+          (a.extra || []).map(function(r, x){ return '<span class="rng" data-x="' + x + '"><select data-xk="from"></select><span class="meta">hingga</span><select data-xk="to"></select>' +
+            '<button type="button" class="rng-del" data-xdel="' + x + '" title="Buang julat ini">×</button></span>'; }).join('') +
+          '<button type="button" class="btn ghost small" data-addrng="1">+ Tambah masa</button>') +
+        '<input data-k="reason" list="sebabList" placeholder="Sebab (cth. MC)" value="' + esc(a.reason || '') + '" style="width:150px">' +
+        '<select data-k="cover" title="Guru ini akan masuk semua kelas guru yang tidak hadir (jika lapang)" style="max-width:230px">' +
+          '<option value="">Guru ganti: ikut sistem</option>' + teachers.filter(function(t){ return t !== a.name; }).map(function(t){
+            return '<option value="' + esc(t) + '"' + (a.cover === t ? ' selected' : '') + '>Semua kelas → ' + esc(t) + '</option>'; }).join('') + '</select>' +
+        '<button class="btn danger" type="button" data-del="1">Buang</button></div>';
+    }).join('');
+    Array.prototype.forEach.call(el.querySelectorAll('.item'), function(row){
+      var a = absents[+row.dataset.i];
+      var f = row.querySelector('[data-k=from]'), t = row.querySelector('[data-k=to]');
+      if (f){ fillTimeSel(f, a.from, false); fillTimeSel(t, a.to, true); a.from = f.value; a.to = t.value; }
+      Array.prototype.forEach.call(row.querySelectorAll('.rng[data-x]'), function(sp){
+        var r = a.extra[+sp.dataset.x], xf = sp.querySelector('[data-xk=from]'), xt = sp.querySelector('[data-xk=to]');
+        fillTimeSel(xf, r.from, false); fillTimeSel(xt, r.to, true); r.from = xf.value; r.to = xt.value;
+      });
+    });
+  }
+  $('absList').addEventListener('click', function(ev){
+    var row = ev.target.closest('.item'); if (!row) return;
+    var a = absents[+row.dataset.i];
+    if (ev.target.dataset.del){ absents.splice(+row.dataset.i, 1); renderAbs(); hideResults(); return; }
+    if (ev.target.dataset.addrng){
+      // Julat baharu bermula selepas julat terakhir (jika boleh).
+      var b = bounds(), last = rangesOf(a).slice(-1)[0], k = b.indexOf(last.to);
+      var from = k >= 0 && k < b.length - 1 ? last.to : b[0], to = b[Math.min(b.indexOf(from) + 2, b.length - 1)];
+      (a.extra = a.extra || []).push({ from: from, to: to }); renderAbs(); hideResults(); return;
+    }
+    if (ev.target.dataset.xdel != null){ a.extra.splice(+ev.target.dataset.xdel, 1); renderAbs(); hideResults(); return; }
+    if (ev.target.dataset.full != null){ a.full = ev.target.dataset.full === '1'; if (!a.full) clampRange(a); renderAbs(); hideResults(); }
+  });
+  $('absList').addEventListener('change', function(ev){
+    var row = ev.target.closest('.item'); if (!row) return;
+    if (ev.target.dataset.xk){ absents[+row.dataset.i].extra[+ev.target.closest('.rng').dataset.x][ev.target.dataset.xk] = ev.target.value; hideResults(); return; }
+    if (!ev.target.dataset.k) return;
+    absents[+row.dataset.i][ev.target.dataset.k] = ev.target.value;
+    if (ev.target.dataset.k === 'reason' && R) renderResults(true); else hideResults();
+  });
+  $('absList').addEventListener('input', function(ev){
+    var row = ev.target.closest('.item'); if (!row || ev.target.dataset.k !== 'reason') return;
+    absents[+row.dataset.i].reason = ev.target.value;
+  });
+  $('addAbsBtn').addEventListener('click', function(){
+    var n = $('teacherSel').value; if (!n){ toast('Pilih guru dahulu.'); return; }
+    var b = bounds();
+    absents.push({ name: n, full: true, from: b[0], to: b[b.length - 1], reason: '' });
+    renderAbs(); hideResults();
+  });
+  $('teacherSel').addEventListener('change', function(){ if (this.value) $('addAbsBtn').click(); });
+
+  /* ---------- UI: permohonan sementara ---------- */
+  function holdAt(name, i){
+    var m = D.slots[i].m;
+    var h = holds.find(function(h){ return h.name === name && m >= mins(h.from) && m < mins(h.to); });
+    if (h) return h;
+    var w = swaps.find(function(w){ return w.owner === name && !w.ownerFree && m >= mins(w.from) && m < mins(w.to); });
+    return w ? { name: name, from: w.from, to: w.to, reason: 'jual beli masa dengan ' + shortName(w.taker) } : null;
+  }
+
+  /* ---------- UI: jual beli masa ---------- */
+  function fillSel(id, cur){
+    $(id).innerHTML = '<option value="">— Pilih guru —</option>' + teachers.map(function(n){ return '<option' + (n === cur ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('');
+  }
+  function swapClasses(w){
+    // Kelas yang dipindahkan (dibaca daripada D yang sudah dibina).
+    var out = [];
+    D.slots.forEach(function(sl, i){
+      var x = D.tmap[w.taker] && D.tmap[w.taker][i];
+      if (x && x.swapFrom === w.owner && sl.m >= mins(w.from) && sl.m < mins(w.to)){
+        var last = out[out.length - 1], lbl = x.class + ' ' + subjLabel(x.subject);
+        if (last && last.lbl === lbl && last.end === sl.start) last.end = sl.end; else out.push({ lbl: lbl, start: sl.start, end: sl.end });
+      }
+    });
+    return out;
+  }
+  function renderSwaps(){
+    fillSel('swOwner', $('swOwner').value); fillSel('swTaker', $('swTaker').value);
+    $('swList').innerHTML = swaps.map(function(w, i){
+      var cl = swapClasses(w);
+      return '<div class="item"><div class="name">' + esc(w.owner) + ' → ' + esc(w.taker) +
+        '<div class="meta">' + fmtT(w.from) + '–' + fmtT(w.to) + ' • ' + (cl.length ? esc(cl.map(function(c){ return c.lbl + ' (' + fmtT(c.start) + '-' + fmtT(c.end) + ')'; }).join(', ')) : '<span style="color:var(--red)">tiada kelas dipindahkan</span>') +
+        (w.ownerFree ? ' • guru asal boleh diberi teach-in' : ' • guru asal tidak diberi teach-in') + '</div></div>' +
+        '<button class="btn danger" type="button" data-swdel="' + i + '">Buang</button></div>';
+    }).join('');
+  }
+  $('swAddBtn').addEventListener('click', function(){
+    var owner = $('swOwner').value, taker = $('swTaker').value, from = $('swFrom').value, to = $('swTo').value;
+    if (!owner || !taker){ toast('Pilih guru asal dan guru yang mengambil alih.'); return; }
+    if (owner === taker){ toast('Guru asal dan guru pengganti mesti berbeza.'); return; }
+    if (mins(to) <= mins(from)){ toast('Masa tamat mesti selepas masa mula.'); return; }
+    var own = 0, clash = [];
+    D.slots.forEach(function(sl, i){
+      if (sl.m < mins(from) || sl.m >= mins(to)) return;
+      if (D.tmap[owner] && D.tmap[owner][i]){ own++; if (D.tmap[taker] && D.tmap[taker][i]) clash.push(sl.start); }
+    });
+    if (!own){ toast(owner + ' tiada kelas dalam masa ' + fmtT(from) + '–' + fmtT(to) + '.'); return; }
+    if (clash.length){ toast(taker + ' juga mengajar pada ' + clash.map(fmtT).join(', ') + '. Pilih masa lain.'); return; }
+    swaps.push({ owner: owner, taker: taker, from: from, to: to, ownerFree: $('swOwnerFree').checked });
+    $('swOwner').value = ''; $('swTaker').value = ''; $('swOwnerFree').checked = false;
+    onDate();
+  });
+  $('swList').addEventListener('click', function(ev){
+    if (ev.target.dataset.swdel == null) return;
+    swaps.splice(+ev.target.dataset.swdel, 1); onDate();
+  });
+  function renderHolds(){
+    var cur = $('holdTeacher').value;
+    $('holdTeacher').innerHTML = '<option value="">— Pilih guru —</option>' + teachers.map(function(n){ return '<option' + (n === cur ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('');
+    $('holdList').innerHTML = holds.map(function(h, i){
+      return '<div class="item"><div class="name">' + esc(h.name) + '<div class="meta">Tidak diberikan teach-in ' + fmtT(h.from) + '–' + fmtT(h.to) + (h.reason ? ' • ' + esc(h.reason) : '') + '</div></div>' +
+        '<button class="btn danger" type="button" data-hdel="' + i + '">Buang</button></div>';
+    }).join('');
+  }
+  $('holdAddBtn').addEventListener('click', function(){
+    var n = $('holdTeacher').value, from = $('holdFrom').value, to = $('holdTo').value;
+    if (!n){ toast('Pilih guru dahulu.'); return; }
+    if (mins(to) <= mins(from)){ toast('Masa tamat mesti selepas masa mula.'); return; }
+    holds.push({ name: n, from: from, to: to, reason: $('holdReason').value.trim() });
+    $('holdReason').value = ''; $('holdTeacher').value = '';
+    renderHolds(); hideResults();
+  });
+  $('holdList').addEventListener('click', function(ev){
+    if (ev.target.dataset.hdel == null) return;
+    holds.splice(+ev.target.dataset.hdel, 1); renderHolds(); hideResults();
+  });
+
+  /* ---------- UI: program ---------- */
+  function renderProgClasses(){
+    var lv = {};
+    classCodes.forEach(function(c){ (lv[c[0]] = lv[c[0]] || []).push(c); });
+    $('progClasses').innerHTML = classCodes.map(function(c){
+      return '<label class="chip"><input type="checkbox" value="' + esc(c) + '">' + esc(c) + '</label>';
+    }).join('');
+  }
+  function setAllProg(on){ Array.prototype.forEach.call($('progClasses').querySelectorAll('input'), function(x){ x.checked = on; }); }
+  $('progAllBtn').addEventListener('click', function(){ setAllProg(true); });
+  $('progNoneBtn').addEventListener('click', function(){ setAllProg(false); });
+  $('addProgBtn').addEventListener('click', function(){
+    var name = $('progName').value.trim() || 'Program';
+    var cls = Array.prototype.filter.call($('progClasses').querySelectorAll('input'), function(x){ return x.checked; }).map(function(x){ return x.value; });
+    var from = $('progFrom').value, to = $('progTo').value;
+    if (!cls.length){ toast('Pilih sekurang-kurangnya satu kelas.'); return; }
+    if (mins(to) <= mins(from)){ toast('Masa tamat mesti selepas masa mula.'); return; }
+    var free = document.querySelector('input[name=progFree]:checked').value === '1';
+    programs.push({ name: name, from: from, to: to, classes: cls, free: free });
+    $('progName').value = ''; setAllProg(false);
+    renderProgs(); hideResults();
+  });
+  function renderProgs(){
+    var el = $('progList');
+    if (!programs.length){ el.innerHTML = ''; return; }
+    el.innerHTML = programs.map(function(p, i){
+      return '<div class="item"><div class="name">' + esc(p.name) + '<div class="meta">' + p.from + '–' + p.to + ' • ' +
+        (p.classes.length === classCodes.length ? 'Semua kelas' : esc(p.classes.join(', '))) +
+        ' • <b>' + (p.free ? 'Guru dibebaskan untuk teach-in' : 'Guru bertugas bersama program') + '</b></div></div>' +
+        '<button class="btn danger" type="button" data-pdel="' + i + '">Buang</button></div>';
+    }).join('');
+  }
+  $('progList').addEventListener('click', function(ev){
+    if (ev.target.dataset.pdel == null) return;
+    programs.splice(+ev.target.dataset.pdel, 1); renderProgs(); hideResults();
+  });
+
+  /* ---------- UI: tetapan & pentadbir ---------- */
+  function renderAdmins(){
+    $('adminList').innerHTML = teachers.map(function(n){
+      return '<label><input type="checkbox" value="' + esc(n) + '"' + (admins.has(n) ? ' checked' : '') + '>' + esc(n) + '</label>';
+    }).join('');
+    $('adminCount').textContent = admins.size;
+  }
+  var LS_BY = 'ganti_disediakan';
+  function renderPreparedBy(){
+    var last = lsGet(LS_BY, '');
+    $('preparedBy').innerHTML = '<option value="">— Pilih guru —</option>' + teachers.map(function(n){
+      return '<option' + (n === last ? ' selected' : '') + '>' + esc(n) + '</option>';
+    }).join('');
+  }
+  $('preparedBy').addEventListener('change', function(){
+    lsSet(LS_BY, this.value);
+    if (R) renderPreparedLine();
+  });
+  // Makluman kelas kolaborasi dipecahkan (guru dilepaskan untuk teach-in, pasangan meneruskan kelas).
+  function titleCase(h){ return h.charAt(0) + h.slice(1).toLowerCase(); }
+  function gelar(n){ return titleCase(honorific(n)) + ' ' + shortName(n); }
+  function kolabNotes(){
+    if (!R) return [];
+    var out = [];
+    R.needs.slice().sort(function(a, b){ return a.i - b.i; }).forEach(function(n){
+      if (!n.relief || !n.releasedFrom) return;
+      var co = (coTeachers(n.relief, n.i) || []).filter(function(t){ return t !== n.relief; });
+      var sl = D.slots[n.i], last = out[out.length - 1];
+      if (last && last.t === n.relief && last.from === n.releasedFrom && last.to === n.class && last.end === sl.start){ last.end = sl.end; return; }
+      out.push({ t: n.relief, from: n.releasedFrom, to: n.class, co: co, start: sl.start, end: sl.end });
+    });
+    return out.map(function(x){
+      return fmtT(x.start) + '-' + fmtT(x.end) + ': ' + gelar(x.t) + ' dilepaskan daripada kelas ' + x.from +
+        ' untuk teach-in di kelas ' + x.to + '. Pengajaran di kelas ' + x.from + ' diteruskan oleh ' +
+        (x.co.length ? x.co.map(gelar).join(' dan ') : 'guru pasangan') + '.';
+    });
+  }
+  var KOLAB_INTRO = 'Bagi memastikan setiap kelas mempunyai guru, guru berikut telah dilepaskan buat sementara waktu daripada kelas kolaborasi untuk melaksanakan teach-in. Pengajaran di kelas kolaborasi tersebut akan diteruskan oleh guru pasangan. Kerjasama dan persefahaman semua guru amat dihargai.';
+  function renderPreparedLine(){
+    var kn = kolabNotes();
+    $('kolabNote').innerHTML = kn.length ? '<b class="h">Makluman: Kelas kolaborasi</b>' + esc(KOLAB_INTRO) +
+      '<ul>' + kn.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '';
+    var by = $('preparedBy').value;
+    $('preparedLine').innerHTML = 'Jadual teach-in disediakan oleh: <b>' + esc(by || '______________________') + '</b>';
+  }
+  function renderFlex(){
+    $('flexList').innerHTML = teachers.map(function(n){
+      return '<label><input type="checkbox" value="' + esc(n) + '"' + (flex.has(n) ? ' checked' : '') + '>' + esc(n) + '</label>';
+    }).join('');
+    $('flexCount').textContent = flex.size;
+  }
+  $('flexList').addEventListener('change', function(ev){
+    if (ev.target.checked) flex.add(ev.target.value); else flex.delete(ev.target.value);
+    lsSet(LS_FLEX, Array.from(flex)); $('flexCount').textContent = flex.size; hideResults();
+  });
+  $('adminList').addEventListener('change', function(ev){
+    if (ev.target.checked) admins.add(ev.target.value); else admins.delete(ev.target.value);
+    lsSet(LS_ADMIN, Array.from(admins)); $('adminCount').textContent = admins.size; hideResults();
+  });
+  function getSettings(){
+    return {
+      tier2: +$('tier2').value, tier3: +$('tier3').value, tier4: +$('tier4').value, tier5: +$('tier5').value, tier6: +$('tier6').value, tier7: +$('tier7').value,
+      adm: +document.querySelector('input[name=adm]:checked').value,
+      noConsec: $('noConsec').checked,
+      noAdjacent: $('noAdjacent').checked,
+      noReliefRun: $('noReliefRun').checked,
+      weekFair: $('weekFair').checked,
+      splitKolab: $('splitKolab').checked,
+      flexMax: +$('flexMax').value
+    };
+  }
+  // Senarai tetapan dalam bentuk teks (disimpan bersama rekod supaya boleh disemak kemudian).
+  function settingsLines(set){
+    var L = [];
+    L.push('Had teach-in: 2 masa ke bawah → ' + (set.tier2 != null ? set.tier2 : set.tier4) + ', 3 masa → ' + (set.tier3 != null ? set.tier3 : set.tier4) + ', 4 masa → ' + set.tier4 + ', 5 masa → ' + set.tier5 + ', 6 masa → ' + set.tier6 + ', 7 masa ke atas → ' + set.tier7);
+    if (set.jumaat) L.push('Hari Jumaat: had guru 4 masa mengajar dan ke atas ditetapkan 0 secara automatik');
+    L.push('Guru fleksibel: ' + (set.flexMax ? 'maks ' + set.flexMax + ' masa' : 'tidak dilibatkan') + (set.flexMax && set.fleksibel && set.fleksibel.length ? ' (' + set.fleksibel.join(', ') + ')' : ''));
+    L.push('Pentadbir: ' + (set.adm ? 'maks ' + set.adm + ' masa' : 'tidak dilibatkan') + (set.adm && set.pentadbir && set.pentadbir.length ? ' (' + set.pentadbir.join(', ') + ')' : ''));
+    L.push('Elak 3 masa atau lebih berturut-turut: ' + (set.noConsec ? 'Ya' : 'Tidak'));
+    L.push('Elak teach-in bersambung kelas asal: ' + (set.noAdjacent ? 'Ya' : 'Tidak'));
+    L.push('Elak teach-in berturut-turut: ' + (set.noReliefRun ? 'Ya' : 'Tidak'));
+    L.push('Utamakan guru belum teach-in minggu ini: ' + (set.weekDropped ? 'Ya, tetapi DIBATALKAN kerana jadual tidak dapat diisi sepenuhnya' : set.weekSoft ? 'Ya, dilonggarkan kepada guru paling sedikit teach-in minggu ini (jadual tidak dapat diisi sepenuhnya)' : set.weekFair ? 'Ya' : 'Tidak'));
+    L.push('Kelas kolaborasi boleh dipecahkan: ' + (set.splitKolab ? 'Ya' : 'Tidak'));
+    return L;
+  }
+  function restoreSettings(){
+    var s = lsGet(LS_SET, null); if (!s) return;
+    ['tier4', 'tier5', 'tier6', 'tier7'].forEach(function(k){ if (s[k] != null) $(k).value = String(s[k]); });
+    // Tetapan lama (sebelum had 2 & 3 masa ditambah): ikut nilai "4 masa ke bawah".
+    ['tier2', 'tier3'].forEach(function(k){ var v = s[k] != null ? s[k] : s.tier4; if (v != null) $(k).value = String(v); });
+    var a = document.querySelector('input[name=adm][value="' + s.adm + '"]'); if (a) a.checked = true;
+    if (typeof s.noConsec === 'boolean') $('noConsec').checked = s.noConsec;
+    if (typeof s.noAdjacent === 'boolean') $('noAdjacent').checked = s.noAdjacent;
+    if (typeof s.noReliefRun === 'boolean') $('noReliefRun').checked = s.noReliefRun;
+    if (typeof s.weekFair === 'boolean') $('weekFair').checked = s.weekFair;
+    if (typeof s.splitKolab === 'boolean') $('splitKolab').checked = s.splitKolab;
+    if (s.flexMax != null) $('flexMax').value = String(Math.min(4, Math.max(0, +s.flexMax || 0)));   // maksimum 4 masa
+  }
+  $('setCard').addEventListener('change', function(ev){
+    if (ev.target.name === 'adm' || ['noConsec','noAdjacent','noReliefRun','weekFair','splitKolab','flexMax','tier2','tier3','tier4','tier5','tier6','tier7'].indexOf(ev.target.id) >= 0){ lsSet(LS_SET, getSettings()); hideResults(); }
+    if (ev.target.name === 'adm' && ev.target.value !== '0' && !admins.size){ $('adminBox').open = true; toast('Tandakan guru yang merupakan pentadbir dahulu.'); }
+  });
+
+  /* ---------- Enjin penjanaan ---------- */
+  function absentAt(name, i){
+    var s = D.slots[i];
+    return absents.some(function(a){
+      if (a.name !== name) return false;
+      return a.full || rangesOf(a).some(function(r){ return s.m >= mins(r.from) && s.m < mins(r.to); });
+    });
+  }
+  function programFor(cls, i){
+    var s = D.slots[i], codes = String(cls).split(/[\/,]/).map(function(x){ return x.trim(); });
+    return programs.find(function(p){
+      return s.m >= mins(p.from) && s.m < mins(p.to) && codes.some(function(c){ return p.classes.indexOf(c) >= 0; });
+    }) || null;
+  }
+
+  // Cuba beberapa susunan rawak dan pilih yang terbaik: paling sedikit petak kosong, kemudian paling ramai guru
+  // berkongsi beban (beban paling tinggi seorang guru paling rendah). Setiap kali Jana ditekan, hasil boleh berbeza.
+  var ATTEMPTS = 40;
+  function generate(){
+    var set = daySettings(getSettings());
+    var bestRun = runBatch(set), total = bestRun.run.needs.length, hint = null;
+    // Keadilan dahulu: jika ada petak kosong dan had guru 6 masa masih 0, semak sama ada membuka had itu dapat mengisinya
+    // tanpa melonggarkan keutamaan "belum teach-in minggu ini". Jika ya, kekalkan hasil ini dan maklumkan penyedia jadual.
+    if (bestRun.score[0] < total && set.tier6 < 1 && !set.jumaat){
+      var trial = runBatch(Object.assign({}, set, { tier6: 1 }));
+      if (trial.score[0] > bestRun.score[0]){
+        var helpers = Object.keys(trial.run.st.relief).filter(function(t){
+          return trial.run.st.relief[t].length && !flex.has(t) && !admins.has(t) && origLoad(t) === 6;
+        });
+        hint = { gain: trial.score[0] - bestRun.score[0], full: trial.score[0] === total, helpers: helpers,
+          fresh: helpers.filter(function(t){ return !weekCount(t); }).length };
+      }
+    }
+    // Jika masih ada petak tidak terisi, batalkan keutamaan no. 1 (belum ada teach-in minggu ini) dan cuba semula.
+    // Langkah 1: tukar kepada "guru paling sedikit teach-in minggu ini dahulu" (weekSoft).
+    // Langkah 2: jika masih kurang, abaikan rekod mingguan sepenuhnya (weekDropped).
+    if (set.weekFair && bestRun.score[0] < total && !hint){
+      var setS = Object.assign({}, set, { weekSoft: true });
+      var soft = runBatch(setS);
+      if (soft.score[0] > bestRun.score[0]){ bestRun = soft; set = setS; }
+      if (bestRun.score[0] < total){
+        var set2 = Object.assign({}, set, { weekFair: false, weekSoft: false, weekDropped: true });
+        var alt = runBatch(set2);
+        if (alt.score[0] > bestRun.score[0]){ bestRun = alt; set = set2; }
+      }
+    }
+    var needs = bestRun.run.needs, st = bestRun.run.st;
+    needs.forEach(function(n){ delete n.done; markAdded(n); });
+    needs.sort(function(a, b){ return a.i - b.i || a.class.localeCompare(b.class); });
+    R = { needs: needs, st: st, set: set, day: D.realDay || D.day, ttDay: D.day, date: $('dateIn').value, hint: hint };
+    renderResults();
+    if (set.weekDropped) toast('Keutamaan mingguan dibatalkan supaya semua petak dapat diisi.');
+    else if (set.weekSoft) toast('Keutamaan no. 1 dilonggarkan: guru yang paling sedikit teach-in minggu ini dipilih dahulu.');
+  }
+  function runBatch(set){
+    var bestRun = null;
+    for (var k = 0; k < ATTEMPTS; k++){
+      var run = attempt(set);
+      var filled = run.needs.filter(function(n){ return n.relief || n.program || n.kolab; }).length;
+      // Jumlah masa mengajar asal guru biasa yang diberi teach-in — lebih rendah = lebih banyak guru kurang masa digunakan.
+      // Skor keutamaan: setiap teach-in diberi nilai kumpulannya (+10 jika guru sudah ada teach-in minggu ini). Lebih rendah = lebih baik.
+      var maxLoad = 0, used = 0, rankSum = 0;
+      Object.keys(run.st.relief).forEach(function(t){
+        var c = run.st.relief[t].length; if (!c) return;
+        used++;
+        if (!flex.has(t)) maxLoad = Math.max(maxLoad, c);
+        rankSum += c * (priorityRank(t, origLoad(t), false) + (!set.weekFair ? 0 : set.weekSoft ? weekCount(t) * 4 : weekCount(t) > 0 ? 10 : 0));
+      });
+      run.needs.forEach(function(n){ if (n.releasedFrom) rankSum += 5; });
+      var score = [filled, -maxLoad, -rankSum, used];
+      if (!bestRun || better(score, bestRun.score)) bestRun = { run: run, score: score };
+    }
+    return bestRun;
+  }
+  // Kumpulan keutamaan 2–7 (1 = belum ada teach-in minggu ini, dikendalikan berasingan).
+  function priorityRank(t, orig, released){
+    if (released) return 7;
+    if (flex.has(t)) return 4;
+    if (admins.has(t)) return 6;
+    return orig <= 4 ? 2 : orig === 5 ? 3 : 5;
+  }
+  function better(a, b){ for (var i = 0; i < a.length; i++){ if (a[i] !== b[i]) return a[i] > b[i]; } return false; }
+  function origLoad(t){ var n = 0; (D.tmap[t] || []).forEach(function(x, i){ if (x && !freedAt(t, i)) n++; }); return n; }
+  function attempt(set){
+    var needs = [], seen = {};
+    absents.forEach(function(a){
+      (D.tmap[a.name] || []).forEach(function(x, i){
+        if (!x || !absentAt(a.name, i)) return;
+        var key = x.class + '@' + i;
+        if (seen[key]){ seen[key].absent.push(a.name); return; }
+        var ce = D.cmap[x.class] && D.cmap[x.class][i];
+        var partners = ce && ce.teacher.indexOf('/') >= 0
+          ? ce.teacher.split('/').map(function(s){ return s.trim(); }).filter(function(n){ return n !== a.name && !absentAt(n, i); }) : [];
+        var n = { key: key, i: i, class: x.class, subject: x.subject, absent: [a.name], program: programFor(x.class, i), partners: partners, relief: null };
+        seen[key] = n; needs.push(n);
+      });
+    });
+    // Pelepasan kelas: kelas yang ditinggalkan guru yang dibebaskan perlu guru teach-in.
+    (D.lepas || []).forEach(function(l){
+      var key = l.class + '@' + l.i;
+      if (seen[key]){ if (seen[key].absent.indexOf(l.teacher) < 0) seen[key].absent.push(l.teacher); seen[key].lepas = l; return; }
+      var n = { key: key, i: l.i, class: l.class, subject: l.subject, absent: [l.teacher], lepas: l, program: programFor(l.class, l.i), partners: [], relief: null };
+      seen[key] = n; needs.push(n);
+    });
+    // Pasangan guru bersama yang turut tidak hadir tidak dikira hadir.
+    needs.forEach(function(n){ n.partners = n.partners.filter(function(p){ return n.absent.indexOf(p) < 0; }); });
+
+    // Susunan rawak bagi guru/petak yang sama taraf — setiap kali Jana ditekan, susunan baharu dicuba.
+    var rnd = {}; teachers.forEach(function(t){ rnd[t] = Math.random(); });
+    needs.forEach(function(n){ n.rk = Math.random(); });
+    var st = { relief: {}, set: set, rnd: rnd };
+    teachers.forEach(function(t){ st.relief[t] = []; });
+    needs.forEach(function(n){ n.kolab = !n.program && n.partners.length > 0; });
+    // Mod kemas kini: program tanpa definisi (rekod lama) dikekalkan daripada rekod; tugasan asal dikunci.
+    if (BASE){
+      needs.forEach(function(n){
+        var b = BASE.map[n.class + '@' + D.slots[n.i].start];
+        n.baseRelief = b && b.kind === 'ganti' ? b.relief : '';
+        if (!n.program && b && b.kind === 'program' && !programs.length) n.program = { name: b.note || 'PROGRAM' };
+      });
+    }
+    // Guru praktikum tidak hadir: guru asal mengambil alih semula kelasnya (jika guru asal hadir).
+    needs.forEach(function(n){
+      if (n.program) return;
+      var x = null;
+      n.absent.some(function(a){ var y = D.tmap[a] && D.tmap[a][n.i]; if (y && y.mentor){ x = y; return true; } });
+      if (!x) return;
+      n.partners = n.partners.filter(function(p){ return p !== x.mentor; });
+      if (!absentAt(x.mentor, n.i) && st.relief[x.mentor] && st.relief[x.mentor].indexOf(n.i) < 0){
+        n.relief = x.mentor; n.byMentor = true; n.kolab = false; st.relief[x.mentor].push(n.i);
+      }
+    });
+    var open = needs.filter(function(n){ return !n.program && !n.kolab && !n.byMentor; });
+    if (BASE && BASE.mode === 'tambah'){
+      open.forEach(function(n){
+        var r = n.baseRelief;
+        if (r && st.relief[r] && !absentAt(r, n.i)){ n.relief = r; n.done = true; st.relief[r].push(n.i); }
+        else if (r) n.prevRelief = r;     // guru ganti asal kini tidak hadir — perlu diganti semula
+      });
+    }
+
+    // Guru ganti penuh: guru yang dipilih masuk semua kelas guru tidak hadir itu (jika tidak mengajar / tidak hadir pada masa itu).
+    open.forEach(function(n){
+      if (n.relief || n.done) return;
+      var a = absents.find(function(x){ return x.cover && n.absent.indexOf(x.name) >= 0; });
+      if (!a || !st.relief[a.cover] || absentAt(a.cover, n.i) || busy(a.cover, n.i, st)) return;
+      n.relief = a.cover; n.done = true; n.byCover = true; st.relief[a.cover].push(n.i);
+    });
+
+    // Tamak: isi dahulu slot yang paling sedikit calon.
+    while (true){
+      var best = null;
+      open.forEach(function(n){
+        if (n.relief || n.done) return;
+        var c = candidates(n, st, true);
+        if (!best || c.length < best.c.length || (c.length === best.c.length && n.rk < best.n.rk)) best = { n: n, c: c };
+      });
+      if (!best) break;
+      if (!best.c.length){ best.n.done = true; continue; }
+      var pick = best.c[0].name;
+      best.n.relief = pick; best.n.done = true; st.relief[pick].push(best.n.i);
+      best.n.releasedFrom = best.c[0].released ? D.tmap[pick][best.n.i].class : '';
+    }
+    return { needs: needs, st: st };
+  }
+
+  // Tugasan TAMBAHAN = berbeza daripada jadual yang telah disimpan (hanya dalam mod kemas kini).
+  function markAdded(n){
+    if (!BASE){ n.added = false; return; }
+    var b = BASE.map[n.class + '@' + D.slots[n.i].start];
+    var nowKind = n.program ? 'program' : n.kolab ? 'kolab' : n.relief ? 'ganti' : 'tiada';
+    n.added = !b || b.kind !== nowKind || (nowKind === 'ganti' && b.relief !== n.relief);
+    // Mod jana semula: catat guru ganti asal jika tugasan bertukar.
+    if (BASE.mode === 'semula') n.prevRelief = n.added && b && b.kind === 'ganti' && b.relief !== n.relief ? b.relief : '';
+  }
+
+  // Guru yang kelasnya dibawa ke program "dibebaskan" pada slot itu.
+  function freedAt(name, i){
+    var x = D.tmap[name] && D.tmap[name][i]; if (!x || absentAt(name, i)) return null;
+    var p = programFor(x.class, i); return p && p.free ? p : null;
+  }
+  function teaching(name, i){ return !!(D.tmap[name] && D.tmap[name][i]) && !freedAt(name, i); }
+  function load(name, st){
+    var n = 0; (D.tmap[name] || []).forEach(function(x, i){ if (x && !freedAt(name, i)) n++; });
+    return n + st.relief[name].length;
+  }
+  function busy(name, i, st){ return teaching(name, i) || st.relief[name].indexOf(i) >= 0; }
+  // Sekatan teach-in daripada admin (Firestore gantiSekatan, dimuatkan oleh skrip log masuk).
+  function blockedAt(name, i){
+    var s = D.slots[i], date = $('dateIn').value;
+    return (window.GANTI_SEKATAN || []).find(function(b){
+      if (b.teacher !== name) return false;
+      if (b.date ? b.date !== date : (b.day !== 'SEMUA' && b.day !== D.day)) return false;
+      return s.m >= mins(b.from) && s.m < mins(b.to);
+    }) || null;
+  }
+  function runWith(name, i, st){ // panjang rantaian mengajar berturut jika slot i ditambah
+    var n = 1, j;
+    for (j = i - 1; j >= 0 && !D.slots[j].brk && busy(name, j, st); j--) n++;
+    for (j = i + 1; j < D.slots.length && !D.slots[j].brk && busy(name, j, st); j++) n++;
+    return n;
+  }
+  // Had teach-in sehari mengikut jumlah masa mengajar asal guru pada hari itu.
+  function tierMax(set, orig){ return orig <= 2 ? set.tier2 : orig === 3 ? set.tier3 : orig === 4 ? set.tier4 : orig === 5 ? set.tier5 : orig === 6 ? set.tier6 : set.tier7; }
+  // Adakah guru sudah diberi teach-in pada slot sejurus sebelum/selepas i (tanpa rehat di antara)?
+  function nextToOwnRelief(name, i, st){
+    var r = st.relief[name] || [], j = i - 1, k = i + 1;
+    return (j >= 0 && !D.slots[j].brk && r.indexOf(j) >= 0) || (k < D.slots.length && !D.slots[k].brk && r.indexOf(k) >= 0);
+  }
+  // Adakah slot i bersebelahan (tanpa rehat di antara) dengan kelas asal guru dalam jadual?
+  function nextToOwnClass(name, i){
+    var j = i - 1, k = i + 1;
+    return (j >= 0 && !D.slots[j].brk && teaching(name, j)) || (k < D.slots.length && !D.slots[k].brk && teaching(name, k));
+  }
+  // strict=true: ikut tetapan. strict=false: semua guru lapang (untuk tukar manual).
+  // Bilangan teach-in setiap guru pada hari lain dalam minggu yang sama (daripada Rekod Mingguan).
+  var WEEKCNT = {}, WEEKDAYS = 0;
+  function weekCount(t){ return WEEKCNT[t] || 0; }
+  // Kelas kolaborasi boleh dipecahkan: guru t boleh dilepaskan pada slot i jika semua rakan kolaborasinya hadir
+  // dan tiada seorang pun daripada mereka telah dilepaskan.
+  function coTeachers(t, i){
+    var x = D.tmap[t] && D.tmap[t][i]; if (!x || x.mentor) return null;
+    var ce = D.cmap[x.class] && D.cmap[x.class][i];
+    if (!ce || ce.teacher.indexOf('/') < 0) return null;
+    var list = ce.teacher.split('/').map(function(v){ return v.trim(); });
+    return list.indexOf(t) >= 0 ? list : null;
+  }
+  function canRelease(t, i, st){
+    if (!st.set.splitKolab) return false;
+    var list = coTeachers(t, i); if (!list) return false;
+    return list.every(function(o){ return o === t || (!absentAt(o, i) && !(st.relief[o] && st.relief[o].indexOf(i) >= 0)); });
+  }
+  function candidates(need, st, strict){
+    var out = [], i = need.i, set = st.set;
+    teachers.forEach(function(t){
+      if (absentAt(t, i) || need.absent.indexOf(t) >= 0) return;
+      var released = false;
+      if (busy(t, i, st)){
+        if (teaching(t, i) && st.relief[t].indexOf(i) < 0 && canRelease(t, i, st)) released = true; else return;
+      }
+      var blk = blockedAt(t, i), hold = holdAt(t, i);
+      var isFlex = flex.has(t), isAdm = !isFlex && admins.has(t), L = load(t, st), rl = st.relief[t].length, run = runWith(t, i, st);
+      var reason = blk ? (window.GANTI_SEE_SEKATAN ? 'sekatan: ' + (blk.reason || 'admin') : 'tidak tersedia')
+        : hold ? 'memohon tidak diberi teach-in' + (hold.reason ? ': ' + hold.reason : '') : '';
+      if (reason){
+        // disekat oleh admin pada masa ini
+      } else if (isFlex){
+        // Guru fleksibel: hanya tertakluk kepada had masa ganti guru fleksibel.
+        if (rl >= set.flexMax) reason = set.flexMax ? 'had fleksibel ' + set.flexMax + ' masa' : 'guru fleksibel tidak dilibatkan';
+      } else if (isAdm){
+        if (set.adm === 0) reason = 'pentadbir';
+        else if (rl >= set.adm) reason = 'had pentadbir';
+      } else {
+        var orig = L - rl, mx = tierMax(set, orig);
+        if (rl >= mx) reason = mx ? 'guru ' + orig + ' masa — had ' + mx + ' teach-in' : 'guru ' + orig + ' masa — tiada teach-in';
+      }
+      if (!reason && !isFlex && set.noConsec && run >= 3) reason = run + ' masa berturut';
+      if (!reason && !isFlex && set.noAdjacent && nextToOwnClass(t, i)) reason = 'bersambung kelas sendiri';
+      // Terpakai kepada semua guru termasuk guru fleksibel.
+      if (!reason && set.noReliefRun && nextToOwnRelief(t, i, st)) reason = 'teach-in berturut-turut';
+      if (strict && reason) return;
+      var knows = Object.keys(TT.classTeachers[need.class] || {}).indexOf(t) >= 0;
+      out.push({ name: t, load: L, orig: L - rl, rank: priorityRank(t, L - rl, released), relief: rl, adm: isAdm, flex: isFlex, knows: knows, reason: reason, released: released,
+        week: set.weekFair ? weekCount(t) : 0 });
+    });
+    out.sort(function(a, b){
+      // Turutan keutamaan (ditetapkan sekolah): 1) belum ada teach-in minggu ini → 2) ≤4 masa → 3) 5 masa → 4) guru fleksibel
+      // → 5) 6 masa ke atas → 6) pentadbir → 7) guru kolaborasi yang dilepaskan. Dalam kumpulan: masa paling sedikit dahulu.
+      return (a.reason ? 1 : 0) - (b.reason ? 1 : 0) || (set.weekSoft ? a.week - b.week : (a.week > 0) - (b.week > 0)) || (a.rank - b.rank) || (a.orig - b.orig) ||
+        (a.week - b.week) || a.relief - b.relief ||
+        (st.rnd ? st.rnd[a.name] - st.rnd[b.name] : 0) || (b.knows - a.knows) || (a.adm - b.adm) || a.name.localeCompare(b.name);
+    });
+    return out;
+  }
+
+  /* ---------- Paparan keputusan ---------- */
+  function hideResults(){ var ss = $('saveStatus'); if (ss) ss.className = 'save-status hidden no-print'; ['slipCard','gridCard','listCard'].forEach(function(id){ $(id).classList.add('hidden'); }); R = null; }
+
+  function fmtDate(ds){
+    var p = ds.split('-'); return p[2] + '.' + p[1] + '.' + p[0];
+  }
+  function renderTierHint(){
+    var el = $('tierHint'), h = R.hint;
+    if (!h){ el.className = 'tier-hint no-print hidden'; el.innerHTML = ''; return; }
+    el.innerHTML = '<div><b>Makluman kepada penyedia jadual:</b> masih ada petak <b>TIADA GURU</b> kerana had teach-in guru yang mengajar <b>6 masa</b> ditetapkan 0. ' +
+      'Jika had itu dibuka kepada <b>1 masa</b>, <b>' + h.gain + ' petak lagi</b> boleh diisi' + (h.full ? ' (semua petak terisi)' : '') +
+      ' tanpa mengetepikan keutamaan guru yang belum bertugas teach-in' +
+      (h.fresh ? '. Seramai <b>' + h.fresh + ' guru 6 masa</b> yang belum ada teach-in minggu ini boleh membantu' : '') + '. Tetapan lain tidak berubah.</div>' +
+      '<button class="btn primary small" type="button" id="openTier6Btn">Buka had 6 masa &amp; Jana semula</button>';
+    el.className = 'tier-hint no-print';
+    $('openTier6Btn').onclick = function(){
+      $('tier6').value = '1'; lsSet(LS_SET, getSettings());
+      toast('Had guru 6 masa dibuka kepada 1 masa. Jadual dijana semula.');
+      $('genBtn').click();
+    };
+  }
+  function renderResults(keepScroll){
+    renderTierHint();
+    var st = R.st, needs = R.needs;
+    var filled = needs.filter(function(n){ return n.relief; }).length;
+    var prog = needs.filter(function(n){ return n.program; }).length;
+    var kol = needs.filter(function(n){ return n.kolab; }).length;
+    var unf = needs.length - filled - prog - kol;
+    var fairTxt = R.set.weekDropped ? ' • KEUTAMAAN MINGGUAN DIBATALKAN (jadual tidak dapat diisi sepenuhnya dengannya)' :
+      R.set.weekSoft ? ' • KEUTAMAAN MINGGUAN DILONGGARKAN (guru paling sedikit teach-in minggu ini dahulu)' : R.set.weekFair ? (WEEKDAYS ? ' • Keutamaan mingguan (' + WEEKDAYS + ' hari direkod)' : ' • Keutamaan mingguan (tiada rekod lain)') : '';
+    var setTxt = 'Maks teach-in: ≤2 masa→' + R.set.tier2 + ', 3→' + R.set.tier3 + ', 4→' + R.set.tier4 + ', 5→' + R.set.tier5 + ', 6→' + R.set.tier6 + ', 7+→' + R.set.tier7 + (R.set.flexMax ? ' • Fleksibel maks ' + R.set.flexMax : ' • Fleksibel tidak dilibatkan') + ' • ' + (R.set.adm ? 'Pentadbir ' + R.set.adm + ' masa' : 'Tanpa pentadbir') + (R.set.noConsec ? ' • Elak 3+ masa berturut' : '') + (R.set.noAdjacent ? ' • Elak bersambung kelas sendiri' : '') + (R.set.noReliefRun ? ' • Elak teach-in berturut' : '') + fairTxt + (R.set.splitKolab ? ' • Kolaborasi boleh dipecahkan' : '');
+    var sgTxt = R.ttDay && R.ttDay !== R.day ? ' (sekolah ganti • jadual ' + R.ttDay + ')' : '';
+    $('gridSub').textContent = R.day + sgTxt + ', ' + fmtDate(R.date) + ' • ' + setTxt + ' • ' + TT.label;
+    $('slipSub').textContent = R.day + sgTxt + ', ' + fmtDate(R.date) + ' • ' + absents.length + ' guru tidak hadir • ' + setTxt;
+    $('printTitle').textContent = 'Jadual Guru Ganti — ' + R.day + ', ' + fmtDate(R.date);
+    $('printSub').textContent = absents.length + ' guru tidak hadir • ' + filled + ' masa ganti' + (prog ? ' • ' + prog + ' diganti program' : '') + (unf ? ' • ' + unf + ' TIDAK TERISI' : '') + ' • ' + setTxt;
+    $('stats').innerHTML =
+      stat('', needs.length, 'Masa perlu diganti') + stat('ok', filled, 'Diisi guru ganti') +
+      stat('prog', prog, 'Diganti program') + stat('kol', kol, 'Kolaborasi (pasangan hadir)') + stat(unf ? 'bad' : '', unf, 'Tidak terisi') +
+      stat('', new Set(needs.filter(function(n){ return n.relief; }).map(function(n){ return n.relief; })).size, 'Guru terlibat');
+    renderSlips(); renderPreparedLine(); renderGrid(); renderList();
+    ['slipCard','gridCard','listCard'].forEach(function(id){ $(id).classList.remove('hidden'); });
+    if (keepScroll) return;
+    if (unf) toast(unf + ' masa tidak terisi — cuba longgarkan tetapan atau pilih manual.');
+    $('slipCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function stat(cls, v, lbl){ return '<div class="stat ' + cls + '"><b>' + v + '</b><span>' + lbl + '</span></div>'; }
+
+  // Gelaran: guru Bahasa Arab / Pendidikan Islam → USTAZ (bin) / USTAZAH (binti); lain-lain → CIKGU.
+  var AGAMA_SUBJ = /^(BA|PI-)/;
+  function honorific(name){
+    if (!TT.agama) return 'CIKGU';
+    if (!TT.agama[name]) return 'CIKGU';
+    if (/\b(binti|bt)\b\.?/i.test(name)) return 'USTAZAH';
+    if (/\b(bin|b)\b\.?/i.test(name)) return 'USTAZ';
+    return 'CIKGU';
+  }
+  function reliefLabel(n){
+    if (n.program) return { t: n.program.name.toUpperCase(), c: '' };
+    if (n.kolab) return { t: 'KOLABORASI – ' + n.partners.map(function(p){ return honorific(p) + ' ' + upShort(p); }).join(', '), c: 'kol' };
+    if (n.relief) return { t: honorific(n.relief) + ' ' + upShort(n.relief) + (n.byMentor ? ' (GURU ASAL)' : ''), c: '' };
+    return { t: 'TIADA GURU', c: 'none' };
+  }
+  // Kumpulan slip: satu bagi setiap guru tidak hadir + satu bagi setiap guru yang dibebaskan daripada kelas (pelepasan).
+  function slipGroups(){
+    var g = absents.map(function(a){
+      return { name: a.name, why: (a.reason || '').toUpperCase() + (a.full ? '' : (a.reason ? ' ' : '') + '(' + rangeTxt(a) + ')'),
+        wa: (a.reason ? ' — ' + a.reason.toUpperCase() : '') + (a.full ? '' : ' (' + rangeTxt(a) + ')'),
+        needs: R.needs.filter(function(n){ return n.absent.indexOf(a.name) >= 0 && !n.lepas; }) };
+    });
+    var lp = {};
+    R.needs.forEach(function(n){ if (n.lepas) (lp[n.lepas.teacher] = lp[n.lepas.teacher] || []).push(n); });
+    Object.keys(lp).sort().forEach(function(t){
+      var cls = lp[t].map(function(n){ return n.class + ' ' + subjLabel(n.subject); }).filter(function(v, i, a){ return a.indexOf(v) === i; });
+      var rs = lp[t][0].lepas.reason;
+      var why = 'DIBEBASKAN DARIPADA ' + cls.join(', ') + (rs ? ' (' + rs.toUpperCase() + ')' : '');
+      g.push({ name: t, why: why, wa: ' — ' + why, needs: lp[t], lepas: true });
+    });
+    return g;
+  }
+  function renderSlips(){
+    $('slips').innerHTML = slipGroups().map(function(a){
+      var rows = a.needs.map(function(n){
+        var s = D.slots[n.i], lb = reliefLabel(n);
+        return '<tr><td class="' + lb.c + (n.added ? ' add' : '') + '">' + esc(lb.t) + '</td><td class="m">' + fmtT(s.start) + '-' + fmtT(s.end) +
+          '</td><td class="k">' + esc(n.class + ' ' + subjLabel(n.subject)) + '</td></tr>';
+      });
+      if (!rows.length) rows.push('<tr><td colspan="3" class="m">Tiada kelas perlu diganti</td></tr>');
+      var why = a.why;
+      return '<div class="slip"><table class="slip-t">' +
+        '<tr><th colspan="3" class="ttl">TEACH-IN SK JALAN BINTANG</th></tr>' +
+        '<tr><th class="lab">NAMA GURU</th><td colspan="2">' + esc(a.name.toUpperCase()) + '</td></tr>' +
+        '<tr><th class="lab">TARIKH</th><td colspan="2">' + fmtDate(R.date) + '</td></tr>' +
+        '<tr><th class="lab">HARI</th><td colspan="2">' + R.day + '</td></tr>' +
+        '<tr><th class="lab">SEBAB</th><td colspan="2">' + esc(why) + '</td></tr>' +
+        '<tr class="hd"><th>NAMA GURU</th><th>MASA</th><th>KELAS / MP</th></tr>' +
+        rows.join('') + '</table></div>';
+    }).join('');
+  }
+
+  function renderGrid(){
+    var st = R.st, rmap = {};
+    R.needs.forEach(function(n){ if (n.relief) rmap[n.relief + '@' + n.i] = n; });
+    var nmap = {}; R.needs.forEach(function(n){ n.absent.forEach(function(a){ nmap[a + '@' + n.i] = n; }); });
+    var absSet = new Set(absents.map(function(a){ return a.name; }));
+    var order = teachers.slice().sort(function(a, b){
+      return (absSet.has(b) - absSet.has(a)) || (st.relief[b].length > 0) - (st.relief[a].length > 0) || 0;
+    });
+    var h = '<thead><tr><th class="tn">Guru</th>' + D.slots.map(function(s){
+      return s.brk ? '<th class="brk" title="Rehat">R</th>' : '<th>' + s.start + '<br>' + s.end + '</th>';
+    }).join('') + '<th>Asal</th><th>Ganti</th><th>Jum</th></tr></thead><tbody>';
+    order.forEach(function(t){
+      var isAbs = absSet.has(t), orig = (D.tmap[t] || []).filter(Boolean).length, rl = st.relief[t].length;
+      h += '<tr class="' + (isAbs ? 'is-abs ' : '') + (flex.has(t) ? 'is-flex ' : admins.has(t) ? 'is-adm' : isTrainee(t) ? 'is-pr' : '') + '"><td class="tn" title="' + esc(t) + '">' + esc(t) + '</td>';
+      D.slots.forEach(function(s, i){
+        if (s.brk){ h += '<td class="brk"></td>'; return; }
+        var x = D.tmap[t] && D.tmap[t][i], r = rmap[t + '@' + i];
+        if (r){ h += '<td class="c r' + (r.added ? ' add' : '') + '" title="' + (r.added ? addTag() + ' — ' : '') + 'Ganti ' + esc(r.absent.join(', ')) + '">' + esc(r.class) + '<small>' + esc(r.subject) + '</small></td>'; return; }
+        if (x && absentAt(t, i)){
+          var n = nmap[t + '@' + i];
+          var cov = n && n.program, kl = n && n.kolab;
+          h += '<td class="c abs' + (cov ? ' cov' : '') + (kl ? ' kol' : '') + '" title="' + (cov ? 'Program: ' + esc(cov.name) : kl ? 'Kolaborasi: ' + esc(n.partners.join(', ')) : (n && n.relief ? 'Diganti: ' + esc(n.relief) : 'TIADA GANTI')) + '">' + esc(x.class) + '<small>' + (cov ? 'PROG' : kl ? 'KOLAB' : (n && n.relief ? esc(shortName(n.relief)).slice(0, 8) : 'KOSONG')) + '</small></td>';
+          return;
+        }
+        var lp = !x && (D.lepas || []).find(function(l){ return l.teacher === t && l.i === i; });
+        if (lp){ h += '<td class="c hold" title="Dibebaskan daripada ' + esc(lp.class + ' ' + lp.subject) + (lp.reason ? ': ' + esc(lp.reason) : '') + '"><small>LEPAS</small></td>'; return; }
+        var fp = x && freedAt(t, i);
+        if (fp){ h += '<td class="c cov" title="Dibebaskan: ' + esc(fp.name) + '">' + esc(x.class) + '<small>PROG</small></td>'; return; }
+        if (x){ h += '<td class="c t' + (x.swapFrom ? ' jb' : '') + '"' + (x.swapFrom ? ' title="Jual beli: kelas ' + esc(x.swapFrom) + '"' : '') + '>' + esc(x.class) + '<small>' + esc(x.subject) + (x.swapFrom ? ' ⇄' : '') + '</small></td>'; return; }
+        var hd = !absentAt(t, i) && holdAt(t, i);
+        if (hd){ h += '<td class="c hold" title="Memohon tidak diberi teach-in' + (hd.reason ? ': ' + esc(hd.reason) : '') + '"><small>MOHON</small></td>'; return; }
+        var bk = window.GANTI_SEE_SEKATAN && !absentAt(t, i) && blockedAt(t, i);
+        h += '<td class="c' + (absentAt(t, i) ? ' off' : bk ? ' blk' : '') + '"' + (bk ? ' title="Sekatan: ' + esc(bk.reason || '') + '"' : '') + '>' + (bk ? '<small>SEKAT</small>' : '') + '</td>';
+      });
+      h += '<td class="sum">' + orig + '</td><td class="sum' + (rl ? ' hl' : '') + '">' + (rl || '–') + '</td><td class="sum">' + (isAbs ? '–' : orig + rl) + '</td></tr>';
+    });
+    $('grid').innerHTML = h + '</tbody>';
+  }
+
+  function renderList(){
+    var h = '<thead><tr><th>Masa</th><th>Kelas</th><th>Subjek</th><th>Guru tidak hadir</th><th>Guru ganti</th></tr></thead><tbody>';
+    if (!R.needs.length) h += '<tr><td colspan="5" class="empty">Guru yang dipilih tiada kelas dalam masa tidak hadir.</td></tr>';
+    R.needs.forEach(function(n, k){
+      var s = D.slots[n.i];
+      var note = '';
+      var cell;
+      if (n.program) cell = '<span class="tag purple">PROGRAM</span> ' + esc(n.program.name);
+      else if (n.kolab) cell = '<span class="tag amber">KOLABORASI</span> maklumkan ' + esc(n.partners.join(', '));
+      else if (n.byMentor) cell = '<span class="tag">GURU ASAL</span> ' + esc(n.relief) + ' mengambil alih semula kelas guru praktikum';
+      else {
+        var tmp = { relief: {}, set: R.set, rnd: R.st.rnd };
+        Object.keys(R.st.relief).forEach(function(t){ tmp.relief[t] = R.st.relief[t].filter(function(i){ return !(t === n.relief && i === n.i); }); });
+        var c = candidates(n, tmp, false);
+        cell = '<select data-k="' + k + '"><option value="">— TIADA GURU GANTI —</option>' + c.map(function(x){
+          return '<option value="' + esc(x.name) + '"' + (x.name === n.relief ? ' selected' : '') + '>' + esc(x.name) +
+            ' (' + x.load + ' masa' + (x.flex ? ', fleksibel' : x.adm ? ', pentadbir' : '') +
+            (R.set.weekFair ? ', ' + x.week + ' teach-in minggu ini' : '') + (x.released ? ', dilepaskan dari kolaborasi' : '') +
+            (x.reason ? ' — ' + esc(x.reason) : '') + ')</option>';
+        }).join('') + '</select>';
+      }
+      if (n.releasedFrom) note += ' <span class="tag">guru ganti dilepaskan dari kolaborasi ' + esc(n.releasedFrom) + '</span>';
+      if (n.lepas) note += ' <span class="tag">dibebaskan daripada kelas ini</span>';
+      if (n.byCover && absents.some(function(x){ return x.cover === n.relief && n.absent.indexOf(x.name) >= 0; })) note += ' <span class="tag">guru ganti penuh</span>';
+      if (n.added) note += ' <span class="tag add">' + addTag() + '</span>' + (n.prevRelief ? ' <span class="tag">asal: ' + esc(shortName(n.prevRelief)) + (absents.some(function(a){ return a.name === n.prevRelief; }) ? ' (tidak hadir)' : '') + '</span>' : '');
+      h += '<tr class="' + (n.program ? 'prog' : n.kolab ? 'kolr' : (n.relief ? (n.added ? 'addr' : '') : 'unfilled')) + '"><td><b>' + s.start + '–' + s.end + '</b></td><td><b>' + esc(n.class) + '</b></td><td>' + esc(n.subject) +
+        '</td><td>' + esc(n.absent.join(', ')) + note + '</td><td>' + cell + '</td></tr>';
+    });
+    $('relList').innerHTML = h + '</tbody>';
+  }
+  $('relList').addEventListener('change', function(ev){
+    var k = ev.target.dataset.k; if (k == null) return;
+    var n = R.needs[+k], st = R.st;
+    if (n.relief) st.relief[n.relief] = st.relief[n.relief].filter(function(i){ return i !== n.i; });
+    n.relief = ev.target.value || null;
+    n.releasedFrom = n.relief && teaching(n.relief, n.i) ? D.tmap[n.relief][n.i].class : '';
+    if (n.relief) st.relief[n.relief].push(n.i);
+    markAdded(n);
+    renderResults(true);
+  });
+
+  /* ---------- Simpan Rekod (PDF → Google Drive melalui Apps Script) ---------- */
+  // URL Web App daripada apps-script/teach-in-drive.gs (Deploy → Web app). Kosong = belum dipasang.
+  var TEACHIN_DRIVE_URL = (self.SITE.appsScript.teachIn || "");
+
+  // Minggu persekolahan dibaca terus daripada erph.html (WEEKS & CUTI) — tidak disalin ke sini.
+  var weeksPromise = null;
+  function loadWeeks(){
+    if (weeksPromise) return weeksPromise;
+    weeksPromise = fetch('./erph.html', { cache: 'no-cache' }).then(function(r){ return r.text(); }).then(function(src){
+      var m = /const\s+WEEKS\s*=\s*(\[[\s\S]*?\])\s*\.map/.exec(src);
+      if (!m) throw new Error('Senarai minggu dalam erph.html tidak ditemui');
+      /* eslint-disable-next-line no-new-func */
+      var weeks = new Function('return ' + m[1])().map(function(w){ return { date: w[0], code: w[1] }; });
+      var c = /const\s+CUTI\s*=\s*(\[[^\]]*\])/.exec(src);
+      var cuti = c ? new Function('return ' + c[1])() : [];
+      return { weeks: weeks, cuti: cuti };
+    }).catch(function(e){ weeksPromise = null; throw e; });
+    return weeksPromise;
+  }
+  // Pulangkan kod minggu (cth. "M37") untuk tarikh YYYY-MM-DD, atau null jika di luar minggu persekolahan.
+  function schoolWeek(W, date){
+    if (W.cuti.indexOf(date) >= 0) return null;
+    var cur = null;
+    W.weeks.forEach(function(w){ if (w.date <= date) cur = w; });
+    if (!cur) return null;
+    var days = (new Date(date + 'T00:00:00Z') - new Date(cur.date + 'T00:00:00Z')) / 864e5;
+    return days < 7 ? cur.code : null;
+  }
+
+  var libPromise = null;
+  function loadScript(src){
+    return new Promise(function(res, rej){ var sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = function(){ rej(new Error('Gagal memuatkan ' + src)); }; document.head.appendChild(sc); });
+  }
+  function loadPdfLib(){
+    if (libPromise) return libPromise;
+    libPromise = (window.jspdf ? Promise.resolve() : loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'))
+      .then(function(){ return loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js'); })
+      .catch(function(e){ libPromise = null; throw e; });
+    return libPromise;
+  }
+
+  // PDF vector: satu jadual per guru tidak hadir (format slip sekolah), A4 menegak.
+  function buildPdf(){
+    var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    var M = 15, W = 210 - 2 * M, y = M;
+    var base = { theme: 'grid', margin: { left: M, right: M, top: M, bottom: M }, pageBreak: 'avoid',
+      styles: { font: 'helvetica', fontSize: 10, textColor: 0, lineColor: 0, lineWidth: 0.2, fillColor: false, cellPadding: { top: 1.4, bottom: 1.4, left: 2, right: 2 }, valign: 'middle' },
+      columnStyles: { 0: { cellWidth: W * 0.46 }, 1: { cellWidth: W * 0.22, halign: 'center' }, 2: { cellWidth: W * 0.32, halign: 'center' } } };
+    var lab = function(t){ return { content: t, styles: { fontStyle: 'bold', halign: 'center' } }; };
+    slipGroups().forEach(function(a){
+      var rows = a.needs.map(function(n){
+        var sl = D.slots[n.i];
+        return [reliefLabel(n).t, fmtT(sl.start) + '-' + fmtT(sl.end), n.class + ' ' + subjLabel(n.subject)];
+      });
+      if (!rows.length) rows.push([{ content: 'Tiada kelas perlu diganti', colSpan: 3, styles: { halign: 'center' } }]);
+      var why = a.why;
+      var body = [
+        [{ content: 'TEACH-IN SK JALAN BINTANG', colSpan: 3, styles: { fontStyle: 'bold', halign: 'center', fontSize: 11 } }],
+        [lab('NAMA GURU'), { content: a.name.toUpperCase(), colSpan: 2, styles: { halign: 'left' } }],
+        [lab('TARIKH'), { content: fmtDate(R.date), colSpan: 2, styles: { halign: 'left' } }],
+        [lab('HARI'), { content: R.day, colSpan: 2, styles: { halign: 'left' } }],
+        [lab('SEBAB'), { content: why, colSpan: 2, styles: { halign: 'left' } }],
+        [lab('NAMA GURU'), lab('MASA'), lab('KELAS / MP')]
+      ].concat(rows);
+      doc.autoTable(Object.assign({}, base, { startY: y, body: body }));
+      y = doc.lastAutoTable.finalY + 8;
+    });
+    var by = $('preparedBy').value;
+    var kn = kolabNotes();
+    if (kn.length){
+      var W = 210 - 2 * M;
+      doc.setFontSize(9.5);
+      var intro = doc.splitTextToSize(KOLAB_INTRO, W - 6);
+      var items = kn.map(function(l){ return doc.splitTextToSize('• ' + l, W - 9); });
+      var h = 6 + 5 + intro.length * 4.3 + items.reduce(function(s, x){ return s + x.length * 4.3 + 1; }, 0) + 2;
+      if (y + h > 297 - M - 10){ doc.addPage(); y = M; }
+      doc.setDrawColor(0); doc.setLineWidth(0.3); doc.rect(M, y, W, h);
+      var yy = y + 6;
+      doc.setFont('helvetica', 'bold'); doc.text('MAKLUMAN: KELAS KOLABORASI', M + 3, yy); yy += 5;
+      doc.setFont('helvetica', 'normal'); doc.text(intro, M + 3, yy); yy += intro.length * 4.3 + 1;
+      items.forEach(function(x){ doc.text(x, M + 4.5, yy); yy += x.length * 4.3 + 1; });
+      y += h + 8;
+    }
+    if (y > 297 - M - 8){ doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    doc.text('Jadual teach-in disediakan oleh: ', M, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(by).toUpperCase(), M + doc.getTextWidth('Jadual teach-in disediakan oleh: '), y);
+    return doc;
+  }
+
+  function saveMsg(html, cls){ var el = $('saveStatus'); el.innerHTML = html; el.className = 'save-status no-print ' + (cls || ''); }
+
+  $('saveBtn').addEventListener('click', function(){
+    if (!R) return;
+    if (!TEACHIN_DRIVE_URL){ saveMsg('Simpan ke Google Drive belum dipasang (URL Apps Script belum ditetapkan dalam ganti.html).', 'err'); return; }
+    var A = window.GantiAuth;
+    if (!A || !A.user()){ saveMsg('Sila <b>log masuk</b> dengan akaun DELIMa (bahagian atas halaman) sebelum menyimpan rekod.', 'err'); $('loginStrip').scrollIntoView({ behavior: 'smooth' }); return; }
+    var btn = $('saveBtn'); btn.disabled = true;
+    var fileName = fmtDate(R.date) + ' ' + R.day + '.pdf', week;
+    saveMsg('Menyediakan PDF…');
+    Promise.all([loadWeeks(), loadPdfLib(), A.token()]).then(function(res){
+      var code = schoolWeek(res[0], R.date);
+      week = code ? 'MINGGU ' + code.replace(/^M/, '') : 'LUAR MINGGU PERSEKOLAHAN';
+      var pdf = buildPdf();
+      var b64 = pdf.output('datauristring').split(',')[1];
+      saveMsg('Menyimpan <b>' + esc(fileName) + '</b> ke Google Drive (TEACH IN / ' + esc(week) + ')…');
+      return fetch(TEACHIN_DRIVE_URL, { method: 'POST', body: JSON.stringify({ idToken: res[2], week: week, fileName: fileName, pdfBase64: b64 }) });
+    }).then(function(r){ return r.json(); }).then(function(j){
+      if (!j.ok) throw new Error(j.error || 'Gagal menyimpan.');
+      var done = '✔ Rekod disimpan: <b>TEACH IN / ' + esc(j.week) + ' / ' + esc(j.name) + '</b> — <a href="' + esc(j.url) + '" target="_blank" rel="noopener">Buka PDF</a> • <a href="' + esc(j.folderUrl) + '" target="_blank" rel="noopener">Buka folder</a>';
+      saveMsg(done + '<br>Mengemas kini rekod mingguan…', 'ok');
+      return A.saveRecord(recordData(week)).then(function(){
+        saveMsg(done + '<br>✔ Rekod mingguan dikemas kini.', 'ok');
+        wkCache = {};
+      }, function(e){
+        saveMsg(done + '<br>⚠ Rekod mingguan tidak dikemas kini: ' + esc(e.code || e.message || e) + ' (semak peraturan Firestore gantiRekod).', 'err');
+      });
+    }).catch(function(e){
+      saveMsg('Gagal menyimpan rekod: ' + esc(e.message || e), 'err');
+    }).then(function(){ btn.disabled = false; });
+  });
+
+  /* ---------- Kemas kini jadual yang telah disimpan ---------- */
+  function exitUpdate(silent){
+    BASE = null; $('updBanner').className = 'upd-banner hidden';
+    absents.forEach(function(a){ delete a.base; });
+    if (!silent){ renderAbs(); hideResults(); }
+  }
+  function setBanner(){
+    if (!BASE) return;
+    var rec = BASE.rec, n = (rec.items || []).filter(function(it){ return it.kind === 'ganti'; }).length;
+    var srcTxt = BASE.src === 'skrin' ? 'Jadual yang sedang dipaparkan' : 'Jadual yang telah disimpan';
+    var how = BASE.mode === 'tambah'
+      ? 'Semua tugasan sedia ada <b>dikekalkan</b>. Tambah guru yang perlu keluar (pilih <b>Beberapa masa</b> dan masa keluar), isikan sebab, kemudian tekan <b>Jana</b>. Tugasan baharu ditanda <b>TAMBAHAN</b>.'
+      : 'Semua tugasan teach-in akan <b>disusun semula</b> mengikut senarai guru tidak hadir dan tetapan terkini. Ubah senarai jika perlu, kemudian tekan <b>Jana</b>. Tugasan yang berbeza daripada jadual asal ditanda <b>BERUBAH</b>.';
+    $('updBanner').innerHTML = '<div><b>Mod kemas kini: ' + (BASE.mode === 'tambah' ? 'Tambah teach-in' : 'Jana semula keseluruhan') + ' — ' + esc(rec.day || D.day || '') + ', ' + fmtDate(rec.date || $('dateIn').value) + '.</b> ' +
+      srcTxt + ' dimuatkan (' + (rec.absents || []).length + ' guru tidak hadir, ' + n + ' masa teach-in).<br>' + how + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn ghost small" type="button" id="swModeBtn">' + (BASE.mode === 'tambah' ? '⟳ Tukar ke Jana Semula' : '＋ Tukar ke Tambah Teach-In') + '</button>' +
+      '<button class="btn ghost small" type="button" id="exitUpdBtn">Keluar mod kemas kini</button></div>';
+    $('updBanner').className = 'upd-banner';
+    $('exitUpdBtn').onclick = function(){ exitUpdate(false); };
+    $('swModeBtn').onclick = function(){ BASE.mode = BASE.mode === 'tambah' ? 'semula' : 'tambah'; setBanner(); hideResults(); };
+  }
+  function startUpdate(mode, btn){
+    var date = $('dateIn').value;
+    // 1) Jadual yang sedang dipaparkan (belum/sudah disimpan) dijadikan asas.
+    if (R && R.date === date){
+      var snap = recordData('');
+      snap.revision = BASE ? BASE.rec.revision : null;
+      var map = {};
+      snap.items.forEach(function(it){ map[it.class + '@' + it.start] = it; });
+      BASE = { rec: snap, map: map, mode: mode, src: 'skrin' };
+      absents.forEach(function(a){ a.base = true; });
+      renderAbs(); setBanner();
+      toast(mode === 'tambah' ? 'Jadual semasa dikekalkan. Tambah guru tidak hadir, kemudian tekan Jana.' : 'Ubah senarai jika perlu, kemudian tekan Jana untuk menyusun semula.');
+      return;
+    }
+    // 2) Jika tiada di skrin, muatkan jadual yang telah disimpan.
+    var A = window.GantiAuth;
+    if (!A || !A.user()){ toast('Tiada jadual dipaparkan. Log masuk untuk memuatkan jadual yang telah disimpan.'); $('loginStrip').scrollIntoView({ behavior: 'smooth' }); return; }
+    if (absents.length && !confirm('Senarai guru tidak hadir sekarang akan diganti dengan jadual yang telah disimpan. Teruskan?')) return;
+    btn.disabled = true;
+    A.loadRecords([date]).then(function(recs){
+      var rec = recs[date];
+      if (!rec){ toast('Tiada jadual dipaparkan atau disimpan untuk ' + fmtDate(date) + '. Gunakan Jana seperti biasa.'); return; }
+      var map = {};
+      (rec.items || []).forEach(function(it){ map[it.class + '@' + it.start] = it; });
+      BASE = { rec: rec, map: map, mode: mode, src: 'rekod' };
+      absents = (rec.absents || []).filter(function(a){ return teachers.indexOf(a.name) >= 0; }).map(function(a){
+        var b = bounds();
+        return { name: a.name, full: !!a.full, from: a.full ? b[0] : a.from, to: a.full ? b[b.length - 1] : a.to, reason: a.reason || '', base: true,
+          cover: a.cover && teachers.indexOf(a.cover) >= 0 ? a.cover : '',
+          extra: a.full ? [] : (a.extra || []).map(function(r){ return { from: r.from, to: r.to }; }) };
+      });
+      holds = (rec.holds || []).filter(function(h){ return teachers.indexOf(h.name) >= 0; }).map(function(h){ return { name: h.name, from: h.from, to: h.to, reason: h.reason || '' }; });
+      renderHolds();
+      swaps = (rec.swaps || []).filter(function(w){ return teachers.indexOf(w.owner) >= 0 && teachers.indexOf(w.taker) >= 0; })
+        .map(function(w){ return { owner: w.owner, taker: w.taker, from: w.from, to: w.to, ownerFree: !!w.ownerFree }; });
+      programs = (rec.programs || []).map(function(p){ return { name: p.name, from: p.from, to: p.to, classes: p.classes || [], free: !!p.free }; });
+      if (rec.preparedBy && teachers.indexOf(rec.preparedBy) >= 0) $('preparedBy').value = rec.preparedBy;
+      onDate();
+      setBanner();
+    }).catch(function(e){ toast('Gagal memuatkan jadual: ' + (e.code || e.message)); })
+      .then(function(){ btn.disabled = false; });
+  }
+  ['loadSavedBtn', 'redoBtn'].forEach(function(id){
+    $(id).addEventListener('click', function(){ startUpdate(this.dataset.mode, this); });
+  });
+
+  /* ---------- Rekod data harian (Firestore gantiRekod) ---------- */
+  function recordData(weekLabel){
+    return {
+      date: R.date, day: R.day, week: weekLabel || '',
+      preparedBy: $('preparedBy').value,
+      revision: BASE ? (BASE.rec.revision == null ? 0 : BASE.rec.revision || 1) + 1 : 1,
+      settings: (function(){
+        var x = Object.assign({}, R.set, { weekDropped: !!R.set.weekDropped, weekSoft: !!R.set.weekSoft,
+          pentadbir: Array.from(admins).sort(), fleksibel: Array.from(flex).sort() });
+        x.lines = settingsLines(x);
+        return x;
+      })(),
+      mode: BASE ? BASE.mode : 'baru',
+      programs: programs.map(function(p){ return { name: p.name, from: p.from, to: p.to, classes: p.classes.slice(), free: !!p.free }; }),
+      holds: holds.map(function(h){ return { name: h.name, from: h.from, to: h.to, reason: h.reason || '' }; }),
+      swaps: swaps.map(function(w){ return { owner: w.owner, taker: w.taker, from: w.from, to: w.to, ownerFree: !!w.ownerFree }; }),
+      absents: absents.map(function(a){ return { name: a.name, reason: a.reason || '', full: !!a.full, from: a.full ? '' : a.from, to: a.full ? '' : a.to, cover: a.cover || '',
+        extra: a.full ? [] : (a.extra || []).map(function(r){ return { from: r.from, to: r.to }; }) }; }),
+      items: R.needs.map(function(n){
+        var sl = D.slots[n.i];
+        return { start: sl.start, end: sl.end, class: n.class, subject: n.subject, absent: n.absent.slice(), lepas: !!n.lepas,
+          relief: n.relief || '', kind: n.program ? 'program' : n.kolab ? 'kolab' : n.relief ? 'ganti' : 'tiada',
+          note: n.program ? n.program.name : n.kolab ? n.partners.join(', ') : n.byMentor ? 'guru asal' : '', added: !!n.added };
+      })
+    };
+  }
+
+  /* ---------- Tab Rekod Mingguan ---------- */
+  var wkCache = {}, wkWeeks = null;
+  var WDAYS = ['ISNIN', 'SELASA', 'RABU', 'KHAMIS', 'JUMAAT'];
+  function addDays(d, n){ var x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
+  function setTab(t){
+    document.body.classList.toggle('tab-minggu', t === 'minggu');
+    document.body.classList.toggle('tab-panduan', t === 'panduan');
+    Array.prototype.forEach.call(document.querySelectorAll('#tabs .tab'), function(b){ b.classList.toggle('on', b.dataset.tab === t); });
+    lsSet('ganti_tab', t);
+    if (t === 'minggu') initWeekTab();
+    if (t === 'panduan') loadGuide();
+  }
+  // Panduan: dibaca daripada panduan-ganti.html supaya sentiasa sama dengan versi terkini (tanpa salinan dalam fail ini).
+  var guideLoaded = false;
+  function loadGuide(){
+    if (guideLoaded) return; guideLoaded = true;
+    fetch('panduan-ganti.html', { cache: 'no-cache' }).then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }).then(function(html){
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var css = Array.prototype.map.call(doc.querySelectorAll('style'), function(x){ return x.textContent.replace(/@page[^}]*\}/g, ''); }).join('\n');
+      var pg = doc.querySelector('.pg');
+      $('guideBody').innerHTML = '<style>' + css + '</style>' + (pg ? pg.outerHTML : '<div class="empty">Panduan tidak ditemui.</div>');
+    }).catch(function(e){
+      guideLoaded = false;
+      $('guideBody').innerHTML = '<div class="empty" style="color:var(--red)">Panduan tidak dapat dimuatkan (' + esc(e.message) + '). <a href="panduan-ganti.html" target="_blank">Buka panduan</a></div>';
+    });
+  }
+  $('tabs').addEventListener('click', function(ev){ var b = ev.target.closest('.tab'); if (b) setTab(b.dataset.tab); });
+
+  function wkMsg(t, err){ var el = $('wkMsg'); el.innerHTML = t || ''; el.className = 'wk-msg no-print' + (err ? ' err' : ''); }
+  function initWeekTab(){
+    if (wkWeeks){ loadWeekView(); return; }
+    loadWeeks().then(function(W){
+      wkWeeks = W.weeks;
+      // Minggu semasa = minggu yang hari Isninnya sudah tiba (Ahad masih dikira minggu lepas).
+      var today = KD.dateKey(), cur = W.weeks[0];
+      var started = W.weeks.filter(function(w){ return addDays(w.date, 1) <= today; });
+      if (started.length) cur = started[started.length - 1];
+      $('wkSel').innerHTML = (started.length ? started : [cur]).slice().reverse().map(function(w){
+        return '<option value="' + w.code + '"' + (w.code === cur.code ? ' selected' : '') + '>Minggu ' + w.code.replace(/^M/, '') + ' (' + fmtDate(addDays(w.date, 1)) + ' – ' + fmtDate(addDays(w.date, 5)) + ')</option>';
+      }).join('');
+      loadWeekView();
+    }).catch(function(e){ wkMsg('Senarai minggu tidak dapat dibaca: ' + esc(e.message), true); });
+  }
+  $('wkSel').addEventListener('change', loadWeekView);
+  $('wkSort').addEventListener('change', function(){ if (wkCache.cur) renderWeek(wkCache.cur); });
+  $('wkReload').addEventListener('click', function(){ wkCache = {}; loadWeekView(); });
+  $('wkPrint').addEventListener('click', function(){ doPrint('grid'); });
+
+  function loadWeekView(){
+    var code = $('wkSel').value; if (!code || !wkWeeks) return;
+    var w = wkWeeks.find(function(x){ return x.code === code; });
+    var dates = WDAYS.concat(['SABTU']).map(function(_, k){ return addDays(w.date, k + 1); });
+    var A = window.GantiAuth;
+    if (!A || !A.user()){ $('wkGrid').innerHTML = ''; $('wkStats').innerHTML = ''; wkMsg('Sila <b>log masuk</b> dengan akaun DELIMa (bahagian atas halaman) untuk melihat rekod mingguan.', true); return; }
+    if (wkCache[code]){ renderWeek(wkCache[code]); return; }
+    wkMsg('Memuatkan rekod Minggu ' + code.replace(/^M/, '') + '…');
+    A.loadRecords(dates).then(function(recs){
+      // Lajur Sabtu jika Sabtu itu sekolah ganti atau ada rekod.
+      var data = { code: code, dates: recs[dates[5]] || sekolahGanti(dates[5]) ? dates : dates.slice(0, 5), recs: recs };
+      wkCache[code] = data; renderWeek(data);
+    }).catch(function(e){ wkMsg('Rekod tidak dapat dimuatkan: ' + esc(e.code || e.message) + ' (semak peraturan Firestore gantiRekod).', true); });
+  }
+
+  function renderWeek(data){
+    wkCache.cur = data;
+    var recs = data.recs, dates = data.dates;
+    // per guru per hari: { abs: sebab|null, items: [] }
+    var M = {};
+    teachers.forEach(function(t){ M[t] = dates.map(function(){ return { abs: null, items: [] }; }); });
+    var saved = 0, totalSlots = 0, absDays = 0;
+    dates.forEach(function(d, k){
+      var r = recs[d]; if (!r) return; saved++;
+      (r.absents || []).forEach(function(a){
+        if (!M[a.name]) M[a.name] = dates.map(function(){ return { abs: null, items: [] }; });
+        M[a.name][k].abs = (a.reason || 'TH').toUpperCase() + (a.full ? '' : ' (' + rangeTxt(a) + ')');
+        absDays++;
+      });
+      (r.items || []).forEach(function(it){
+        if (it.kind !== 'ganti' || !it.relief) return;
+        if (!M[it.relief]) M[it.relief] = dates.map(function(){ return { abs: null, items: [] }; });
+        M[it.relief][k].items.push(it); totalSlots++;
+      });
+    });
+    var names = Object.keys(M);
+    var tot = {}; names.forEach(function(n){ tot[n] = M[n].reduce(function(s, c){ return s + c.items.length; }, 0); });
+    names.sort(function(a, b){ return ($('wkSort').value === 'jumlah' ? tot[b] - tot[a] : 0) || a.localeCompare(b); });
+    var involved = names.filter(function(n){ return tot[n] > 0; }).length;
+
+    var wl = 'Minggu ' + data.code.replace(/^M/, '') + ' (' + fmtDate(dates[0]) + ' – ' + fmtDate(dates[dates.length - 1]) + ')';
+    $('wkTitle').textContent = 'Rekod Teach-In Mingguan — ' + wl;
+    $('wkSub').textContent = saved + '/' + dates.length + ' hari direkod • ' + totalSlots + ' masa teach-in • ' + involved + ' guru terlibat • ' + absDays + ' guru-hari tidak hadir';
+    $('wkStats').innerHTML = stat('', saved + '/' + dates.length, 'Hari direkod') + stat('ok', totalSlots, 'Masa teach-in') +
+      stat('', involved, 'Guru terlibat') + stat('bad', absDays, 'Guru-hari tidak hadir');
+    wkMsg(saved ? '' : 'Belum ada rekod disimpan untuk minggu ini. Rekod dicipta apabila <b>Simpan Rekod</b> ditekan pada tab Jana Teach-In.');
+
+    var h = '<thead><tr><th class="tn">Guru</th>' + dates.map(function(d, k){
+      return '<th class="' + (recs[d] ? '' : 'nr') + '">' + (WDAYS[k] || 'SABTU') + (k === 5 && sekolahGanti(d) ? ' <small>(sekolah ganti)</small>' : '') + '<br>' + fmtDate(d) + (recs[d] ? '' : '<br><i>tiada rekod</i>') + '</th>';
+    }).join('') + '<th>Jumlah</th></tr></thead><tbody>';
+    names.forEach(function(n){
+      h += '<tr class="' + (tot[n] ? '' : 'none') + '"><td class="tn" title="' + esc(n) + '">' + esc(n) + '</td>';
+      M[n].forEach(function(c, k){
+        if (!recs[dates[k]]){ h += '<td class="c nr"></td>'; return; }
+        var parts = [];
+        if (c.abs) parts.push('<small>' + esc(c.abs) + '</small>');
+        if (c.items.length){
+          var tip = c.items.map(function(it){ return fmtT(it.start) + '-' + fmtT(it.end) + ' ' + it.class + ' ' + subjLabel(it.subject) + ' (ganti ' + it.absent.join(', ') + ')' + (it.added ? ' [tambahan]' : ''); }).join('\n');
+          var cls = c.items.map(function(it){ return it.class; }).filter(function(v, i, a){ return a.indexOf(v) === i; });
+          parts.push('<b>' + c.items.length + '</b><small>' + esc(cls.join(', ')) + '</small>');
+          h += '<td class="c r" title="' + esc(tip) + '">' + parts.join('') + '</td>'; return;
+        }
+        h += '<td class="c' + (c.abs ? ' abs' : '') + '">' + parts.join('') + '</td>';
+      });
+      h += '<td class="sum tot' + (tot[n] ? ' hl' : '') + '">' + (tot[n] || '–') + '</td></tr>';
+    });
+    $('wkGrid').innerHTML = h + '</tbody>';
+    // Tetapan yang digunakan oleh penyedia setiap hari (disimpan bersama rekod).
+    var days = WDAYS.concat(['SABTU']);
+    var sh = dates.map(function(d, k){
+      var r = recs[d]; if (!r) return '';
+      var st = r.settings, who = (r.preparedBy || '—') + (r.savedBy ? ' • disimpan oleh ' + r.savedBy : '');
+      var lines = st ? (st.lines || settingsLines(st)) : ['Tetapan tidak direkodkan (rekod disimpan sebelum ciri ini ditambah).'];
+      return '<details open><summary>' + days[k] + ' ' + fmtDate(d) + ' <span class="meta">— disediakan oleh ' + esc(who) +
+        (r.revision > 1 ? ' • kemas kini ke-' + (r.revision - 1) + (r.mode === 'semula' ? ' (jana semula)' : r.mode === 'tambah' ? ' (tambah teach-in)' : '') : '') + '</span></summary><ul>' +
+        lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul></details>';
+    }).join('');
+    $('wkSettings').innerHTML = sh ? '<h3>Tetapan yang digunakan</h3>' + sh : '';
+  }
+
+  /* ---------- Salin & cetak ---------- */
+  function doPrint(mode){
+    var css = mode === 'slip' ? '@page{size:A4 portrait;margin:12mm}' : '@page{size:A4 landscape;margin:7mm}';
+    var el = $('pageStyle'); if (!el){ el = document.createElement('style'); el.id = 'pageStyle'; document.head.appendChild(el); }
+    el.textContent = '@media print{' + css + '}';
+    document.body.classList.remove('print-slip', 'print-grid');
+    document.body.classList.add('print-' + mode);
+    window.print();
+  }
+  window.addEventListener('afterprint', function(){ document.body.classList.remove('print-slip', 'print-grid'); });
+  $('printBtn').addEventListener('click', function(){ doPrint('slip'); });
+  $('printGridBtn').addEventListener('click', function(){ doPrint('grid'); });
+  $('copyBtn').addEventListener('click', function(){
+    if (!R) return;
+    var lines = ['*TEACH-IN SK JALAN BINTANG*', R.day + ', ' + fmtDate(R.date)];
+    if (BASE && BASE.mode === 'semula'){
+      lines[0] = '*KEMAS KINI TEACH-IN SK JALAN BINTANG*';
+      lines.push('_Jadual ini menggantikan jadual teach-in sebelum ini._');
+    } else if (BASE){
+      lines[0] = '*KEMAS KINI TEACH-IN SK JALAN BINTANG*';
+      var fresh = absents.filter(function(a){ return !a.base; });
+      if (fresh.length){
+        lines.push('', '*Guru tidak hadir (tambahan):*');
+        fresh.forEach(function(a){ lines.push('• ' + a.name.toUpperCase() + (a.reason ? ' — ' + a.reason.toUpperCase() : '') + (a.full ? '' : ' (' + rangeTxt(a) + ')')); });
+      }
+      var adds = R.needs.filter(function(n){ return n.added; });
+      lines.push('', '*Tugasan teach-in tambahan:*');
+      if (!adds.length) lines.push('Tiada perubahan.');
+      adds.forEach(function(n){
+        var sl = D.slots[n.i];
+        lines.push(fmtT(sl.start) + '-' + fmtT(sl.end) + ' | ' + n.class + ' ' + subjLabel(n.subject) + ' → ' + reliefLabel(n).t +
+          (n.prevRelief ? ' (menggantikan ' + upShort(n.prevRelief) + ')' : ''));
+      });
+      if ($('preparedBy').value) lines.push('', 'Disediakan oleh: ' + $('preparedBy').value);
+      return copyText(lines.join('\n'));
+    }
+    slipGroups().forEach(function(a){
+      lines.push('', '*' + a.name.toUpperCase() + '*' + a.wa);
+      var mine = a.needs;
+      if (!mine.length) lines.push('Tiada kelas perlu diganti');
+      mine.forEach(function(n){
+        var s = D.slots[n.i];
+        lines.push(fmtT(s.start) + '-' + fmtT(s.end) + ' | ' + n.class + ' ' + subjLabel(n.subject) + ' → ' + reliefLabel(n).t +
+          (BASE && n.added ? ' _(BERUBAH' + (n.prevRelief ? ', asal: ' + upShort(n.prevRelief) : '') + ')_' : ''));
+      });
+    });
+    if ($('preparedBy').value) lines.push('', 'Disediakan oleh: ' + $('preparedBy').value);
+    copyText(lines.join('\n'));
+  });
+  function copyText(txt){
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){ toast('Teks disalin. Tampal di WhatsApp.'); }, function(){
+      var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('Teks disalin.'); } catch(e){ toast('Gagal menyalin.'); } ta.remove();
+    });
+  }
+
+  $('genBtn').addEventListener('click', function(){
+    if (!D.slots.length){ toast(/SABTU|AHAD/.test(D.realDay || '') ? 'Tiada jadual pada hari ini. Jika hari ini sekolah ganti, Admin / Penyelaras perlu menetapkannya dalam kad Sekolah ganti.' : 'Tiada jadual pada hari ini.'); return; }
+    if (!absents.length && !(D.lepas || []).length){ toast('Tambah sekurang-kurangnya seorang guru tidak hadir.'); return; }
+    if (!$('preparedBy').value){ toast('Pilih guru yang menyediakan jadual teach-in.'); $('preparedBy').focus(); return; }
+    if (absents.some(function(a){ return !a.full && rangesOf(a).some(function(r){ return mins(r.to) <= mins(r.from); }); })){ toast('Semak masa tidak hadir: masa tamat mesti selepas masa mula.'); return; }
+    var A = window.GantiAuth, btn = $('genBtn');
+    WEEKCNT = {}; WEEKDAYS = 0;
+    if (!$('weekFair').checked){ generate(); return; }
+    if (!A || !A.user()){ toast('Log masuk untuk menggunakan keutamaan mingguan. Jadual dijana tanpanya.'); generate(); return; }
+    var date = $('dateIn').value, dow = new Date(date + 'T00:00:00Z').getUTCDay();
+    if (dow === 0) dow = 7;
+    var dates = [1, 2, 3, 4, 5, 6].map(function(k){ return addDays(date, k - dow); }).filter(function(d){ return d !== date; });
+    btn.disabled = true;
+    A.loadRecords(dates).then(function(recs){
+      Object.keys(recs).forEach(function(d){
+        WEEKDAYS++;
+        (recs[d].items || []).forEach(function(it){ if (it.kind === 'ganti' && it.relief) WEEKCNT[it.relief] = (WEEKCNT[it.relief] || 0) + 1; });
+      });
+    }).catch(function(e){ toast('Rekod mingguan tidak dapat dibaca (' + (e.code || e.message) + '). Jadual dijana tanpanya.'); })
+      .then(function(){ btn.disabled = false; generate(); });
+  });
+
+  window.GantiUI = {
+    ready: null,
+    teachers: function(){ return teachers.slice(); },
+    changed: function(){ hideResults(); },
+    // Senarai kelas+subjek seorang guru (untuk borang guru praktikum).
+    mentorClasses: function(name){
+      var t = TT.data.teachers.find(function(x){ return x.name === name; }); if (!t) return [];
+      var agg = {};
+      t.entries.forEach(function(e){ var k = e.class + '|' + e.subject; agg[k] = (agg[k] || 0) + (mins(e.end) - mins(e.start)) / 30; });
+      return Object.keys(agg).sort().map(function(k){ var p = k.split('|'); return { class: p[0], subject: p[1], masa: agg[k] }; });
+    },
+    timetableTeachers: function(){ return TT.data.teachers.map(function(t){ return t.name; }).sort(function(a, b){ return a.localeCompare(b); }); },
+    praktikumChanged: function(){
+      (window.GANTI_PRAKTIKUM || []).forEach(function(p){ if (teachers.indexOf(p.name) < 0) teachers.push(p.name); });
+      teachers.sort(function(a, b){ return a.localeCompare(b); });
+      var by = $('preparedBy').value;
+      renderAdmins(); renderFlex(); renderPreparedBy(); if (by) $('preparedBy').value = by;
+      onDate();
+    },
+    sgChanged: function(){
+      if (!dateTouched) $('dateIn').value = defaultDate(); onDate();
+      wkCache = {}; if (document.body.classList.contains('tab-minggu')) loadWeekView();
+    },
+    authChanged: function(){ wkCache = {}; if (document.body.classList.contains('tab-minggu')) initWeekTab(); },
+    // Diagnostik: jana PDF slip / kod minggu tanpa memuat naik.
+    pdf: function(){ return loadPdfLib().then(buildPdf); },
+    record: function(){ return R ? recordData('') : null; },
+    weekFor: function(date){ return loadWeeks().then(function(W){ return schoolWeek(W, date); }); }
+  };
+
+  /* ---------- Mula ---------- */
+  var dateTouched = false;
+  function defaultDate(){
+    var d = new Date();
+    if (d.getHours() >= 13) d.setDate(d.getDate() + 1);       // selepas waktu sekolah: hari esok
+    while ((d.getDay() === 0 || d.getDay() === 6) && !sekolahGanti(KD.dateKey(d))) d.setDate(d.getDate() + 1);
+    return KD.dateKey(d);
+  }
+  window.GantiUI.ready = KD.loadTimetable().then(function(tt){
+    TT = tt;
+    teachers = tt.data.teachers.map(function(t){ return t.name; }).concat(EXTRA_TEACHERS.filter(function(n){
+      return !tt.data.teachers.some(function(t){ return t.name === n; });
+    })).sort(function(a, b){ return a.localeCompare(b); });
+    classCodes = tt.data.classes.map(function(c){ return c.code; }).sort();
+    TT.classTeachers = {};
+    tt.data.teachers.forEach(function(t){ t.entries.forEach(function(e){ (TT.classTeachers[e.class] = TT.classTeachers[e.class] || {})[t.name] = 1; }); });
+    TT.agama = {};
+    tt.data.teachers.forEach(function(t){ if (t.entries.some(function(e){ return AGAMA_SUBJ.test(e.subject || ''); })) TT.agama[t.name] = 1; });
+    admins = new Set(Array.from(admins).filter(function(n){ return teachers.indexOf(n) >= 0; }));
+    flex = new Set(Array.from(flex).filter(function(n){ return teachers.indexOf(n) >= 0; }));
+    $('loadingCard').classList.add('hidden');
+    ['absCard','holdCard','swapCard','progCard','setCard','byCard','genBar'].forEach(function(id){ $(id).classList.remove('hidden'); });
+    $('dateIn').value = defaultDate();
+    $('dateIn').addEventListener('change', function(){
+      dateTouched = true;
+      if (BASE) exitUpdate(true);
+      if (holds.length || swaps.length){ holds = []; swaps = []; toast('Permohonan dan jual beli masa dikosongkan kerana tarikh ditukar.'); }
+      onDate();
+    });
+    restoreSettings(); renderAdmins(); renderFlex(); renderPreparedBy(); renderProgClasses(); onDate();
+    var savedTab = lsGet('ganti_tab', 'jana'); if (savedTab === 'minggu' || savedTab === 'panduan') setTab(savedTab);
+    return teachers;
+  }).catch(function(e){
+    $('loadingCard').innerHTML = '<div class="empty" style="color:var(--red)">' + esc(e.message) + '</div>';
+  });
+})();
+</script>
+<script type="module">
+  // Log masuk Firebase (pilihan) — untuk membaca sekatan teach-in, dan admin mengurusnya.
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence }
+    from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, deleteDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  const app = initializeApp(self.SITE.firebase);
+  const auth = getAuth(app), db = getFirestore(app);
+  setPersistence(auth, browserLocalPersistence).catch(() => {});
+  const COL = "gantiSekatan";
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmtD = d => { const [y, m, dd] = d.split("-"); return `${dd}.${m}.${y}`; };
+  window.GANTI_SEKATAN = [];
+  let isAdmin = false;      // boleh mengurus tetapan teach-in: role admin ATAU Penyelaras Teach-In
+  let isRealAdmin = false;  // role admin sebenar (hanya ini boleh melantik Penyelaras Teach-In)
+  // Untuk butang "Simpan Rekod": token log masuk dihantar ke Apps Script untuk pengesahan guru.
+  window.GantiAuth = {
+    user: () => auth.currentUser,
+    token: () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null),
+    // Rekod harian teach-in: dokumen gantiRekod/<YYYY-MM-DD> (ditimpa jika disimpan semula pada hari yang sama).
+    saveRecord: data => setDoc(doc(db, "gantiRekod", data.date), {
+      ...data, savedBy: String(auth.currentUser.email || "").toLowerCase(), savedAt: serverTimestamp()
+    }),
+    loadRecords: async dates => {
+      const out = {};
+      await Promise.all(dates.map(async d => { const s = await getDoc(doc(db, "gantiRekod", d)); if (s.exists()) out[d] = s.data(); }));
+      return out;
+    }
+  };
+
+  function msg(html, showBtn) { $("loginMsg").innerHTML = html; $("loginBtn").classList.toggle("hidden", !showBtn); }
+
+  $("loginBtn").addEventListener("click", async () => {
+    try { const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" }); await signInWithPopup(auth, p); }
+    catch (e) { msg("Gagal log masuk: " + esc(e.message), true); }
+  });
+
+  // Sekolah ganti: dibaca tanpa log masuk (peraturan: read if true), diurus Admin / Penyelaras.
+  window.GANTI_SEKOLAH_GANTI = [];
+  async function loadSekolahGanti() {
+    const snap = await getDocs(collection(db, "sekolahGanti"));
+    window.GANTI_SEKOLAH_GANTI = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => a.date.localeCompare(b.date));
+    await window.GantiUI.ready; window.GantiUI.sgChanged();
+    if (isAdmin) renderSekolahGanti();
+  }
+  loadSekolahGanti().catch(e => console.warn("sekolahGanti", e));
+  let sgReady = false;
+  function initSgForm() {
+    if (sgReady) return; sgReady = true;
+    $("sgAddBtn").addEventListener("click", async () => {
+      const date = $("sgDate").value, ikut = $("sgDay").value, catatan = $("sgNote").value.trim();
+      if (!date) return alert("Pilih tarikh sekolah ganti.");
+      $("sgAddBtn").disabled = true;
+      try {
+        await setDoc(doc(db, "sekolahGanti", date), { date, ikut, catatan, createdBy: auth.currentUser.email, createdAt: serverTimestamp() });
+        $("sgNote").value = "";
+        await loadSekolahGanti();
+      } catch (e) { alert("Gagal menyimpan: " + (e.code || e.message) + "\nPastikan peraturan Firestore untuk sekolahGanti sudah ditambah."); }
+      finally { $("sgAddBtn").disabled = false; }
+    });
+    $("sgList").addEventListener("click", async ev => {
+      const id = ev.target.dataset.sgdel; if (!id) return;
+      if (!confirm("Padam tarikh sekolah ganti ini?")) return;
+      try { await deleteDoc(doc(db, "sekolahGanti", id)); await loadSekolahGanti(); } catch (e) { alert("Gagal memadam: " + (e.code || e.message)); }
+    });
+  }
+  function renderSekolahGanti() {
+    const HARI = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
+    const today = new Date().toISOString().slice(0, 10);
+    const list = window.GANTI_SEKOLAH_GANTI;
+    $("sgList").innerHTML = list.length ? list.map(x => `<div class="item"${x.date < today ? ' style="opacity:.55"' : ''}><div class="name">${fmtD(x.date)} (${HARI[new Date(x.date + "T00:00:00Z").getUTCDay()]}) → jadual ${esc(x.ikut)}
+        <div class="meta">${x.catatan ? esc(x.catatan) : "Sekolah ganti"}${x.date < today ? " • telah berlalu" : ""}</div></div>
+        <button class="btn danger" type="button" data-sgdel="${esc(x.id)}">Padam</button></div>`).join("")
+      : '<div class="empty">Tiada tarikh sekolah ganti ditetapkan.</div>';
+  }
+
+  window.GANTI_PRAKTIKUM = [];
+  window.GANTI_PELEPASAN = [];
+  // Pelepasan kelas disimpan dalam koleksi gantiPraktikum dengan jenis: "pelepasan" (peraturan Firestore sedia ada).
+  let lpReady = false;
+  function initLpForm() {
+    if (lpReady) return; lpReady = true;
+    $("lpTeacher").innerHTML = '<option value="">— Pilih guru —</option>' + window.GantiUI.timetableTeachers().map(n => `<option>${esc(n)}</option>`).join("");
+    $("lpTeacher").addEventListener("change", () => {
+      const list = window.GantiUI.mentorClasses($("lpTeacher").value);
+      $("lpClasses").innerHTML = list.length ? list.map(c => `<label class="chip pr"><input type="checkbox" value="${esc(c.class)}|${esc(c.subject)}">${esc(c.class)} ${esc(c.subject)} <span class="meta">(${c.masa} masa/minggu)</span></label>`).join("")
+        : '<span class="meta">Guru ini tiada kelas dalam jadual.</span>';
+    });
+    $("lpAddBtn").addEventListener("click", async () => {
+      const teacher = $("lpTeacher").value, reason = $("lpReason").value.trim(), from = $("lpFrom").value, to = $("lpTo").value;
+      const classes = [...$("lpClasses").querySelectorAll("input:checked")].map(x => { const [c, s] = x.value.split("|"); return { class: c, subject: s }; });
+      if (!teacher) return alert("Pilih guru.");
+      if (!classes.length) return alert("Pilih sekurang-kurangnya satu kelas.");
+      if (from && to && to < from) return alert("Tarikh tamat mesti selepas tarikh mula.");
+      $("lpAddBtn").disabled = true;
+      try {
+        await addDoc(collection(db, "gantiPraktikum"), { jenis: "pelepasan", name: teacher, teacher, classes, from, to, reason, createdBy: auth.currentUser.email, createdAt: serverTimestamp() });
+        $("lpReason").value = ""; [...$("lpClasses").querySelectorAll("input")].forEach(x => x.checked = false);
+        await loadPraktikum();
+      } catch (e) { alert("Gagal menyimpan: " + (e.code || e.message)); }
+      finally { $("lpAddBtn").disabled = false; }
+    });
+    $("lpList").addEventListener("click", async ev => {
+      const id = ev.target.dataset.lpdel; if (!id) return;
+      if (!confirm("Padam pelepasan ini?")) return;
+      try { await deleteDoc(doc(db, "gantiPraktikum", id)); await loadPraktikum(); } catch (e) { alert("Gagal memadam: " + (e.code || e.message)); }
+    });
+  }
+  function renderPelepasan() {
+    const list = window.GANTI_PELEPASAN;
+    $("lpList").innerHTML = list.length ? list.map(p => `<div class="item"><div class="name">${esc(p.teacher)} <span class="base-tag" style="background:#fef3c7;color:#92400e">DIBEBASKAN</span>
+        <div class="meta">${(p.classes || []).map(c => esc(c.class + " " + c.subject)).join(", ")} • ${p.from ? fmtD(p.from) : "—"} hingga ${p.to ? fmtD(p.to) : "—"}${p.reason ? " • " + esc(p.reason) : ""}</div></div>
+        <button class="btn danger" type="button" data-lpdel="${esc(p.id)}">Padam</button></div>`).join("")
+      : '<div class="empty">Tiada pelepasan kelas.</div>';
+  }
+  async function loadPraktikum() {
+    const snap = await getDocs(collection(db, "gantiPraktikum"));
+    const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    window.GANTI_PELEPASAN = all.filter(x => x.jenis === "pelepasan").sort((a, b) => String(a.teacher).localeCompare(String(b.teacher)));
+    window.GANTI_PRAKTIKUM = all.filter(x => !x.jenis).sort((a, b) => a.name.localeCompare(b.name));
+    if (isAdmin) renderPelepasan();
+    window.GantiUI && window.GantiUI.praktikumChanged();
+    if (isAdmin) renderPraktikum();
+    return window.GANTI_PRAKTIKUM.length;
+  }
+
+  async function loadBlocks() {
+    const snap = await getDocs(collection(db, COL));
+    window.GANTI_SEKATAN = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => a.teacher.localeCompare(b.teacher) || String(a.from).localeCompare(String(b.from)));
+    window.GantiUI && window.GantiUI.changed();
+    if (isRealAdmin) renderBlocks();
+    return window.GANTI_SEKATAN.length;
+  }
+
+  onAuthStateChanged(auth, async u => {
+    isAdmin = false; isRealAdmin = false; window.GANTI_SEKATAN = []; window.GANTI_SEE_SEKATAN = false; $("blockCard").classList.add("hidden"); $("prCard").classList.add("hidden"); $("sgCard").classList.add("hidden"); $("lpCard").classList.add("hidden"); $("coordCard").classList.add("hidden");
+    if (window.GANTI_PRAKTIKUM.length || window.GANTI_PELEPASAN.length) { window.GANTI_PRAKTIKUM = []; window.GANTI_PELEPASAN = []; window.GantiUI?.ready?.then(() => window.GantiUI.praktikumChanged()); }
+    window.GantiUI?.ready?.then(() => window.GantiUI.authChanged());
+    if (!u) { window.ICTHeader?.clearUser(); msg("Log masuk dengan akaun DELIMa supaya tetapan sekolah (guru praktikum dan lain-lain) turut diambil kira, dan rekod boleh disimpan.", true); return; }
+    try {
+      const snap = await getDoc(doc(db, "teachers", String(u.email || "").toLowerCase().trim()));
+      if (!snap.exists() || snap.data().active !== true) { msg("Akaun ini bukan guru aktif — sekatan teach-in tidak dimuatkan.", true); return; }
+      const t = snap.data();
+      isRealAdmin = t.role === "admin";
+      isAdmin = isRealAdmin || t.penyelarasTeachIn === true;
+      window.ICTHeader?.setUser(t.displayName || u.displayName || u.email,
+        isRealAdmin ? "ADMIN" : t.penyelarasTeachIn === true ? "PENYELARAS TEACH-IN" : t.role === "pentadbir" ? "PENTADBIR" : "GURU");
+      if (isRealAdmin) { $("coordCard").classList.remove("hidden"); loadCoordinators(); }
+      window.GANTI_SEE_SEKATAN = isRealAdmin;   // sekatan teach-in: admin sahaja boleh melihat & mengurus
+      if (isRealAdmin) { await window.GantiUI.ready; initForm(); $("blockCard").classList.remove("hidden"); }
+      if (isAdmin) { await window.GantiUI.ready; initPrForm(); $("prCard").classList.remove("hidden"); initSgForm(); $("sgCard").classList.remove("hidden"); renderSekolahGanti(); initLpForm(); $("lpCard").classList.remove("hidden"); renderPelepasan(); }
+      await window.GantiUI.ready;
+      try { await loadPraktikum(); } catch (e) { console.warn("gantiPraktikum", e); if (isAdmin) $("prList").innerHTML = '<div class="empty" style="color:var(--red)">Senarai guru praktikum tidak dapat dibaca (' + esc(e.code || e.message) + '). Semak peraturan Firestore gantiPraktikum.</div>'; }
+      const n = await loadBlocks();
+      msg(`Log masuk sebagai <b>${esc(t.displayName || u.email)}</b>` + (isRealAdmin ? ` • ${n} sekatan teach-in diambil kira.` : ` • tetapan sekolah diambil kira.`), false);
+    } catch (e) {
+      console.error(e);
+      msg("Sekatan teach-in tidak dapat dimuatkan (" + esc(e.code || e.message) + ").", false);
+    }
+  });
+
+  /* ---------- Borang admin ---------- */
+  let formReady = false;
+  function times(from, to) { const o = []; for (let m = from; m <= to; m += 30) o.push(String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0")); return o; }
+  function initForm() {
+    if (formReady) return; formReady = true;
+    $("blkTeacher").innerHTML = '<option value="">— Pilih guru —</option>' + window.GantiUI.teachers().map(n => `<option>${esc(n)}</option>`).join("");
+    const t = times(7 * 60, 13 * 60);
+    $("blkFrom").innerHTML = t.slice(0, -1).map(x => `<option>${x}</option>`).join("");
+    $("blkTo").innerHTML = t.slice(1).map(x => `<option>${x}</option>`).join("");
+    $("blkTo").value = "07:30";
+    $("blkWhen").addEventListener("change", () => $("blkDateWrap").classList.toggle("hidden", $("blkWhen").value !== "TARIKH"));
+    $("blkAddBtn").addEventListener("click", addBlock);
+    $("blkList").addEventListener("click", async ev => {
+      const id = ev.target.dataset.bdel; if (!id) return;
+      if (!confirm("Padam sekatan ini?")) return;
+      try { await deleteDoc(doc(db, COL, id)); await loadBlocks(); } catch (e) { alert("Gagal memadam: " + (e.code || e.message)); }
+    });
+  }
+  async function addBlock() {
+    const teacher = $("blkTeacher").value, when = $("blkWhen").value, from = $("blkFrom").value, to = $("blkTo").value;
+    const reason = $("blkReason").value.trim(), date = $("blkDate").value;
+    if (!teacher) return alert("Pilih guru.");
+    if (to <= from) return alert("Masa tamat mesti selepas masa mula.");
+    if (when === "TARIKH" && !date) return alert("Pilih tarikh.");
+    if (!reason) return alert("Isikan sebab sekatan.");
+    const data = { teacher, from, to, reason, day: when === "TARIKH" ? "" : when, date: when === "TARIKH" ? date : "",
+      createdBy: auth.currentUser.email, createdAt: serverTimestamp() };
+    $("blkAddBtn").disabled = true;
+    try { await addDoc(collection(db, COL), data); $("blkReason").value = ""; await loadBlocks(); }
+    catch (e) { alert("Gagal menyimpan: " + (e.code || e.message) + "\nPastikan peraturan Firestore untuk gantiSekatan sudah ditambah."); }
+    finally { $("blkAddBtn").disabled = false; }
+  }
+  /* ---------- Admin: lantik Penyelaras Teach-In (medan penyelarasTeachIn dalam teachers/<email>) ---------- */
+  let coordWired = false;
+  async function loadCoordinators() {
+    const box = $("coordList");
+    try {
+      const snap = await getDocs(collection(db, "teachers"));
+      const rows = snap.docs.map(d => ({ email: d.id, ...d.data() })).filter(t => t.active !== false && t.role !== "admin")
+        .sort((a, b) => String(a.displayName || a.email).localeCompare(String(b.displayName || b.email)));
+      box.innerHTML = rows.map(t => `<label data-s="${esc(String(t.displayName || "").toLowerCase() + " " + t.email)}"><input type="checkbox" value="${esc(t.email)}"${t.penyelarasTeachIn === true ? " checked" : ""}>${esc(t.displayName || t.email)}</label>`).join("")
+        || '<div class="empty">Tiada guru.</div>';
+      if (!coordWired) {
+        coordWired = true;
+        $("coordSearch").addEventListener("input", () => {
+          const q = $("coordSearch").value.toLowerCase().trim();
+          [...box.querySelectorAll("label")].forEach(l => l.style.display = !q || l.dataset.s.includes(q) ? "" : "none");
+        });
+        box.addEventListener("change", async ev => {
+          const cb = ev.target; if (!cb.value) return;
+          cb.disabled = true;
+          try { await updateDoc(doc(db, "teachers", cb.value), { penyelarasTeachIn: cb.checked }); }
+          catch (e) { cb.checked = !cb.checked; alert("Gagal menyimpan: " + (e.code || e.message)); }
+          finally { cb.disabled = false; }
+        });
+      }
+    } catch (e) { box.innerHTML = '<div class="empty" style="color:var(--red)">Senarai guru tidak dapat dibaca (' + esc(e.code || e.message) + ').</div>'; }
+  }
+
+  /* ---------- Borang admin: guru praktikum ---------- */
+  let prReady = false;
+  function initPrForm() {
+    if (prReady) return; prReady = true;
+    $("prMentor").innerHTML = '<option value="">— Pilih guru asal —</option>' + window.GantiUI.timetableTeachers().map(n => `<option>${esc(n)}</option>`).join("");
+    $("prMentor").addEventListener("change", () => {
+      const list = window.GantiUI.mentorClasses($("prMentor").value);
+      $("prClasses").innerHTML = list.length ? list.map(c => `<label class="chip pr"><input type="checkbox" value="${esc(c.class)}|${esc(c.subject)}">${esc(c.class)} ${esc(c.subject)} <span class="meta">(${c.masa} masa/minggu)</span></label>`).join("")
+        : '<span class="meta">Guru ini tiada kelas dalam jadual.</span>';
+    });
+    $("prAddBtn").addEventListener("click", async () => {
+      const name = $("prName").value.trim().replace(/\s+/g, " "), mentor = $("prMentor").value;
+      const classes = [...$("prClasses").querySelectorAll("input:checked")].map(x => { const [c, s] = x.value.split("|"); return { class: c, subject: s }; });
+      const from = $("prFrom").value, to = $("prTo").value;
+      if (!name) return alert("Isikan nama guru praktikum.");
+      if (window.GantiUI.timetableTeachers().includes(name)) return alert("Nama ini sudah ada dalam jadual guru.");
+      if (!mentor) return alert("Pilih guru asal.");
+      if (!classes.length) return alert("Pilih sekurang-kurangnya satu kelas yang diambil alih.");
+      if (from && to && to < from) return alert("Tarikh tamat mesti selepas tarikh mula.");
+      $("prAddBtn").disabled = true;
+      try {
+        await addDoc(collection(db, "gantiPraktikum"), { name, mentor, classes, from, to, createdBy: auth.currentUser.email, createdAt: serverTimestamp() });
+        $("prName").value = ""; [...$("prClasses").querySelectorAll("input")].forEach(x => x.checked = false);
+        await loadPraktikum();
+      } catch (e) { alert("Gagal menyimpan: " + (e.code || e.message) + "\nPastikan peraturan Firestore untuk gantiPraktikum sudah ditambah."); }
+      finally { $("prAddBtn").disabled = false; }
+    });
+    $("prList").addEventListener("click", async ev => {
+      const id = ev.target.dataset.prdel; if (!id) return;
+      if (!confirm("Padam guru praktikum ini?")) return;
+      try { await deleteDoc(doc(db, "gantiPraktikum", id)); await loadPraktikum(); } catch (e) { alert("Gagal memadam: " + (e.code || e.message)); }
+    });
+  }
+  function renderPraktikum() {
+    const list = window.GANTI_PRAKTIKUM;
+    $("prList").innerHTML = list.length ? list.map(p => `<div class="item"><div class="name">${esc(p.name)} <span class="base-tag" style="background:#ecfeff;color:#155e75">PRAKTIKUM</span>
+        <div class="meta">Guru asal: ${esc(p.mentor)} • ${(p.classes || []).map(c => esc(c.class + " " + c.subject)).join(", ")} • ${p.from ? fmtD(p.from) : "—"} hingga ${p.to ? fmtD(p.to) : "—"}</div></div>
+        <button class="btn danger" type="button" data-prdel="${esc(p.id)}">Padam</button></div>`).join("")
+      : '<div class="empty">Tiada guru praktikum didaftarkan.</div>';
+  }
+
+  function renderBlocks() {
+    const list = window.GANTI_SEKATAN;
+    $("blkList").innerHTML = list.length ? list.map(b => `<div class="item"><div class="name">${esc(b.teacher)}
+        <div class="meta">${b.date ? fmtD(b.date) : (b.day === "SEMUA" ? "Setiap hari" : "Setiap " + esc(b.day))} • ${esc(b.from)}–${esc(b.to)} • ${esc(b.reason)}</div></div>
+        <button class="btn danger" type="button" data-bdel="${esc(b.id)}">Padam</button></div>`).join("")
+      : '<div class="empty">Tiada sekatan.</div>';
+  }
+</script>
+</body>
+</html>

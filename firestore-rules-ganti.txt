@@ -1,0 +1,45 @@
+// GURU GANTI (ganti.html) — peraturan Firestore.
+// Tambah fungsi isGantiAdmin() selepas fungsi isReviewer() dalam peraturan penuh (Firebase Console → Firestore → Rules),
+// kemudian blok-blok di bawah di dalam `match /databases/{database}/documents { ... }` (gantikan blok Guru Ganti yang lama).
+// Penyelaras Teach-In = guru dengan medan penyelarasTeachIn == true dalam teachers/<email> (dilantik oleh Admin dalam ganti.html).
+
+    function isGantiAdmin() {
+      return isAdmin()
+        || (isActiveTeacher() && get(teacherPath()).data.get('penyelarasTeachIn', false) == true);
+    }
+
+    // ==========================================
+    // GURU GANTI — SEKATAN TEACH-IN
+    // ==========================================
+    match /gantiSekatan/{id} {
+      allow read: if isActiveTeacher();
+      allow create, update, delete: if isAdmin();   // Admin sahaja (bukan Penyelaras)
+    }
+
+    // ==========================================
+    // GURU GANTI — REKOD HARIAN TEACH-IN (tab Rekod Mingguan)
+    // ==========================================
+    match /gantiRekod/{date} {
+      allow read: if isActiveTeacher();
+      allow create, update: if isActiveTeacher()
+        && request.resource.data.savedBy == request.auth.token.email
+        && request.resource.data.date == date;
+      allow delete: if isGantiAdmin();
+    }
+
+    // ==========================================
+    // GURU GANTI — GURU PRAKTIKUM
+    // ==========================================
+    match /gantiPraktikum/{id} {
+      allow read: if isActiveTeacher();
+      allow create, update, delete: if isGantiAdmin();
+    }
+
+    // ==========================================
+    // SEKOLAH GANTI — tarikh persekolahan ganti dan jadual hari yang digunakan
+    // (doc id = YYYY-MM-DD; dibaca tanpa log masuk supaya semua boleh menjana teach-in)
+    // ==========================================
+    match /sekolahGanti/{date} {
+      allow read: if true;
+      allow create, update, delete: if isGantiAdmin();
+    }
