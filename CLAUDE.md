@@ -50,7 +50,9 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
   slate/gray to a warm stone scale and green/emerald/teal/brand to one zamrud scale, so existing classes follow the theme.
 - `tema-zamrud.css` is loaded last in index.html and overrides `mobile-tools-ui.css` and inline styles.
 - Type: Marcellus for headings, Plus Jakarta Sans for text. Accent: brass `#AC8634`/`#D9B766`.
-  The one signature element is the eight-point star (khatam) lattice on the hub welcome panel and the tool header.
+  The one signature element is the eight-point star (khatam) lattice on the hub welcome panel and the tool header: a fine 64px interlaced lattice
+  (`--khatam`) plus a 16-point rosette (`--rosette`) at the right, a double inset gold frame and a deep-to-lighter emerald radial gradient.
+  The same SVGs are inlined as `KHATAM`/`ROSETTE` in `ict-header.js` — keep both copies in sync.
 - `ict-header.js` uses the same palette, khatam pattern and fonts for every tool page.
 
 ## Conventions for tool pages
