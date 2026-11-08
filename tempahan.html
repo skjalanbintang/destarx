@@ -442,6 +442,7 @@ $("googleLoginBtn").addEventListener("click", async () => {
 
 $("bookingForm").addEventListener("submit", submitBooking);
 $("editRoom").insertAdjacentHTML("beforeend", ROOMS.map(r => `<option>${escapeHtml(r)}</option>`).join(""));
+$("room").insertAdjacentHTML("beforeend", ROOMS.map(r => `<option>${escapeHtml(r)}</option>`).join(""));
 $("editForm").addEventListener("submit", saveEdit);
 $("editCancelBtn").addEventListener("click", closeEdit);
 $("editModal").addEventListener("click", e => { if (e.target === $("editModal")) closeEdit(); });
@@ -740,11 +741,6 @@ onAuthStateChanged(auth, async user => {
             Bilik
             <select id="room" required>
               <option value="">-- Pilih bilik --</option>
-              <option>Dewan Ibnu Khaldun</option>
-              <option>Makmal Komputer</option>
-              <option>Bengkel RBT</option>
-              <option>Bilik Muzik</option>
-              <option>Bilik Mesyuarat</option>
             </select>
           </label>
 
