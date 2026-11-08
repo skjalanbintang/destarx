@@ -278,3 +278,12 @@ html body #toolsGrid>.hub-cat:focus-visible{outline:2px solid var(--emas);outlin
 html body #catBack{border-radius:999px;border-color:var(--garis);background:transparent;color:var(--redup)}
 html body #catBack:hover{border-color:var(--zamrud);color:var(--zamrud)}
 @media(prefers-reduced-motion:reduce){#toolsGrid>.hub-cat{transition:none}}
+
+/* ---------- Bar kembali pada telefon ---------- */
+#catBar{display:none}
+@media(max-width:640px){
+  html body #catBar.on{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:2px 0}
+  #catBar button{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--garis);background:var(--kertas);color:var(--zamrud);font-size:13px;font-weight:600;font-family:var(--font-teks)}
+  #catBar button:active{background:var(--zamrud-lembut)}
+  #catBar b{font-family:var(--font-tajuk);font-weight:400;font-size:20px;color:var(--dakwat)}
+}

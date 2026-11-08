@@ -845,6 +845,12 @@
             <span id="sectionHint" class="text-[11px] text-slate-400">Pilih kategori untuk melihat alatan</span>
         </div>
 
+        <!-- Bar kembali (telefon): baris tajuk bahagian disembunyikan pada skrin kecil -->
+        <div id="catBar">
+            <button type="button" onclick="setCategory('ALL')" aria-label="Kembali ke semua kategori"><i class="fa-solid fa-arrow-left"></i><span>Semua kategori</span></button>
+            <b id="catBarTitle"></b>
+        </div>
+
         <!-- Grid Cards Container -->
         <div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Cards populated dynamically via JavaScript -->
@@ -2568,6 +2574,11 @@
 
             const hc = hubCat(cat);
             document.getElementById('sectionTitle').innerText = cat === 'ALL' ? 'Kategori' : cat === 'FAV' ? 'Alatan disimpan' : (hc ? hc.label : 'Senarai Alatan');
+            const bar = document.getElementById('catBar');
+            if (bar) {
+                bar.classList.toggle('on', !!hc || cat === 'FAV');
+                document.getElementById('catBarTitle').innerText = hc ? hc.label : (cat === 'FAV' ? 'Alatan disimpan' : '');
+            }
             const back = document.getElementById('catBack');
             if (back) back.classList.toggle('hidden', !hc);
             const hint = document.getElementById('sectionHint');
