@@ -26,6 +26,11 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
 - Timetable name -> account: `teachers/<email>.namaJadual` (set in tetapan.html "Padanan nama jadual"); `kehadiran.html` passes it to
   `findTeacher` before displayName.
 
+## Selenggara alatan
+
+- Setiap tool boleh ditandakan `maintenance: true` (+ `maintenanceMsg`) di Panel Pentadbir > Edit (kotak "Selenggara"). `launchTool()` menyekat guru bukan admin
+  dengan toast mesej itu; kad menjadi pudar dengan lencana "Diselenggara". Hanya hub yang menyekat — URL terus ke halaman tool masih boleh dibuka.
+
 ## Kategori paparan utama
 
 - Paparan utama index.html memaparkan 5 kad kategori (`HUB_CATS`): PENGURUSAN, KURIKULUM, HEM (Hal Ehwal Murid), KOKURIKULUM, PPKI.

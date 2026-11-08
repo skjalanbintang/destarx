@@ -1605,7 +1605,7 @@
                         <!-- URL Input Container -->
                         <div id="urlInputContainer">
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Pautan Web URL <span class="text-rose-500">*</span></label>
-                            <input type="url" id="toolUrl" placeholder="https://delimamb.moe-dl.edu.my" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                            <input type="text" id="toolUrl" placeholder="https://delimamb.moe-dl.edu.my" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
                         </div>
 
                         <!-- HTML Input Container -->
@@ -1621,6 +1621,14 @@
 
 </style>&#10;<h3>Timer PdP</h3>&#10;<button onclick='alert(&quot;Mula!&quot;)'>Mula</button>" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-900 text-emerald-400 font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
                             <p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-circle-info mr-1"></i>Kod HTML ini akan dijalankan secara selamat di dalam paparan modal web app.</p>
+                        </div>
+
+                        <div class="rounded-xl border border-amber-300/60 bg-amber-500/5 p-3 space-y-2">
+                            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="toolMaint" class="w-4 h-4"> Selenggara (tutup sementara untuk guru)
+                            </label>
+                            <input type="text" id="toolMaintMsg" placeholder="Mesej untuk guru, cth. Sedang diselenggara, cuba semula petang ini" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+                            <p class="text-[10px] text-slate-400">Admin masih boleh membuka alatan ini. Hanya menyekat pembukaan melalui hub.</p>
                         </div>
 
                         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-200 dark:border-slate-800">
@@ -2188,6 +2196,11 @@
             const tool = tools.find(t => t.id === id);
             if (!tool) return;
 
+            if (tool.maintenance && !(window.currentTeacher && window.currentTeacher.role === 'admin')) {
+                showToast(tool.maintenanceMsg || 'Alatan ini sedang diselenggara oleh admin. Sila cuba sebentar lagi.', 'info');
+                return;
+            }
+
             if (tool.type === 'ERPH') {
                 openErphModal();
             } else if (tool.type === 'URL' || tool.type === 'HTML') {
@@ -2493,6 +2506,7 @@
                 const card = document.createElement('div');
                 card.className = 'tool-card glass-card p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all duration-200 flex flex-col justify-between group relative ios-shadow';
                 card.dataset.cat = (hubCat(catOf(tool)) || {}).old || 'PENTADBIRAN';
+                if (tool.maintenance) card.style.opacity = '.6';
                 card.style.setProperty('--card-i', String(grid.children.length));
 
                 const cc = catOf(tool);
@@ -2519,7 +2533,7 @@
                         </div>
 
                         <div class="flex items-center space-x-1.5 mb-1.5">
-                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${catBadgeColor}">${catLabel}</span>
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${catBadgeColor}">${catLabel}</span>${tool.maintenance ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-600 border border-amber-500/30 ml-1"><i class="fa-solid fa-screwdriver-wrench mr-1"></i>Diselenggara</span>' : ''}
                             ${typeBadge}
                         </div>
 
@@ -2802,7 +2816,9 @@
                 url: type === 'URL' ? url : '',
                 htmlCode: type === 'HTML' ? htmlCode : '',
                 isPinned: existing?.isPinned || false,
-                order: existing?.order ?? 9999
+                order: existing?.order ?? 9999,
+                maintenance: document.getElementById('toolMaint').checked,
+                maintenanceMsg: document.getElementById('toolMaintMsg').value.trim()
             };
 
             try {
@@ -2831,6 +2847,8 @@
             document.getElementById('toolUrl').value = '';
             document.getElementById('toolHtmlCode').value = '';
             document.getElementById('toolIcon').value = '';
+            document.getElementById('toolMaint').checked = false;
+            document.getElementById('toolMaintMsg').value = '';
             document.getElementById('submitFormBtn').innerHTML = `<i class="fa-solid fa-floppy-disk mr-1.5"></i>Simpan Tool`;
         }
 
@@ -2882,6 +2900,8 @@
             document.getElementById('toolIcon').value = tool.icon || '';
             document.getElementById('toolUrl').value = tool.url || '';
             document.getElementById('toolHtmlCode').value = tool.htmlCode || '';
+            document.getElementById('toolMaint').checked = !!tool.maintenance;
+            document.getElementById('toolMaintMsg').value = tool.maintenanceMsg || '';
 
             toggleTypeInput();
             document.getElementById('submitFormBtn').innerHTML = `<i class="fa-solid fa-pen-to-square mr-1.5"></i>Kemaskini Tool`;
