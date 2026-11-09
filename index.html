@@ -736,7 +736,7 @@
         html:not(.dark) #adminModal .admin-content [class*="bg-white/10"] { background:#f1f5f9 !important; }
         html:not(.dark) #adminModal .admin-scroll::-webkit-scrollbar-thumb { background:rgba(100,116,139,.3); }
     </style>
-    <link rel="stylesheet" href="./tema-zamrud.css?v=20261109-2">
+    <link rel="stylesheet" href="./tema-zamrud.css?v=20261109-3">
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-200 flex flex-col justify-between pb-20 md:pb-6">
 
@@ -2518,7 +2518,7 @@
                 const card = document.createElement('div');
                 card.className = 'tool-card glass-card p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all duration-200 flex flex-col justify-between group relative ios-shadow';
                 card.dataset.cat = (hubCat(catOf(tool)) || {}).old || 'PENTADBIRAN';
-                if (tool.maintenance) card.style.opacity = '.6';
+                if (tool.maintenance) card.classList.add('is-maint');
                 card.style.setProperty('--card-i', String(grid.children.length));
 
                 const cc = catOf(tool);
@@ -2565,7 +2565,9 @@
                     </div>
                     <span class="tool-card-watermark" aria-hidden="true"><i class="${tool.icon || 'fa-solid fa-wrench'}"></i></span>
                     <span class="tool-card-go" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+                    ${tool.maintenance ? '<span class="tool-card-maint" aria-hidden="true"><span>DISELENGGARA</span></span>' : ''}
                 `;
+                if (tool.maintenance) card.setAttribute('aria-label', (tool.title || 'Alatan') + ' (sedang diselenggara)');
                 grid.appendChild(card);
             });
         }

@@ -29,7 +29,8 @@ https://skjalanbintang.github.io/destarx/. Forked from skagamamiri/tools and reb
 ## Selenggara alatan
 
 - Setiap tool boleh ditandakan `maintenance: true` (+ `maintenanceMsg`) di Panel Pentadbir > Edit (kotak "Selenggara"). `launchTool()` menyekat guru bukan admin
-  dengan toast mesej itu; kad menjadi pudar dengan lencana "Diselenggara". Hanya hub yang menyekat — URL terus ke halaman tool masih boleh dibuka.
+  dengan toast mesej itu; kad mendapat kelas `is-maint` (kandungan dimalapkan + kelabu) dan cop condong
+  "DISELENGGARA" merentasi kad (`.tool-card-maint` dalam `tema-zamrud.css`). Hanya hub yang menyekat — URL terus ke halaman tool masih boleh dibuka.
 
 ## Alatan khas admin
 
